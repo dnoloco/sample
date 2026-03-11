@@ -21,15 +21,22 @@ class MyPCO_REST_Controller {
     const NAMESPACE = 'mypco/v1';
 
     /**
-     * @var MyPCO_Loader
+     * @var MyPCO_Settings_Repository  The "Data Vault" for local settings.
+     */
+    private $settings_repo;
+
+    /**
+     * @var MyPCO_Loader  Loader for accessing other repositories (events, cache).
      */
     protected $loader;
 
     /**
-     * @param MyPCO_Loader $loader The loader (provides access to repositories).
+     * @param MyPCO_Settings_Repository $settings_repo The settings data repository.
+     * @param MyPCO_Loader              $loader        The loader (for event repos, cache clearing).
      */
-    public function __construct( MyPCO_Loader $loader ) {
-        $this->loader = $loader;
+    public function __construct( MyPCO_Settings_Repository $settings_repo, MyPCO_Loader $loader ) {
+        $this->settings_repo = $settings_repo;
+        $this->loader        = $loader;
     }
 
     /**
@@ -105,18 +112,17 @@ class MyPCO_REST_Controller {
      * POST /settings/credentials — Save API credentials.
      */
     public function save_credentials( $request ) {
-        $params        = $request->get_json_params();
-        $settings_repo = $this->loader->get_repository( 'settings' );
+        $params = $request->get_json_params();
 
         if ( ! empty( $params['pco_client_id'] ) ) {
-            $settings_repo->save_pco_credentials(
+            $this->settings_repo->save_pco_credentials(
                 sanitize_text_field( $params['pco_client_id'] ),
                 sanitize_text_field( $params['pco_secret_key'] ?? '' )
             );
         }
 
         if ( ! empty( $params['clearstream_api_key'] ) ) {
-            $settings_repo->save_clearstream_credentials(
+            $this->settings_repo->save_clearstream_credentials(
                 sanitize_text_field( $params['clearstream_api_key'] ),
                 '' // message header
             );
@@ -129,8 +135,7 @@ class MyPCO_REST_Controller {
      * POST /settings/test-connection — Test PCO API connection.
      */
     public function test_connection( $request ) {
-        $settings_repo = $this->loader->get_repository( 'settings' );
-        $credentials   = $settings_repo->get_pco_credentials();
+        $credentials = $this->settings_repo->get_pco_credentials();
 
         if ( empty( $credentials['client_id'] ) || empty( $credentials['secret_key'] ) ) {
             return rest_ensure_response( [ 'connected' => false, 'message' => 'No credentials configured.' ] );
@@ -156,12 +161,12 @@ class MyPCO_REST_Controller {
         $params  = $request->get_json_params();
         $enabled = ! empty( $params['enabled'] );
 
-        $active_modules = get_option( 'mypco_active_modules', [] );
+        $active_modules = $this->settings_repo->get_active_modules();
         $active_modules[ $key ] = [
             'enabled'    => $enabled,
             'updated_at' => time(),
         ];
-        update_option( 'mypco_active_modules', $active_modules );
+        $this->settings_repo->save_active_modules( $active_modules );
 
         return rest_ensure_response( [ 'success' => true, 'module' => $key, 'enabled' => $enabled ] );
     }
