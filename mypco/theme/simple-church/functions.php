@@ -1013,7 +1013,7 @@ add_action( 'init', 'simple_church_disable_admin_bar_styles' );
  * @return array|false
  */
 function simple_church_get_next_sunday_event() {
-	if ( ! class_exists( 'MyPCO_API_Model' ) || ! class_exists( 'MyPCO_Credentials_Manager' ) ) {
+	if ( ! class_exists( 'MyPCO_API_Model' ) || ! class_exists( 'MyPCO_Settings_Repository' ) ) {
 		return false;
 	}
 
@@ -1031,7 +1031,8 @@ function simple_church_get_next_sunday_event() {
 		return $cached;
 	}
 
-	$credentials = MyPCO_Credentials_Manager::get_pco_credentials();
+	$settings_repo = new MyPCO_Settings_Repository();
+	$credentials   = $settings_repo->get_pco_credentials();
 	if ( empty( $credentials['client_id'] ) || empty( $credentials['secret_key'] ) ) {
 		return false;
 	}

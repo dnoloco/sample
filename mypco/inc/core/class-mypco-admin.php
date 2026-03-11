@@ -114,8 +114,9 @@ class MyPCO_Admin {
         <?php
     }
     public function render_status_metabox() {
-        $pco_creds = MyPCO_Credentials_Manager::get_pco_credentials();
-        $cs_creds  = MyPCO_Credentials_Manager::get_clearstream_credentials();
+        $settings_repo = $this->loader->get_repository( 'settings' );
+        $pco_creds     = $settings_repo->get_pco_credentials();
+        $cs_creds      = $settings_repo->get_clearstream_credentials();
 
         $pco_ok = !empty($pco_creds['client_id']);
         $cs_ok  = !empty($cs_creds['api_key']);

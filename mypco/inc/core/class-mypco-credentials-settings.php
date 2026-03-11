@@ -7,7 +7,14 @@
 
 class MyPCO_Credentials_Settings {
 
-    public function __construct( $loader ) {
+    /**
+     * @var MyPCO_Settings_Repository
+     */
+    private $settings_repo;
+
+    public function __construct( $loader, MyPCO_Settings_Repository $settings_repo ) {
+        $this->settings_repo = $settings_repo;
+
         $loader->add_action('admin_menu', $this, 'add_credentials_page', 15);
         $loader->add_action('admin_init', $this, 'handle_credentials_save');
 
@@ -63,7 +70,7 @@ class MyPCO_Credentials_Settings {
 
         // Save PCO credentials if provided
         if ($pco_client_id !== null && $pco_secret_key !== null) {
-            MyPCO_Credentials_Manager::set_pco_credentials(
+            $this->settings_repo->save_pco_credentials(
                     sanitize_text_field($pco_client_id),
                     sanitize_text_field($pco_secret_key)
             );
@@ -71,7 +78,7 @@ class MyPCO_Credentials_Settings {
 
         // Save Clearstream credentials if provided
         if ($clearstream_token !== null) {
-            MyPCO_Credentials_Manager::set_clearstream_credentials(
+            $this->settings_repo->save_clearstream_credentials(
                     sanitize_text_field($clearstream_token),
                     sanitize_text_field($clearstream_header)
             );
@@ -95,7 +102,7 @@ class MyPCO_Credentials_Settings {
             wp_send_json_error('Unauthorized');
         }
 
-        $creds = MyPCO_Credentials_Manager::get_pco_credentials();
+        $creds = $this->settings_repo->get_pco_credentials();
 
         if (empty($creds['client_id']) || empty($creds['secret_key'])) {
             wp_send_json_error('No PCO credentials found. Please save credentials first.');
@@ -137,9 +144,9 @@ class MyPCO_Credentials_Settings {
             wp_send_json_error('Unauthorized');
         }
 
-        $creds = MyPCO_Credentials_Manager::get_clearstream_credentials();
+        $creds = $this->settings_repo->get_clearstream_credentials();
 
-        if (empty($creds['api_token'])) {
+        if (empty($creds['api_key'])) {
             wp_send_json_error('No Clearstream token found. Please save credentials first.');
         }
 
@@ -147,7 +154,7 @@ class MyPCO_Credentials_Settings {
         // Official URL: https://api.getclearstream.com/v1/
         $response = wp_remote_get('https://api.getclearstream.com/v1/account', [
                 'headers' => [
-                        'X-API-Key' => $creds['api_token'],
+                        'X-API-Key' => $creds['api_key'],
                         'Accept' => 'application/json'
                 ],
                 'timeout' => 15
@@ -180,18 +187,18 @@ class MyPCO_Credentials_Settings {
         }
 
         // Get current credentials (decrypted for display)
-        $pco_creds = MyPCO_Credentials_Manager::get_pco_credentials();
-        $clearstream_creds = MyPCO_Credentials_Manager::get_clearstream_credentials();
+        $pco_creds = $this->settings_repo->get_pco_credentials();
+        $clearstream_creds = $this->settings_repo->get_clearstream_credentials();
 
         // Create masked display values
-        $pco_client_display = MyPCO_Credentials_Manager::get_masked_value($pco_creds['client_id']);
-        $pco_secret_display = MyPCO_Credentials_Manager::get_masked_value($pco_creds['secret_key']);
-        $clearstream_token_display = MyPCO_Credentials_Manager::get_masked_value($clearstream_creds['api_token']);
+        $pco_client_display = $this->settings_repo->get_masked_value($pco_creds['client_id']);
+        $pco_secret_display = $this->settings_repo->get_masked_value($pco_creds['secret_key']);
+        $clearstream_token_display = $this->settings_repo->get_masked_value($clearstream_creds['api_key'] ?? '');
 
         // Check for migration from config.php
         $config_file = MYPCO_PLUGIN_DIR . 'config.php';
         $config_exists = file_exists($config_file);
-        $can_migrate = $config_exists && !MyPCO_Credentials_Manager::has_pco_credentials();
+        $can_migrate = $config_exists && !$this->settings_repo->has_pco_credentials();
 
         ?>
         <div class="wrap">

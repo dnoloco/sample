@@ -69,6 +69,7 @@ require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-stripe-handler.php';
 require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-google-forms-webhook.php';
 
 // Repositories ("Muscle")
+require_once MYPCO_PLUGIN_DIR . 'inc/repositories/class-settings-repository.php';
 require_once MYPCO_PLUGIN_DIR . 'inc/repositories/class-event-repository.php';
 require_once MYPCO_PLUGIN_DIR . 'inc/repositories/class-service-repository.php';
 require_once MYPCO_PLUGIN_DIR . 'inc/repositories/class-publishing-repository.php';
@@ -80,6 +81,7 @@ require_once MYPCO_PLUGIN_DIR . 'inc/modules/class-mypco-modules.php';
 require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-admin.php';
 require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-settings.php';
 require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-license-page.php';
+require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-credentials-settings.php';
 require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-shortcodes-admin.php';
 
 // Public
@@ -99,11 +101,18 @@ $i18n = new MyPCO_i18n();
 $loader->add_action( 'plugins_loaded', $i18n, 'load_plugin_textdomain' );
 
 /*--------------------------------------------------------------------------
- * 6. API MODEL
+ * 6. SETTINGS REPOSITORY  ("Data Vault" — local wp_options data access)
+ *------------------------------------------------------------------------*/
+
+$settings_repo = new MyPCO_Settings_Repository();
+$loader->register_repository( 'settings', $settings_repo );
+
+/*--------------------------------------------------------------------------
+ * 7. API MODEL
  *------------------------------------------------------------------------*/
 
 $api_model   = null;
-$credentials = MyPCO_Credentials_Manager::get_pco_credentials();
+$credentials = $settings_repo->get_pco_credentials();
 
 if ( ! empty( $credentials['client_id'] ) && ! empty( $credentials['secret_key'] ) ) {
     $timezone  = get_option( 'timezone_string' ) ?: 'America/Chicago';
@@ -111,7 +120,7 @@ if ( ! empty( $credentials['client_id'] ) && ! empty( $credentials['secret_key']
 }
 
 /*--------------------------------------------------------------------------
- * 7. REPOSITORIES  ("Muscle" — SSP-style data access)
+ * 8. API REPOSITORIES  ("Muscle" — SSP-style external data access)
  *------------------------------------------------------------------------*/
 
 if ( $api_model ) {
@@ -123,14 +132,14 @@ if ( $api_model ) {
 }
 
 /*--------------------------------------------------------------------------
- * 8. UPDATE MANAGER
+ * 9. UPDATE MANAGER
  *------------------------------------------------------------------------*/
 
 $update_manager = MyPCO_Update_Manager::get_instance();
 $update_manager->init( $loader );
 
 /*--------------------------------------------------------------------------
- * 9. ADMIN HOOKS
+ * 10. ADMIN HOOKS
  *------------------------------------------------------------------------*/
 
 $plugin_name = 'mypco-online';
@@ -176,9 +185,12 @@ $shortcodes_admin->init();
 $loader->add_action( 'admin_menu', $admin, 'add_modules_menu', 99 );
 
 // Settings — React mount point
-$settings = new MyPCO_Settings( MYPCO_VERSION, $api_model );
+$settings = new MyPCO_Settings( MYPCO_VERSION, $api_model, $settings_repo );
 $loader->add_action( 'admin_menu',            $settings, 'add_settings_menu', 99 );
 $loader->add_action( 'admin_enqueue_scripts', $settings, 'enqueue_assets' );
+
+// Credentials settings — legacy admin page (hooks registered in constructor)
+$credentials_settings = new MyPCO_Credentials_Settings( $loader, $settings_repo );
 
 // License page
 $license_page = new MyPCO_License_Page( $plugin_name, MYPCO_VERSION );
@@ -197,7 +209,7 @@ $rest_controller = new MyPCO_REST_Controller( $loader );
 $loader->add_action( 'rest_api_init', $rest_controller, 'register_routes' );
 
 /*--------------------------------------------------------------------------
- * 10. PUBLIC HOOKS
+ * 11. PUBLIC HOOKS
  *------------------------------------------------------------------------*/
 
 $public = new MyPCO_Public( $plugin_name, MYPCO_VERSION );
@@ -205,7 +217,7 @@ $loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_styles' );
 $loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_scripts' );
 
 /*--------------------------------------------------------------------------
- * 11. FIRE EVERYTHING
+ * 12. FIRE EVERYTHING
  *------------------------------------------------------------------------*/
 
 $loader->run();

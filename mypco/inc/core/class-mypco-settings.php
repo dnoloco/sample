@@ -22,10 +22,12 @@ class MyPCO_Settings {
 
     private $version;
     private $api_model;
+    private $settings_repo;
 
-    public function __construct( $version, $api_model ) {
-        $this->version   = $version;
-        $this->api_model = $api_model;
+    public function __construct( $version, $api_model, MyPCO_Settings_Repository $settings_repo ) {
+        $this->version       = $version;
+        $this->api_model     = $api_model;
+        $this->settings_repo = $settings_repo;
     }
 
     /**
@@ -74,8 +76,8 @@ class MyPCO_Settings {
      * Build the initial data blob passed to the React app via wp_localize_script.
      */
     private function get_localized_data() {
-        $pco_creds = MyPCO_Credentials_Manager::get_pco_credentials();
-        $cs_creds  = MyPCO_Credentials_Manager::get_clearstream_credentials();
+        $pco_creds = $this->settings_repo->get_pco_credentials();
+        $cs_creds  = $this->settings_repo->get_clearstream_credentials();
 
         $modules_data = [];
         if ( class_exists( 'MyPCO_Module_Manager' ) ) {
@@ -95,9 +97,9 @@ class MyPCO_Settings {
         }
 
         return [
-            'pcoClientId'    => ! empty( $pco_creds['client_id'] ) ? '••••••••' . substr( $pco_creds['client_id'], -5 ) : '',
+            'pcoClientId'    => $this->settings_repo->get_masked_value( $pco_creds['client_id'] ?? '', 5 ),
             'pcoSecretKey'   => '',
-            'clearstreamKey' => ! empty( $cs_creds['api_key'] ) ? '••••••••' . substr( $cs_creds['api_key'], -5 ) : '',
+            'clearstreamKey' => $this->settings_repo->get_masked_value( $cs_creds['api_key'] ?? '', 5 ),
             'modules'        => $modules_data,
             'nonce'          => wp_create_nonce( 'wp_rest' ),
             'restBase'       => esc_url_raw( rest_url( 'mypco/v1/' ) ),

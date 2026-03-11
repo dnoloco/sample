@@ -105,17 +105,18 @@ class MyPCO_REST_Controller {
      * POST /settings/credentials — Save API credentials.
      */
     public function save_credentials( $request ) {
-        $params = $request->get_json_params();
+        $params        = $request->get_json_params();
+        $settings_repo = $this->loader->get_repository( 'settings' );
 
         if ( ! empty( $params['pco_client_id'] ) ) {
-            MyPCO_Credentials_Manager::save_pco_credentials(
+            $settings_repo->save_pco_credentials(
                 sanitize_text_field( $params['pco_client_id'] ),
                 sanitize_text_field( $params['pco_secret_key'] ?? '' )
             );
         }
 
         if ( ! empty( $params['clearstream_api_key'] ) ) {
-            MyPCO_Credentials_Manager::save_clearstream_credentials(
+            $settings_repo->save_clearstream_credentials(
                 sanitize_text_field( $params['clearstream_api_key'] ),
                 '' // message header
             );
@@ -128,7 +129,8 @@ class MyPCO_REST_Controller {
      * POST /settings/test-connection — Test PCO API connection.
      */
     public function test_connection( $request ) {
-        $credentials = MyPCO_Credentials_Manager::get_pco_credentials();
+        $settings_repo = $this->loader->get_repository( 'settings' );
+        $credentials   = $settings_repo->get_pco_credentials();
 
         if ( empty( $credentials['client_id'] ) || empty( $credentials['secret_key'] ) ) {
             return rest_ensure_response( [ 'connected' => false, 'message' => 'No credentials configured.' ] );

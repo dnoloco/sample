@@ -69,8 +69,8 @@ class MyPCO_Contacts_Module extends MyPCO_Module_Base {
         }
 
         // Check if Clearstream is configured
-        $creds = MyPCO_Credentials_Manager::get_clearstream_credentials();
-        $is_configured = !empty($creds['api_token']);
+        $creds = $this->repository('settings')->get_clearstream_credentials();
+        $is_configured = !empty($creds['api_key']);
         $credentials_url = admin_url('admin.php?page=mypco-credentials');
 
         ?>
@@ -156,9 +156,9 @@ class MyPCO_Contacts_Module extends MyPCO_Module_Base {
      * @return array Result with success/error info
      */
     public function send_sms($phone_numbers, $message) {
-        // Get credentials from encrypted storage
-        $creds = MyPCO_Credentials_Manager::get_clearstream_credentials();
-        $api_token = $creds['api_token'];
+        // Get credentials from settings repository
+        $creds = $this->repository('settings')->get_clearstream_credentials();
+        $api_token = $creds['api_key'];
         $message_header = $creds['message_header'];
 
         if (empty($api_token)) {
