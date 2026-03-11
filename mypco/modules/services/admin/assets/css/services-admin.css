@@ -1,0 +1,32 @@
+/* Service Plans Styling */
+.wp-list-table.posts .column-title {
+    width: auto;
+}
+
+.subsubsub li {
+    white-space: nowrap;
+}
+
+/* Team Member Tables */
+.card h3 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.card table {
+    margin-top: 15px;
+}
+
+/* Status Colors */
+.status-confirmed {
+    color: green;
+}
+
+.status-unconfirmed {
+    color: orange;
+}
+
+.status-declined {
+    color: red;
+}

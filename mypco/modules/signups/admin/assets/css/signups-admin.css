@@ -1,0 +1,75 @@
+/**
+ * Signups Module - Admin Styles
+ *
+ * Styling for event signups and registration management.
+ */
+
+/* Signups List */
+.wp-list-table .notice.inline {
+    display: inline-block;
+    margin: 0;
+    padding: 3px 8px;
+    font-size: 12px;
+}
+
+/* Edit Form */
+#payment_fields,
+#partial_payment_fields {
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Registrants List */
+.card h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.form-table th {
+    font-weight: 600;
+}
+
+/* Waitlist Styling */
+tr[style*="background-color: #fff9e6"] {
+    background-color: #fff9e6 !important;
+}
+
+/* Payment Status Colors */
+span[style*="color: green"] {
+    color: #46b450 !important;
+}
+
+span[style*="color: orange"] {
+    color: #ffb900 !important;
+}
+
+span[style*="color: red"] {
+    color: #dc3232 !important;
+}
+
+/* Registration Detail */
+.card {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Button Spacing */
+.button + .button {
+    margin-left: 5px;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+    .wp-list-table td.column-primary {
+        padding-bottom: 15px;
+    }
+    
+    .wp-list-table .button-small {
+        display: block;
+        margin-bottom: 5px;
+        width: 100%;
+    }
+}

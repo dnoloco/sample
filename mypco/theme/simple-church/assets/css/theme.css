@@ -1,0 +1,2081 @@
+/* ==========================================================================
+   Simple Church Theme — Main Stylesheet
+   A minimal theme with parallax scrolling and scroll-reveal animations.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. RESET & BASE
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	font-size: 16px;
+	scroll-behavior: smooth;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+body {
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		Oxygen, Ubuntu, sans-serif;
+	font-weight: 400;
+	line-height: 1.6;
+	color: #1a1a1a;
+	background-color: #f3ebe2;
+	overflow-x: hidden;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+ul, ol {
+	list-style: none;
+}
+
+/* --------------------------------------------------------------------------
+   2. TYPOGRAPHY
+   -------------------------------------------------------------------------- */
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 700;
+	line-height: 1.15;
+	letter-spacing: -0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   3. SITE HEADER
+   -------------------------------------------------------------------------- */
+
+.site-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	padding: 1.5rem 2.5rem;
+	transition: background-color 0.4s ease, padding 0.4s ease, color 0.4s ease;
+}
+
+.site-header--scrolled {
+	background-color: rgba(255, 255, 255, 0.95);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	padding: 1rem 2.5rem;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* When on dark sections, keep header text white */
+.site-header--dark {
+	color: #ffffff;
+}
+
+.site-header--dark.site-header--scrolled {
+	color: #1a1a1a;
+}
+
+/* Dark navbar variant — black bar with white text/logo */
+.site-header--variant-dark {
+	background-color: #0a0a0a;
+	color: #ffffff;
+}
+
+.site-header--variant-dark.site-header--scrolled {
+	background-color: rgba(10, 10, 10, 0.95);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	color: #ffffff;
+	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Logo visibility: dark variant shows the dark (white) logo, hides the light one */
+.site-header--variant-dark .site-header__logo-light {
+	display: none !important;
+}
+
+/* When over a light section after scrolling, swap back to light appearance */
+.site-header--variant-dark.site-header--variant-light-swap {
+	background-color: rgba(255, 255, 255, 0.95);
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+	color: #1a1a1a;
+	box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+.site-header--variant-dark.site-header--variant-light-swap .site-header__logo-dark {
+	display: none !important;
+}
+
+.site-header--variant-dark.site-header--variant-light-swap .site-header__logo-light {
+	display: inline-block !important;
+}
+
+/* Non-dark variant with alt logo (e.g., seasonal theme on the front page).
+   Initially show the light-for-dark-bg logo; swap to the dark logo on scroll. */
+.site-header--has-alt-logo .site-header__logo-light {
+	display: none !important;
+}
+
+.site-header--has-alt-logo .site-header__logo-dark {
+	display: inline-block !important;
+}
+
+.site-header--has-alt-logo.site-header--scrolled .site-header__logo-dark {
+	display: none !important;
+}
+
+.site-header--has-alt-logo.site-header--scrolled .site-header__logo-light {
+	display: inline-block !important;
+}
+
+.site-header__inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	max-width: 1440px;
+	margin: 0 auto;
+}
+
+.site-header__logo a,
+.site-header__title {
+	font-size: 1.125rem;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	color: inherit;
+	text-decoration: none;
+}
+
+.site-header__logo img {
+	max-height: 36px;
+	width: auto;
+}
+
+.site-header__actions {
+	display: flex;
+	align-items: center;
+	gap: 2rem;
+}
+
+/* Inline header nav (visible on desktop) */
+.site-header__nav {
+	display: none;
+}
+
+@media (min-width: 768px) {
+	.site-header__nav {
+		display: block;
+	}
+}
+
+.header-nav {
+	display: flex;
+	gap: 2rem;
+}
+
+.header-nav li a {
+	font-size: 0.875rem;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	color: inherit;
+	text-decoration: none;
+	position: relative;
+	padding-bottom: 2px;
+}
+
+.header-nav li a::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 0;
+	height: 1px;
+	background-color: currentColor;
+	transition: width 0.3s ease;
+}
+
+.header-nav li a:hover::after {
+	width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   4. HAMBURGER / MENU TOGGLE
+   -------------------------------------------------------------------------- */
+
+.menu-toggle {
+	position: relative;
+	z-index: 200;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 32px;
+	height: 32px;
+	gap: 6px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+	color: inherit;
+}
+
+.menu-toggle__line {
+	display: block;
+	width: 24px;
+	height: 1.5px;
+	background-color: currentColor;
+	transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+	            opacity 0.3s ease;
+	transform-origin: center;
+}
+
+/* Open state — X shape */
+.menu-toggle--open .menu-toggle__line:first-child {
+	transform: translateY(3.75px) rotate(45deg);
+}
+
+.menu-toggle--open .menu-toggle__line:last-child {
+	transform: translateY(-3.75px) rotate(-45deg);
+}
+
+/* --------------------------------------------------------------------------
+   5. OVERLAY MENU
+   -------------------------------------------------------------------------- */
+
+.overlay-menu {
+	position: fixed;
+	inset: 0;
+	z-index: 150;
+	background-color: #0a0a0a;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.5s cubic-bezier(0.25, 0.1, 0.25, 1),
+	            visibility 0.5s;
+}
+
+.overlay-menu--open {
+	opacity: 1;
+	visibility: visible;
+}
+
+/* Close button — top-right, always visible in overlay */
+.overlay-menu__close {
+	position: absolute;
+	top: 1.5rem;
+	right: 2.5rem;
+	z-index: 10;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	background: none;
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	border-radius: 50%;
+	cursor: pointer;
+	color: #ffffff;
+	transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Push close button below the WP admin bar */
+.admin-bar .overlay-menu__close {
+	top: calc(1.5rem + 32px);
+}
+
+@media (max-width: 782px) {
+	.admin-bar .overlay-menu__close {
+		top: calc(1.25rem + 46px);
+	}
+}
+
+.overlay-menu__close svg {
+	width: 20px;
+	height: 20px;
+	pointer-events: none;
+}
+
+.overlay-menu__close:hover {
+	border-color: #ffffff;
+	transform: rotate(90deg);
+}
+
+.overlay-menu__inner {
+	width: 100%;
+	padding: 6rem 2.5rem 2rem;
+	text-align: right;
+}
+
+/* Hint for admins when no menu is assigned */
+.overlay-menu__hint {
+	margin-top: 2rem;
+	font-size: 0.8125rem;
+	color: #555555;
+}
+
+.overlay-menu__hint a {
+	color: #888888;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.overlay-menu__list {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 0.5rem;
+}
+
+.overlay-menu__item {
+	overflow: hidden;
+	text-align: right;
+}
+
+.overlay-menu__link {
+	display: inline-block;
+	font-size: clamp(2rem, 6vw, 4.5rem);
+	font-weight: 700;
+	color: #ffffff;
+	letter-spacing: -0.03em;
+	line-height: 1.2;
+	text-align: right;
+	transform: translateY(110%);
+	transition: transform 0.6s cubic-bezier(0.25, 0.1, 0.25, 1),
+	            color 0.3s ease;
+}
+
+.overlay-menu--open .overlay-menu__link {
+	transform: translateY(0);
+}
+
+/* Stagger the animation */
+.overlay-menu--open .overlay-menu__item:nth-child(1) .overlay-menu__link { transition-delay: 0.1s; }
+.overlay-menu--open .overlay-menu__item:nth-child(2) .overlay-menu__link { transition-delay: 0.15s; }
+.overlay-menu--open .overlay-menu__item:nth-child(3) .overlay-menu__link { transition-delay: 0.2s; }
+.overlay-menu--open .overlay-menu__item:nth-child(4) .overlay-menu__link { transition-delay: 0.25s; }
+.overlay-menu--open .overlay-menu__item:nth-child(5) .overlay-menu__link { transition-delay: 0.3s; }
+.overlay-menu--open .overlay-menu__item:nth-child(6) .overlay-menu__link { transition-delay: 0.35s; }
+
+.overlay-menu__link:hover {
+	color: #888888;
+}
+
+/* Divider and upcoming event inside overlay menu */
+.overlay-menu__event-wrap {
+	width: fit-content;
+	margin-left: auto;
+	opacity: 0;
+	transform: translateY(10px);
+	transition: opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s;
+}
+
+.overlay-menu--open .overlay-menu__event-wrap {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.overlay-menu__divider {
+	border: none;
+	border-top: 1px solid rgba(255, 255, 255, 0.15);
+	margin: 2rem 0 1.5rem 0;
+}
+
+.overlay-menu__event {
+	text-align: left;
+}
+
+/* Heading — right-aligned, matches overlay link color */
+.overlay-menu__event-heading {
+	font-size: 0.7rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: #ffffff;
+	margin: 0 0 0.75rem;
+	text-align: right;
+}
+
+/* Bordered card — flex row: badge left, meta right */
+.overlay-menu__event-card {
+	display: flex;
+	align-items: center;
+	gap: 0.875rem;
+	border: 1px solid #ffffff;
+	border-radius: 12px;
+	padding: 0.875rem 1rem;
+}
+
+/* Date badge — vertical, compact */
+.overlay-menu__event-badge {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: fit-content;
+	flex-shrink: 0;
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 8px;
+	padding: 0.4rem 0.625rem;
+	line-height: 1.2;
+}
+
+.overlay-menu__event-badge-day,
+.overlay-menu__event-badge-month {
+	font-size: 0.65rem;
+	font-weight: 500;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.overlay-menu__event-badge-num {
+	font-size: 1.25rem;
+	font-weight: 700;
+	color: #ffffff;
+}
+
+/* Time + location stacked beside badge */
+.overlay-menu__event-meta {
+	display: flex;
+	flex-direction: column;
+	gap: 0.375rem;
+	font-size: 0.8125rem;
+}
+
+.overlay-menu__event-time,
+.overlay-menu__event-location {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.overlay-menu__event-time svg,
+.overlay-menu__event-location svg {
+	flex-shrink: 0;
+	color: rgba(255, 255, 255, 0.4);
+}
+
+.overlay-menu__event-location a {
+	color: #ffffff;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.overlay-menu__event-location a:hover {
+	color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   6. HERO SECTION — Typed headline + subtitle
+   -------------------------------------------------------------------------- */
+
+.hero {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	min-height: 100vh;
+	min-height: 100dvh;
+	padding: 8rem 2.5rem 4rem;
+	background-color: #edebe6; /* overridden by inline style from Customizer */
+}
+
+.hero__content {
+	width: 100%;
+	transform: translateY(calc(-1 * var(--hero-offset, 0px)));
+}
+
+.hero__headline {
+	font-family: var(--hero-headline-font, 'DM Sans', sans-serif);
+	font-size: var(--hero-headline-size, 11vw);
+	font-weight: 400;
+	line-height: 1;
+	letter-spacing: -0.02em;
+	color: var(--hero-headline-color, #1a1a1a);
+}
+
+.hero__cursor {
+	display: inline-block;
+	font-weight: 300;
+	animation: cursorBlink 0.8s steps(1) infinite;
+	margin-left: 2px;
+}
+
+@keyframes cursorBlink {
+	0%, 100% { opacity: 1; }
+	50% { opacity: 0; }
+}
+
+.hero__divider {
+	width: 100%;
+	border: none;
+	border-top: 1px solid var(--hero-headline-color, #1a1a1a);
+	margin: 0.4em 0 0.4em;
+}
+
+.hero__subtitle {
+	font-family: var(--hero-subtitle-font, 'DM Sans', sans-serif);
+	font-size: var(--hero-subtitle-size, 2.5vw);
+	font-weight: 400;
+	line-height: 1.4;
+	color: var(--hero-subtitle-color, #1a1a1a);
+}
+
+/* Bottom tagline — centered above the scroll indicator */
+.hero__bottom-tagline {
+	position: absolute;
+	bottom: 8rem;
+	left: 0;
+	right: 0;
+	text-align: center;
+	color: var(--hero-tagline-color, #1a1a1a);
+}
+
+.hero__bottom-tagline p {
+	font-family: var(--hero-tagline-font, 'DM Sans', sans-serif);
+	font-size: var(--hero-tagline-size, 1vw);
+	font-weight: 400;
+	letter-spacing: 0.02em;
+}
+
+/* Scroll indicator */
+.hero__scroll-indicator {
+	position: absolute;
+	bottom: 2.5rem;
+	left: 50%;
+	transform: translateX(-50%);
+	color: var(--hero-headline-color, #1a1a1a);
+}
+
+.hero__scroll-line {
+	width: 1px;
+	height: 60px;
+	background: linear-gradient(to bottom, currentColor, transparent);
+	animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+	0%, 100% { opacity: 0.3; transform: scaleY(1); }
+	50% { opacity: 1; transform: scaleY(1.2); }
+}
+
+/* --------------------------------------------------------------------------
+   7. SECTIONS — GENERAL
+   -------------------------------------------------------------------------- */
+
+.section {
+	padding: 8rem 2.5rem;
+}
+
+.section--light {
+	background-color: #ffffff;
+	color: #1a1a1a;
+}
+
+.section--dark {
+	background-color: #0a0a0a;
+	color: #ffffff;
+}
+
+.section--full {
+	min-height: 100vh;
+	min-height: 100dvh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.section--full .section__inner {
+	max-width: 720px;
+}
+
+.section__inner {
+	max-width: 1200px;
+	margin: 0 auto;
+	width: 100%;
+}
+
+.section__inner--narrow {
+	max-width: 780px;
+}
+
+.page-hero + .section {
+	padding-top: 3rem;
+}
+
+.section__inner--720 {
+	max-width: 720px;
+}
+
+.section__label {
+	display: block;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: #888888;
+	margin-bottom: 1rem;
+}
+
+.section__heading {
+	font-size: clamp(2rem, 5vw, 3.5rem);
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	line-height: 1.1;
+	margin-bottom: 1.5rem;
+	max-width: 720px;
+}
+
+.section__text {
+	font-size: clamp(1rem, 1.5vw, 1.125rem);
+	line-height: 1.7;
+	color: #666666;
+	margin-bottom: 1rem;
+	max-width: 720px;
+}
+
+.section--dark .section__text {
+	color: #999999;
+}
+
+.section__link {
+	display: inline-block;
+	font-size: 0.9375rem;
+	font-weight: 600;
+	color: #1a1a1a;
+	padding-bottom: 2px;
+	border-bottom: 1px solid currentColor;
+	transition: color 0.3s ease;
+	margin-top: 0.5rem;
+}
+
+.section__link:hover {
+	color: #555555;
+}
+
+/* --------------------------------------------------------------------------
+   8. CARD GRID (services / capabilities)
+   -------------------------------------------------------------------------- */
+
+.card-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 2rem;
+	margin-top: 3rem;
+	justify-content: center;
+}
+
+@media (min-width: 640px) {
+	.card-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+.card {
+	padding: 2.5rem;
+	border: 1px solid #e8e8e8;
+	border-radius: 2px;
+	transition: border-color 0.3s ease;
+}
+
+.card:hover {
+	border-color: #1a1a1a;
+}
+
+.card__number {
+	display: block;
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: #bbbbbb;
+	letter-spacing: 0.05em;
+	margin-bottom: 1rem;
+}
+
+.card__title {
+	font-size: 1.25rem;
+	font-weight: 700;
+	margin-bottom: 0.75rem;
+}
+
+.card__text {
+	font-size: 0.9375rem;
+	line-height: 1.6;
+	color: #666666;
+}
+
+.card__link {
+	margin-top: 0.75rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	text-align: right;
+}
+
+.card__link a {
+	color: inherit;
+	text-decoration: none;
+	border-bottom: 1px solid currentColor;
+	padding-bottom: 2px;
+	transition: opacity 0.3s ease;
+}
+
+.card__link a:hover {
+	opacity: 0.6;
+}
+
+.section--dark .card__link a {
+	color: #ffffff;
+}
+
+.section--dark .card {
+	background-color: #0a0a0a;
+	border-color: #333333;
+}
+
+.section--dark .card:hover {
+	border-color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   9. PARALLAX BREAK
+   -------------------------------------------------------------------------- */
+
+.parallax-break {
+	position: relative;
+	height: 60vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #1a1a1a;
+	overflow: hidden;
+}
+
+.parallax-break::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		135deg,
+		rgba(10, 10, 10, 0.9) 0%,
+		rgba(30, 30, 30, 0.7) 100%
+	);
+}
+
+.parallax-break__content {
+	position: relative;
+	z-index: 1;
+	text-align: center;
+	padding: 2rem;
+}
+
+.parallax-break__quote {
+	font-size: clamp(1.5rem, 4vw, 2.5rem);
+	font-weight: 300;
+	font-style: italic;
+	color: #ffffff;
+	max-width: 700px;
+	line-height: 1.4;
+	letter-spacing: -0.01em;
+}
+
+/* --------------------------------------------------------------------------
+   10. SPLIT LAYOUT
+   -------------------------------------------------------------------------- */
+
+.split {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 3rem;
+}
+
+@media (min-width: 768px) {
+	.split {
+		grid-template-columns: 1fr 1fr;
+		gap: 4rem;
+		align-items: start;
+	}
+
+	.split--stretch {
+		align-items: stretch;
+	}
+}
+
+/* --------------------------------------------------------------------------
+   10b. SPLIT QUOTE BOX
+   -------------------------------------------------------------------------- */
+
+.split-quote-box {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 3rem;
+	min-height: 280px;
+}
+
+.split-quote-box__quote,
+.split-quote-box .wp-block-quote.split-quote-box__quote {
+	font-size: clamp(1.25rem, 3vw, 2rem);
+	font-weight: 300;
+	font-style: italic;
+	line-height: 1.5;
+	letter-spacing: -0.01em;
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+.split-quote-box__quote p {
+	font-size: inherit;
+	font-weight: inherit;
+	font-style: inherit;
+	line-height: inherit;
+	color: inherit;
+}
+
+.split-quote-box--light {
+	background-color: #ffffff;
+	color: #000000;
+}
+
+/* --------------------------------------------------------------------------
+   11. MODULE GRID
+   -------------------------------------------------------------------------- */
+
+.module-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 1.5rem;
+	margin-top: 3rem;
+}
+
+@media (min-width: 640px) {
+	.module-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (min-width: 960px) {
+	.module-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+.module-card {
+	padding: 2rem;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 2px;
+	transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.module-card:hover {
+	border-color: rgba(255, 255, 255, 0.3);
+	transform: translateY(-2px);
+}
+
+.module-card__icon {
+	width: 32px;
+	height: 32px;
+	margin-bottom: 1.25rem;
+	color: #ffffff;
+}
+
+.module-card__icon svg {
+	width: 100%;
+	height: 100%;
+}
+
+.module-card__title {
+	font-size: 1.125rem;
+	font-weight: 700;
+	margin-bottom: 0.5rem;
+	color: #ffffff;
+}
+
+.module-card__text {
+	font-size: 0.875rem;
+	line-height: 1.6;
+	color: #999999;
+}
+
+/* --------------------------------------------------------------------------
+   12. CTA SECTION
+   -------------------------------------------------------------------------- */
+
+.section--cta {
+	background-color: #f5f5f0;
+	color: #1a1a1a;
+}
+
+.cta {
+	text-align: center;
+	max-width: 600px;
+	margin: 0 auto;
+}
+
+.cta__heading {
+	font-size: clamp(2rem, 4vw, 3rem);
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	margin-bottom: 1rem;
+}
+
+.cta__text {
+	font-size: 1.0625rem;
+	color: #666666;
+	line-height: 1.7;
+	margin-bottom: 2rem;
+}
+
+.cta__button {
+	display: inline-block;
+	padding: 0;
+	background-color: transparent;
+	border: none;
+	border-radius: 0;
+	cursor: pointer;
+}
+
+.cta__button:hover {
+	background-color: transparent;
+	transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   13. PAGE HERO (inner pages)
+   -------------------------------------------------------------------------- */
+
+.page-hero {
+	padding: 10rem 2.5rem 4rem;
+	background-color: #0a0a0a;
+	color: #ffffff;
+}
+
+.page-hero--compact {
+	padding: 10rem 2.5rem 3rem;
+}
+
+.page-hero__inner {
+	max-width: 780px;
+	margin: 0 auto;
+}
+
+.page-hero__date {
+	display: block;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	color: #888888;
+	letter-spacing: 0.05em;
+	margin-bottom: 1rem;
+}
+
+.page-hero__title {
+	font-size: clamp(2rem, 5vw, 3.5rem);
+	font-weight: 700;
+	letter-spacing: -0.03em;
+	line-height: 1.1;
+}
+
+/* --------------------------------------------------------------------------
+   14. PAGE CONTENT (prose)
+   -------------------------------------------------------------------------- */
+
+.page-content {
+	font-size: 1.0625rem;
+	line-height: 1.8;
+	color: #333333;
+}
+
+.page-content h2 {
+	font-size: 1.75rem;
+	margin: 2.5rem 0 1rem;
+}
+
+.page-content h3 {
+	font-size: 1.375rem;
+	margin: 2rem 0 0.75rem;
+}
+
+.page-content p {
+	margin-bottom: 1.25rem;
+}
+
+.page-content a {
+	color: #0a0a0a;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.page-content ul,
+.page-content ol {
+	margin: 1rem 0 1.5rem 1.5rem;
+}
+
+.page-content ul {
+	list-style: disc;
+}
+
+.page-content ol {
+	list-style: decimal;
+}
+
+.page-content li {
+	margin-bottom: 0.5rem;
+}
+
+.page-content blockquote {
+	border-left: 3px solid #0a0a0a;
+	padding-left: 1.5rem;
+	margin: 2rem 0;
+	font-style: italic;
+	color: #555555;
+}
+
+.page-content img {
+	margin: 2rem 0;
+	border-radius: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   15. POST CARDS (blog listing)
+   -------------------------------------------------------------------------- */
+
+.posts-list {
+	display: flex;
+	flex-direction: column;
+	gap: 3rem;
+}
+
+.post-card {
+	padding-bottom: 3rem;
+	border-bottom: 1px solid #e8e8e8;
+}
+
+.post-card:last-child {
+	border-bottom: none;
+}
+
+.post-card__date {
+	display: block;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	color: #888888;
+	letter-spacing: 0.03em;
+	margin-bottom: 0.5rem;
+}
+
+.post-card__title {
+	font-size: 1.75rem;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	margin-bottom: 0.75rem;
+}
+
+.post-card__title a {
+	color: #0a0a0a;
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+.post-card__title a:hover {
+	color: #555555;
+}
+
+.post-card__excerpt {
+	font-size: 1rem;
+	line-height: 1.7;
+	color: #666666;
+	margin-bottom: 1rem;
+}
+
+.post-card__link {
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: #0a0a0a;
+	border-bottom: 1px solid currentColor;
+	padding-bottom: 1px;
+}
+
+/* Post navigation */
+.post-navigation {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 4rem;
+	padding-top: 2rem;
+	border-top: 1px solid #e8e8e8;
+}
+
+.post-navigation a {
+	font-size: 0.9375rem;
+	font-weight: 500;
+	color: #1a1a1a;
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+.post-navigation a:hover {
+	color: #555555;
+}
+
+/* Pagination */
+.pagination {
+	margin-top: 3rem;
+}
+
+.pagination .nav-links {
+	display: flex;
+	gap: 0.75rem;
+	justify-content: center;
+}
+
+.pagination a,
+.pagination span {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 2.5rem;
+	height: 2.5rem;
+	font-size: 0.875rem;
+	font-weight: 500;
+	color: #1a1a1a;
+	text-decoration: none;
+}
+
+.pagination .current {
+	font-weight: 700;
+	border-bottom: 2px solid #0a0a0a;
+}
+
+/* --------------------------------------------------------------------------
+   16. SCROLL REVEAL ANIMATIONS
+   -------------------------------------------------------------------------- */
+
+.reveal {
+	opacity: 0;
+	transform: translateY(40px);
+	transition: opacity 0.8s cubic-bezier(0.25, 0.1, 0.25, 1),
+	            transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.reveal--visible {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* Optional: Stagger the text lines if they are inside a reveal-group */
+.reveal-group .reveal:nth-child(2) { transition-delay: 0.2s; }
+.reveal-group .reveal:nth-child(3) { transition-delay: 0.4s; }
+
+/* --------------------------------------------------------------------------
+   17. FOOTER
+   -------------------------------------------------------------------------- */
+
+.site-footer {
+	background-color: #0a0a0a;
+	color: var(--footer-text, #ffffff);
+	padding: 4rem 2.5rem 2rem;
+}
+
+.site-footer__inner {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+.site-footer__top {
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	padding-bottom: 3rem;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (min-width: 768px) {
+	.site-footer__top {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: flex-start;
+	}
+}
+
+.site-footer__title {
+	font-size: 1.125rem;
+	font-weight: 700;
+	color: var(--footer-text, #ffffff);
+	text-decoration: none;
+}
+
+.footer-nav {
+	display: flex;
+	gap: 2rem;
+	flex-wrap: wrap;
+}
+
+.footer-nav li a {
+	font-size: 0.875rem;
+	font-weight: 400;
+	color: var(--footer-link, #999999);
+	text-decoration: none;
+	transition: color 0.3s ease;
+}
+
+.footer-nav li a:hover {
+	color: var(--footer-text, #ffffff);
+}
+
+.site-footer__bottom {
+	padding-top: 2rem;
+}
+
+.site-footer__copy {
+	font-size: 0.8125rem;
+	color: var(--footer-copyright, #666666);
+}
+
+/* --------------------------------------------------------------------------
+   18. RESPONSIVE
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+	.overlay-menu__close {
+		right: 1.5rem;
+	}
+
+	.overlay-menu__inner {
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+	}
+
+	.site-header {
+		padding: 1.25rem 1.5rem;
+	}
+
+	.site-header--scrolled {
+		padding: 0.875rem 1.5rem;
+	}
+
+	.hero {
+		padding: 7rem 1.5rem 3rem;
+	}
+
+	.section {
+		padding: 5rem 1.5rem;
+	}
+
+	.page-hero {
+		padding: 8rem 1.5rem 3rem;
+	}
+
+	.card-grid {
+		gap: 1.25rem;
+	}
+
+	.card {
+		padding: 2rem;
+	}
+
+	.module-card {
+		padding: 1.5rem;
+	}
+
+	.site-footer {
+		padding: 3rem 1.5rem 1.5rem;
+	}
+}
+
+@media (max-width: 479px) {
+	.section__heading {
+		font-size: 1.75rem;
+	}
+
+	.cta__heading {
+		font-size: 1.75rem;
+	}
+}
+
+/* --------------------------------------------------------------------------
+   19. UTILITY
+   -------------------------------------------------------------------------- */
+
+/* WordPress admin bar offset */
+.admin-bar .site-header {
+	top: 32px;
+}
+
+@media (max-width: 782px) {
+	.admin-bar .site-header {
+		top: 46px;
+	}
+}
+
+/* No-content state */
+.no-content {
+	text-align: center;
+	padding: 4rem 0;
+}
+
+.no-content h2 {
+	font-size: 2rem;
+	margin-bottom: 0.5rem;
+}
+
+.no-content p {
+	color: #888888;
+}
+
+/* --------------------------------------------------------------------------
+   19b. BLOCK-EDITOR OVERRIDES
+   When theme sections are built with WordPress group blocks the default
+   wp-block-group padding/margin must be neutralised so our own classes
+   (.section, .card-grid, .split, etc.) control the layout.
+   -------------------------------------------------------------------------- */
+
+/*
+ * WordPress wraps block children in a layout container (is-layout-flow etc.)
+ * which breaks CSS Grid because the grid only sees one child. Use
+ * display:contents to make the wrapper transparent so the actual items
+ * participate in grid/flex column placement.
+ */
+.wp-block-group.card-grid > :only-child:not(.card),
+.wp-block-group.contact-grid > :only-child:not(.contact-card),
+.wp-block-group.testimonial-grid > :only-child:not(.testimonial-card),
+.wp-block-group.stat-grid > :only-child:not(.stat-card),
+.wp-block-group.team-grid > :only-child:not(.team-card),
+.wp-block-group.module-grid > :only-child:not(.module-card),
+.wp-block-group.split > :only-child:not([class*="split__"]) {
+	display: contents;
+}
+
+/*
+ * The .reveal class sets opacity:0 for the scroll-reveal animation.
+ * The block editor does NOT run our IntersectionObserver JS, so .reveal--visible
+ * is never added — text stays invisible. Override this inside the editor.
+ */
+.editor-styles-wrapper .reveal {
+	opacity: 1;
+	transform: none;
+}
+
+/* Force grid layouts to show as rows inside the editor even when the
+   content area is narrower than our responsive breakpoints. */
+.editor-styles-wrapper .wp-block-group.card-grid {
+	grid-template-columns: repeat(3, 1fr) !important;
+}
+
+.editor-styles-wrapper .wp-block-group.contact-grid {
+	grid-template-columns: repeat(3, 1fr) !important;
+}
+
+/* Sections keep their own padding — just remove wp-block-group defaults */
+.wp-block-group.section {
+	box-sizing: border-box;
+}
+
+/* section__inner keeps its max-width & auto-centering */
+.wp-block-group.section__inner {
+	max-width: 1200px;
+	margin: 0 auto;
+	width: 100%;
+	padding: 0;
+}
+
+.section--full .wp-block-group.section__inner {
+	max-width: 720px;
+}
+
+.wp-block-group.section__inner--720 {
+	max-width: 720px;
+}
+
+/* Inner structural elements: strip wp-block-group defaults */
+.wp-block-group.reveal-group,
+.wp-block-group.split__left,
+.wp-block-group.split__right,
+.wp-block-group.parallax-break__content {
+	padding: 0;
+	margin: 0;
+}
+
+.wp-block-group.card {
+	padding: 2.5rem;
+	margin: 0;
+}
+
+/* CTA keeps auto-centering */
+.wp-block-group.cta {
+	padding: 0;
+	margin: 0 auto;
+}
+
+/* The card-grid class needs to win over wp-block-group layout */
+.wp-block-group.card-grid {
+	display: grid !important;
+	grid-template-columns: 1fr;
+	gap: 2rem;
+	margin-top: 3rem;
+	justify-content: center;
+}
+
+@media (min-width: 640px) {
+	.wp-block-group.card-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+/* Contact grid needs to win over wp-block-group layout */
+.wp-block-group.contact-grid {
+	display: grid !important;
+	grid-template-columns: 1fr;
+	gap: 2rem;
+}
+
+
+@media (min-width: 640px) {
+	.wp-block-group.contact-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+/* Ensure parallax-break works as a wp-block-group */
+.wp-block-group.parallax-break {
+	height: 60vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #1a1a1a;
+	overflow: hidden;
+	position: relative;
+}
+
+.wp-block-group.parallax-break::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(
+		135deg,
+		rgba(10, 10, 10, 0.9) 0%,
+		rgba(30, 30, 30, 0.7) 100%
+	);
+}
+
+/* Quote block inside parallax-break */
+.parallax-break .wp-block-quote.parallax-break__quote,
+.parallax-break .wp-block-quote.parallax-break__quote p {
+	font-size: clamp(1.5rem, 4vw, 2.5rem);
+	font-weight: 300;
+	font-style: italic;
+	color: #ffffff;
+	max-width: 700px;
+	line-height: 1.4;
+	letter-spacing: -0.01em;
+	border: none;
+	padding: 0;
+	margin: 0 auto;
+}
+
+/* Ensure split layout works as wp-block-group */
+.wp-block-group.split {
+	display: grid !important;
+	grid-template-columns: 1fr;
+	gap: 3rem;
+}
+
+@media (min-width: 768px) {
+	.wp-block-group.split {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.wp-block-group.split.split--stretch {
+		align-items: stretch;
+	}
+}
+
+/* Split quote box as wp-block-group */
+.wp-block-group.split-quote-box {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 3rem;
+	min-height: 280px;
+}
+
+/* CTA button as wp-block-button */
+.section--cta .wp-block-buttons {
+	justify-content: center;
+}
+
+.section--cta .wp-block-button__link {
+	display: inline-block;
+	padding: 1rem 2.5rem;
+	background: #1a1a1a;
+	color: #ffffff;
+	text-decoration: none;
+	font-weight: 600;
+	font-size: 0.9375rem;
+	border-radius: 0;
+	border: 2px solid #1a1a1a;
+	transition: background 0.3s ease, color 0.3s ease;
+}
+
+.section--cta .wp-block-button__link:hover {
+	background: #ffffff;
+	color: #1a1a1a;
+}
+
+/* ==========================================================================
+   20. BLOCK PATTERN COMPONENTS
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   20a. HERO — Static variant (no typing, for block patterns)
+   -------------------------------------------------------------------------- */
+
+.hero--static {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	min-height: 100vh;
+	min-height: 100dvh;
+	padding: 8rem 2.5rem 4rem;
+	background-color: #edebe6;
+}
+
+.hero__headline--static {
+	font-size: clamp(3rem, 11vw, 11vw);
+	font-weight: 400;
+	line-height: 1;
+	letter-spacing: -0.02em;
+	color: #1a1a1a;
+}
+
+.hero__subtitle--static {
+	font-size: clamp(1.25rem, 2.5vw, 2.5vw);
+	font-weight: 400;
+	line-height: 1.4;
+	color: #1a1a1a;
+}
+
+/* --------------------------------------------------------------------------
+   20b. SPLIT IMAGE (supplement for split-text-image pattern)
+   -------------------------------------------------------------------------- */
+
+.split__image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   20c. TESTIMONIAL GRID
+   -------------------------------------------------------------------------- */
+
+.testimonial-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 2rem;
+	margin-top: 3rem;
+}
+
+@media (min-width: 768px) {
+	.testimonial-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+.testimonial-card {
+	padding: 2rem;
+	border: 1px solid #e8e8e8;
+	border-radius: 2px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.testimonial-card__quote {
+	font-size: 1rem;
+	font-style: italic;
+	line-height: 1.7;
+	color: #333333;
+	margin-bottom: 1.5rem;
+}
+
+.testimonial-card__author {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.testimonial-card__name {
+	font-size: 0.9375rem;
+	font-weight: 700;
+	color: #1a1a1a;
+}
+
+.testimonial-card__role {
+	font-size: 0.8125rem;
+	color: #888888;
+}
+
+/* --------------------------------------------------------------------------
+   20d. CONTACT GRID
+   -------------------------------------------------------------------------- */
+
+.contact-grid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 2rem;
+	margin-top: 3rem;
+}
+
+@media (min-width: 640px) {
+	.contact-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+.contact-card {
+	padding: 2rem;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 2px;
+}
+
+.contact-card__title {
+	font-size: 1.125rem;
+	font-weight: 700;
+	color: #ffffff;
+	margin-bottom: 0.75rem;
+}
+
+.contact-card__text {
+	font-size: 0.9375rem;
+	line-height: 1.7;
+	color: #999999;
+}
+
+/* --------------------------------------------------------------------------
+   20e. STAT COUNTERS
+   -------------------------------------------------------------------------- */
+
+.stat-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 2rem;
+	margin-top: 3rem;
+}
+
+@media (min-width: 768px) {
+	.stat-grid {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+.stat-card {
+	text-align: center;
+	padding: 2rem 1rem;
+}
+
+.stat-card__number {
+	font-size: clamp(2.5rem, 5vw, 4rem);
+	font-weight: 700;
+	line-height: 1;
+	color: #ffffff;
+	letter-spacing: -0.03em;
+	display: inline;
+}
+
+.stat-card__suffix {
+	font-size: clamp(1.5rem, 3vw, 2.5rem);
+	font-weight: 400;
+	color: #ffffff;
+	display: inline;
+}
+
+.stat-card__label {
+	display: block;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	color: #888888;
+	letter-spacing: 0.03em;
+	margin-top: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   20f. TEAM GRID
+   -------------------------------------------------------------------------- */
+
+.team-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 2rem;
+	margin-top: 3rem;
+}
+
+@media (min-width: 768px) {
+	.team-grid {
+		grid-template-columns: repeat(4, 1fr);
+	}
+}
+
+.team-card__photo {
+	position: relative;
+	aspect-ratio: 3 / 4;
+	background-color: #e8e8e8;
+	border-radius: 2px;
+	overflow: hidden;
+	margin-bottom: 1rem;
+}
+
+.team-card__photo img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.team-card__overlay {
+	position: absolute;
+	inset: 0;
+	background: rgba(10, 10, 10, 0.8);
+	display: flex;
+	align-items: flex-end;
+	padding: 1.5rem;
+	opacity: 0;
+	transition: opacity 0.4s ease;
+}
+
+.team-card:hover .team-card__overlay {
+	opacity: 1;
+}
+
+.team-card__bio {
+	font-size: 0.875rem;
+	line-height: 1.6;
+	color: #ffffff;
+}
+
+.team-card__name {
+	font-size: 1.0625rem;
+	font-weight: 700;
+	color: #1a1a1a;
+	margin-bottom: 0.25rem;
+}
+
+.team-card__role {
+	font-size: 0.8125rem;
+	color: #888888;
+}
+
+/* --------------------------------------------------------------------------
+   20g. TIMELINE
+   -------------------------------------------------------------------------- */
+
+.timeline {
+	margin-top: 3rem;
+	position: relative;
+	padding-left: 2rem;
+}
+
+.timeline::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 1px;
+	background-color: #e8e8e8;
+}
+
+.timeline__item {
+	position: relative;
+	padding-bottom: 3rem;
+	padding-left: 2rem;
+}
+
+.timeline__item:last-child {
+	padding-bottom: 0;
+}
+
+.timeline__item::before {
+	content: '';
+	position: absolute;
+	left: -2rem;
+	top: 0.25rem;
+	width: 9px;
+	height: 9px;
+	background-color: #0a0a0a;
+	border-radius: 50%;
+	transform: translateX(-4px);
+}
+
+.timeline__year {
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: #888888;
+	margin-bottom: 0.5rem;
+}
+
+.timeline__title {
+	font-size: 1.25rem;
+	font-weight: 700;
+	margin-bottom: 0.5rem;
+	color: #1a1a1a;
+}
+
+.timeline__text {
+	font-size: 0.9375rem;
+	line-height: 1.7;
+	color: #666666;
+}
+
+/* --------------------------------------------------------------------------
+   20h. TABBED CONTENT
+   -------------------------------------------------------------------------- */
+
+.sc-tabs {
+	margin-top: 3rem;
+}
+
+.sc-tabs__nav {
+	display: flex;
+	gap: 0;
+	border-bottom: 1px solid #e8e8e8;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.sc-tabs__tab {
+	padding: 1rem 1.5rem;
+	background: none;
+	border: none;
+	border-bottom: 2px solid transparent;
+	font-family: inherit;
+	font-size: 0.9375rem;
+	font-weight: 500;
+	color: #888888;
+	cursor: pointer;
+	white-space: nowrap;
+	transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.sc-tabs__tab:hover {
+	color: #1a1a1a;
+}
+
+.sc-tabs__tab--active {
+	color: #1a1a1a;
+	border-bottom-color: #0a0a0a;
+}
+
+.sc-tabs__panel {
+	padding: 2rem 0;
+	display: none;
+}
+
+.sc-tabs__panel--active {
+	display: block;
+}
+
+.sc-tabs__panel h3 {
+	font-size: 1.25rem;
+	font-weight: 700;
+	margin-bottom: 1rem;
+	color: #1a1a1a;
+}
+
+.sc-tabs__panel p {
+	font-size: 1rem;
+	line-height: 1.7;
+	color: #666666;
+	margin-bottom: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   20i. FAQ ACCORDION
+   -------------------------------------------------------------------------- */
+
+.sc-accordion {
+	margin-top: 3rem;
+}
+
+.sc-accordion__item {
+	border-bottom: 1px solid #e8e8e8;
+}
+
+.sc-accordion__trigger {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1.25rem 0;
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-family: inherit;
+	text-align: left;
+}
+
+.sc-accordion__title {
+	font-size: 1.0625rem;
+	font-weight: 600;
+	color: #1a1a1a;
+}
+
+.sc-accordion__icon {
+	font-size: 1.5rem;
+	font-weight: 300;
+	color: #888888;
+	transition: transform 0.3s ease;
+	flex-shrink: 0;
+	margin-left: 1rem;
+}
+
+.sc-accordion__item--open .sc-accordion__icon {
+	transform: rotate(45deg);
+}
+
+.sc-accordion__panel {
+	overflow: hidden;
+	max-height: 0;
+	transition: max-height 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.sc-accordion__item--open .sc-accordion__panel {
+	max-height: 500px;
+}
+
+.sc-accordion__content {
+	padding: 0 0 1.5rem;
+}
+
+.sc-accordion__content p {
+	font-size: 1rem;
+	line-height: 1.7;
+	color: #666666;
+}
+
+/* --------------------------------------------------------------------------
+   20j. RESPONSIVE — Pattern components
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+	.hero--static {
+		padding: 7rem 1.5rem 3rem;
+	}
+
+	.testimonial-card {
+		padding: 1.5rem;
+	}
+
+	.contact-card {
+		padding: 1.5rem;
+	}
+
+	.stat-card {
+		padding: 1.5rem 0.5rem;
+	}
+
+	.timeline {
+		padding-left: 1.5rem;
+	}
+
+	.timeline__item {
+		padding-left: 1.5rem;
+	}
+
+	.sc-tabs__tab {
+		padding: 0.75rem 1rem;
+		font-size: 0.875rem;
+	}
+}
+
+/* --------------------------------------------------------------------------
+   20k. SPECIAL BANNER (replaces parallax section)
+   -------------------------------------------------------------------------- */
+
+body.special-banner-active .hero {
+	display: none;
+}
+
+.special-banner {
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+	background-color: #0a0a0a;
+}
+
+.special-banner__media {
+	display: block;
+}
+
+.special-banner__img {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+.special-banner__iframe {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	min-width: 100%;
+	min-height: 100%;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+}
+
+.special-banner__overlay {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-end;
+	text-align: center;
+	padding: 2rem;
+}
+
+.special-banner__heading {
+	font-size: clamp(1.5rem, 4vw, 3rem);
+	font-weight: 700;
+	color: #ffffff;
+	letter-spacing: -0.02em;
+	text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+	margin-bottom: 1rem;
+}
+
+.special-banner__link {
+	display: inline-block;
+	padding: 0.75rem 2rem;
+	background: #ffffff;
+	color: #0a0a0a;
+	font-size: 0.875rem;
+	font-weight: 600;
+	text-decoration: none;
+	transition: background 0.3s ease, color 0.3s ease;
+}
+
+.special-banner__link:hover {
+	background: #1a1a1a;
+	color: #ffffff;
+}

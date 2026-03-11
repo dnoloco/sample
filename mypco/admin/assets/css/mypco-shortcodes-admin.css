@@ -1,0 +1,331 @@
+/**
+ * Shortcodes Admin Styles
+ *
+ * Styles for the centralized Shortcodes admin page:
+ *  - List view (WP list table)
+ *  - Builder view (two-panel Add New)
+ *  - Edit view (card-based form)
+ */
+
+/* ====================================================================
+ * Edit View (cards + form-table)
+ * ==================================================================== */
+
+.mypco-shortcodes-admin .card {
+    max-width: 800px;
+    margin-bottom: 20px;
+    padding: 20px;
+}
+
+.mypco-shortcodes-admin .card h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.mypco-shortcodes-admin .form-table th {
+    width: 200px;
+    padding-top: 15px;
+}
+
+.mypco-shortcodes-admin .form-table td {
+    padding-top: 15px;
+}
+
+/* Color picker */
+.mypco-shortcodes-admin input[type="color"] {
+    width: 50px;
+    height: 34px;
+    padding: 2px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.mypco-shortcodes-admin .mypco-color-preview {
+    margin-left: 10px;
+    font-family: monospace;
+    font-size: 13px;
+    color: #666;
+    vertical-align: middle;
+}
+
+/* Shortcode preview bar on edit page */
+.mypco-shortcode-preview-bar {
+    background: #f0f6fc;
+    border: 1px solid #c3c4c7;
+    border-left: 4px solid #2271b1;
+    padding: 12px 16px;
+    margin: 15px 0;
+    max-width: 800px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 2px;
+}
+
+.mypco-shortcode-preview-bar code {
+    background: #fff;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+}
+
+/* Submit */
+.mypco-shortcodes-admin .submit {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+/* ====================================================================
+ * List View (WP list table)
+ * ==================================================================== */
+
+.mypco-shortcodes-admin .wp-list-table {
+    margin-top: 0;
+}
+
+.mypco-shortcodes-admin .wp-list-table code {
+    background: #f0f0f1;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 13px;
+}
+
+.mypco-shortcodes-admin .column-shortcode { width: 30%; }
+.mypco-shortcodes-admin .column-description { width: 30%; color: #50575e; }
+.mypco-shortcodes-admin .column-module { width: 15%; }
+.mypco-shortcodes-admin .column-type { width: 15%; }
+
+.mypco-shortcodes-admin .row-title code { color: #2271b1; }
+.mypco-shortcodes-admin .row-title:hover code { color: #135e96; }
+
+.mypco-shortcodes-admin .row-actions { color: #787c82; }
+.mypco-shortcodes-admin .row-actions .trash a { color: #b32d2e; }
+.mypco-shortcodes-admin .row-actions .trash a:hover { color: #a00; }
+
+.mypco-shortcodes-admin .mypco-no-description { color: #a7aaad; }
+
+.mypco-shortcodes-admin .notice { margin: 15px 0; max-width: 800px; }
+
+/* ====================================================================
+ * Builder View (two-panel Add New)
+ * ==================================================================== */
+
+.mypco-builder {
+    display: flex;
+    gap: 0;
+    margin-top: 20px;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    background: #fff;
+    max-width: 960px;
+}
+
+/* Left panel */
+.mypco-builder-left {
+    width: 240px;
+    min-width: 240px;
+    padding: 20px;
+    border-right: 1px solid #c3c4c7;
+    background: #f6f7f7;
+}
+
+.mypco-builder-left h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.mypco-builder-left h3:nth-of-type(2) {
+    margin-top: 24px;
+}
+
+.mypco-builder-left select {
+    width: 100%;
+}
+
+.mypco-builder-hint {
+    color: #787c82;
+    font-size: 13px;
+    font-style: italic;
+    margin: 0;
+}
+
+/* Type list */
+.mypco-type-list {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.mypco-type-list li {
+    margin: 0;
+}
+
+.mypco-type-link {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #2271b1;
+    font-size: 14px;
+    border-radius: 3px;
+}
+
+.mypco-type-link:hover {
+    background: #e9e9e9;
+    color: #135e96;
+}
+
+.mypco-type-link.active {
+    background: #2271b1;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Addon separator and header within type lists */
+.mypco-type-list-addon-separator {
+    height: 12px;
+    line-height: 12px;
+    pointer-events: none;
+}
+
+.mypco-type-list-addon-header {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #50575e;
+    padding: 4px 12px 4px;
+}
+
+/* Right panel */
+.mypco-builder-right {
+    flex: 1;
+    padding: 24px 30px;
+    min-height: 400px;
+}
+
+.mypco-builder-right h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 20px;
+}
+
+.mypco-builder-right h4 {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #50575e;
+    margin: 24px 0 12px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+#mypco-builder-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+}
+
+#mypco-builder-placeholder p {
+    color: #787c82;
+    font-size: 14px;
+    font-style: italic;
+}
+
+/* Builder form fields */
+.mypco-type-fields {
+    display: none;
+}
+
+.mypco-field {
+    margin-bottom: 16px;
+}
+
+.mypco-field > label {
+    display: block;
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.mypco-field label input[type="checkbox"] {
+    margin-right: 6px;
+}
+
+.mypco-field .description {
+    color: #666;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.mypco-field input.large-text,
+.mypco-field input.regular-text {
+    width: 100%;
+    max-width: 100%;
+}
+
+.mypco-field select {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.mypco-field .small-text {
+    width: 70px;
+}
+
+/* Color row */
+.mypco-field-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.mypco-field-color {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+}
+
+.mypco-field-color label {
+    display: block;
+    font-weight: 600;
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: #50575e;
+}
+
+/* Builder submit */
+#mypco-builder-form .submit {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+/* ====================================================================
+ * Responsive
+ * ==================================================================== */
+
+@media (max-width: 782px) {
+    .mypco-builder {
+        flex-direction: column;
+    }
+
+    .mypco-builder-left {
+        width: 100%;
+        min-width: 0;
+        border-right: none;
+        border-bottom: 1px solid #c3c4c7;
+    }
+
+    .mypco-field-row {
+        flex-direction: column;
+    }
+}

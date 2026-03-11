@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <rect width="400" height="300" fill="#e5e7eb"/>
+  <g transform="translate(200,150)" fill="#9ca3af">
+    <!-- Podium/pulpit icon -->
+    <rect x="-30" y="-10" width="60" height="50" rx="4"/>
+    <rect x="-40" y="-14" width="80" height="8" rx="3"/>
+    <!-- Microphone -->
+    <rect x="-6" y="-50" width="12" height="24" rx="6"/>
+    <path d="M-12-38 a18,18 0 0,0 24,0" stroke="#9ca3af" stroke-width="3" fill="none"/>
+    <line x1="0" y1="-26" x2="0" y2="-14" stroke="#9ca3af" stroke-width="3"/>
+  </g>
+</svg>

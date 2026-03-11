@@ -1,0 +1,80 @@
+/**
+ * MyPCO Admin General Styles
+ * 
+ * General admin styles for all MyPCO admin pages
+ */
+
+/* Admin notices */
+.mypco-admin-notice {
+    margin: 15px 0;
+}
+
+/* Card styling */
+.mypco-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+}
+
+.mypco-card h2 {
+    margin-top: 0;
+}
+
+/* Button styling */
+.mypco-button-group {
+    margin-top: 15px;
+}
+
+.mypco-button-group .button {
+    margin-right: 10px;
+}
+
+/* Table styling */
+.mypco-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.mypco-table th,
+.mypco-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.mypco-table th {
+    font-weight: 600;
+    background-color: #f9f9f9;
+}
+
+/* Status indicators */
+.mypco-status-active {
+    color: #46b450;
+}
+
+.mypco-status-inactive {
+    color: #999;
+}
+
+.mypco-status-error {
+    color: #dc3232;
+}
+
+/* Loading spinner */
+.mypco-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: mypco-spin 1s linear infinite;
+}
+
+@keyframes mypco-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

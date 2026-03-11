@@ -1,0 +1,1176 @@
+/* ============================================
+   CONTAINER & LAYOUT
+   ============================================ */
+
+.mypco-wrapper {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.mypco-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    transition: opacity 0.3s, height 0.3s;
+}
+
+/* Hide header in detail view */
+body.mypco-view-detail-active .mypco-header {
+    display: none;
+}
+
+.mypco-layout-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+}
+
+@media (max-width: 768px) {
+    .mypco-layout-grid {
+        grid-template-columns: 1fr;
+    }
+    .mypco-sidebar {
+        display: none;
+    }
+}
+
+/* ============================================
+   VIEW-SPECIFIC SIDEBAR HIDING
+   ============================================ */
+
+body.mypco-view-month-active .mypco-sidebar,
+body.mypco-view-gallery-active .mypco-sidebar,
+body.mypco-view-detail-active .mypco-sidebar {
+    display: none !important;
+}
+
+body.mypco-view-month-active .mypco-layout-grid,
+body.mypco-view-gallery-active .mypco-layout-grid,
+body.mypco-view-detail-active .mypco-layout-grid {
+    grid-template-columns: 1fr !important;
+}
+
+/* ============================================
+   HEADER CONTROLS
+   ============================================ */
+
+.mypco-category-dropdown select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.mypco-view-switcher button {
+    background: none;
+    border: none;
+    padding: 6px 15px;
+    margin-left: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #666;
+    border-radius: 20px;
+    transition: all 0.2s;
+}
+
+.mypco-view-switcher button:hover {
+    background-color: #f0f0f0;
+}
+
+.mypco-view-switcher button.active {
+    background-color: #000;
+    color: #fff;
+}
+
+/* ============================================
+   MINI CALENDAR (SIDEBAR)
+   ============================================ */
+
+.mypco-mini-cal {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Calendar header with navigation */
+.mypco-mini-cal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    font-weight: bold;
+    font-size: 14px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.mypco-mini-cal-month-display {
+    flex: 1;
+    text-align: center;
+}
+
+/* Navigation arrows */
+.mypco-mini-cal-nav {
+    cursor: pointer;
+    padding: 5px 12px;
+    user-select: none;
+    font-size: 20px;
+    line-height: 1;
+    color: #666;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.mypco-mini-cal-nav:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+/* Highlight effect when scrolling to a date */
+.mypco-highlight {
+    animation: highlightPulse 2s ease-out;
+}
+
+@keyframes highlightPulse {
+    0% { background-color: #fff3cd; }
+    100% { background-color: transparent; }
+}
+
+.mypco-mini-cal-nav:active {
+    transform: scale(0.95);
+}
+
+.mypco-mini-cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    padding: 10px;
+}
+
+.mypco-mini-cal-grid > span {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    border-radius: 4px;
+    position: relative;
+}
+
+.mypco-mini-cal-grid > span:nth-child(-n+7) {
+    font-weight: bold;
+    color: #666;
+    font-size: 11px;
+}
+
+/* Day header cells (S M T W T F S) */
+.mypco-day-header-cell {
+    font-weight: bold;
+    color: #666;
+    font-size: 11px;
+}
+
+/* Empty cells before first day */
+.mypco-empty-cell {
+    /* Invisible - no content */
+}
+
+/* Regular date cells */
+.mypco-calendar-date {
+    cursor: default;
+    color: #333;
+}
+
+/* Today's date */
+.mypco-calendar-date.today {
+    background: #e3f2fd;
+    font-weight: bold;
+    color: #1976d2;
+}
+
+/* Dates that have events */
+.mypco-calendar-date.has-events {
+    cursor: pointer;
+    font-weight: 600;
+    color: #1a73e8;
+}
+
+.mypco-calendar-date.has-events:hover {
+    background: #e8f0fe;
+}
+
+.mypco-calendar-date.has-events:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+    z-index: 10;
+}
+
+/* Event indicator dot */
+.mypco-calendar-date .event-indicator {
+    position: absolute;
+    bottom: 1px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    line-height: 1;
+    color: #1a73e8;
+}
+
+/* ============================================
+   FEATURED EVENT
+   ============================================ */
+
+.mypco-featured-section {
+    margin-bottom: 40px;
+}
+
+.mypco-featured-card {
+    display: flex;
+    gap: 20px;
+    background: #fff;
+    align-items: flex-start;
+}
+
+.mypco-featured-img {
+    width: 200px;
+    height: 112px;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.mypco-featured-content h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+}
+
+.mypco-featured-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.mypco-location-separator {
+    margin: 0 4px;
+}
+
+.mypco-featured-meta .mypco-location {
+    color: #666;
+}
+
+.mypco-badges {
+    display: flex;
+    gap: 8px;
+}
+
+.mypco-badge {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: #eee;
+    color: #444;
+    border: none;
+}
+
+.mypco-badge.is-featured {
+    background: #fffbe6;
+    color: #b77a00;
+    border: none;
+}
+
+.mypco-featured-title-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.mypco-featured-title-btn:focus {
+    outline: none;
+}
+
+.mypco-featured-title-btn h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.2rem;
+    color: #333;
+    transition: color 0.2s ease;
+}
+
+.mypco-featured-title-btn:hover h3 {
+    color: #000;
+}
+
+.mypco-badge-signup {
+    transition: all 0.2s ease;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Only show cursor and hover for button version */
+button.mypco-badge-signup {
+    cursor: pointer;
+}
+
+button.mypco-badge-signup:hover {
+    background-color: #e8e8e8;
+    border: none !important;
+}
+
+button.mypco-badge-signup:focus {
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+button.mypco-badge-signup:active {
+    border: none !important;
+    outline: none !important;
+}
+
+/* ============================================
+   EVENT LIST VIEW
+   ============================================ */
+
+.mypco-month-header {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 30px 0 15px 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.mypco-day-header {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #666;
+    margin: 20px 0 10px 0;
+    letter-spacing: 0.5px;
+}
+
+.mypco-event-item {
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.mypco-event-item:hover {
+    background-color: #f9f9f9;
+}
+
+.mypco-event-title-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 4px;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.mypco-event-title-btn:focus {
+    outline: none;
+}
+
+.mypco-event-title {
+    font-weight: 600;
+    font-size: 18px;
+    color: #333;
+    transition: color 0.2s ease;
+    display: block;
+}
+
+.mypco-event-title-btn:hover .mypco-event-title {
+    color: #000;
+}
+
+.mypco-event-time {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.mypco-event-location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    width: fit-content;
+}
+
+.mypco-event-location:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.mypco-event-location:hover .mypco-location-icon {
+    color: #007bff;
+    opacity: 1;
+}
+
+.mypco-location-icon {
+    flex-shrink: 0;
+    opacity: 0.7;
+    color: #999;
+    transition: all 0.2s ease;
+}
+
+.mypco-event-date.mypco-highlight {
+    animation: highlightPulse 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+    0%, 100% {
+        background-color: transparent;
+        border-left-color: transparent;
+    }
+    10%, 90% {
+        background-color: #fff9e6;
+        border-left: 4px solid #ffc107;
+        padding-left: 16px;
+        margin-left: -20px;
+    }
+}
+
+.mypco-event-date {
+    scroll-margin-top: 120px;
+    transition: all 0.3s ease;
+}
+
+.mypco-signup-btn {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 6px 12px;
+    background-color: #f5f5f5;
+    color: #666;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mypco-signup-btn:hover {
+    background-color: #e8e8e8;
+    color: #333;
+}
+
+.mypco-signup-indicator {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 8px;
+    background-color: #f9f9f9;
+    color: #666;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+/* ============================================
+   GALLERY VIEW
+   ============================================ */
+
+.mypco-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+.mypco-gallery-item {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mypco-gallery-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.mypco-gallery-image-wrapper {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.mypco-gallery-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mypco-gallery-content {
+    padding: 20px;
+}
+
+.mypco-gallery-title-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    font-family: inherit;
+}
+
+.mypco-gallery-title-btn:focus {
+    outline: none;
+}
+
+.mypco-gallery-event-name {
+    font-size: 18px;
+    color: #333;
+    transition: color 0.2s;
+}
+
+.mypco-gallery-title-btn:hover .mypco-gallery-event-name {
+    color: #000;
+}
+
+.mypco-gallery-meta {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.mypco-gallery-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ============================================
+   VIEW SWITCHING
+   ============================================ */
+
+.mypco-view-section {
+    display: none;
+}
+
+.mypco-view-section.active {
+    display: block;
+}
+
+/* ============================================
+   MONTH VIEW CALENDAR - PLANNING CENTER STYLE
+   ============================================ */
+
+.mypco-month-view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.mypco-month-view-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+    color: #333;
+}
+
+.mypco-month-view-nav {
+    display: flex;
+    gap: 0;
+    align-items: center;
+}
+
+.mypco-month-nav-btn {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+    color: #333;
+    min-width: 100px;
+}
+
+.mypco-month-nav-btn:first-child {
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-right: none;
+}
+
+.mypco-month-nav-btn:last-child {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-left: none;
+}
+
+.mypco-month-nav-today {
+    padding: 8px 20px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+    color: #333;
+    font-weight: 500;
+}
+
+.mypco-month-nav-btn:hover,
+.mypco-month-nav-today:hover {
+    background: #f5f5f5;
+}
+
+/* Month View Grid */
+.mypco-month-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.mypco-month-day-header {
+    background: #f8f9fa;
+    padding: 10px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 12px;
+    color: #666;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.mypco-month-day-header:last-child {
+    border-right: none;
+}
+
+.mypco-month-day-cell {
+    height: 120px;  /* Fixed height for consistency */
+    padding: 8px;
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    background: white;
+    vertical-align: top;
+    overflow: hidden;  /* Prevent content from expanding cell */
+    display: flex;
+    flex-direction: column;
+}
+
+.mypco-month-day-cell:nth-child(7n) {
+    border-right: none;
+}
+
+.mypco-month-day-empty {
+    background: #fafafa;
+}
+
+.mypco-month-day-today {
+    background: #e3f2fd;
+}
+
+.mypco-month-day-number {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+    flex-shrink: 0;  /* Don't let date number shrink */
+}
+
+.mypco-month-day-today .mypco-month-day-number {
+    color: #1976d2;
+}
+
+.mypco-month-day-events {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow-y: auto;  /* Scroll if too many events */
+    flex: 1;  /* Take remaining space */
+    min-height: 0;  /* Allow flexbox to shrink */
+}
+
+/* Thin scrollbar for event list */
+.mypco-month-day-events::-webkit-scrollbar {
+    width: 4px;
+}
+
+.mypco-month-day-events::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.mypco-month-day-events::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 2px;
+}
+
+.mypco-month-day-events::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+.mypco-month-event {
+    font-size: 11px;
+    padding: 2px 4px;
+    margin-bottom: 2px;
+    background: #e8f0fe;
+    border-radius: 3px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #1a73e8;
+    transition: background 0.2s ease;
+}
+
+.mypco-month-event:hover {
+    background: #d2e3fc;
+}
+
+.mypco-month-event-more {
+    font-size: 10px;
+    color: #666;
+    padding: 2px 4px;
+    font-style: italic;
+}
+
+/* Month View Header */
+.mypco-month-view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.mypco-month-view-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.mypco-month-view-nav {
+    display: flex;
+    gap: 8px;
+}
+
+.mypco-month-nav-btn,
+.mypco-month-nav-today {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.mypco-month-nav-btn:hover,
+.mypco-month-nav-today:hover {
+    background: #f0f0f0;
+    border-color: #ccc;
+}
+
+.mypco-month-nav-today {
+    background: #1a73e8;
+    color: white;
+    border-color: #1a73e8;
+}
+
+.mypco-month-nav-today:hover {
+    background: #1557b0;
+    border-color: #1557b0;
+}
+
+/* =====================================================
+   LOAD MORE BUTTON
+   ===================================================== */
+
+.mypco-load-more-btn {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    margin: 30px auto;
+    padding: 12px 24px;
+    background: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mypco-load-more-btn:hover {
+    background: #1557b0;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(26, 115, 232, 0.3);
+}
+
+.mypco-load-more-btn:active {
+    transform: translateY(0);
+}
+
+/* ============================================
+   EVENT DETAIL VIEW - PLANNING CENTER STYLE
+   ============================================ */
+
+/* EVENT DETAIL VIEW - WITH SIGNUP BUTTON */
+
+.mypco-detail-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.mypco-detail-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.mypco-breadcrumb-link {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.mypco-breadcrumb-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.mypco-breadcrumb-separator {
+    color: #999;
+}
+
+.mypco-detail-nav-arrows {
+    display: flex;
+    gap: 10px;
+}
+
+.mypco-nav-arrow {
+    background: none;
+    border: none;
+    color: #007bff;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: all 0.2s;
+}
+
+.mypco-nav-arrow:hover {
+    color: #0056b3;
+}
+
+/* Two-column layout */
+.mypco-detail-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+.mypco-detail-left {
+    max-width: none;
+}
+
+.mypco-detail-right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mypco-detail-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0 0 15px 0;
+    color: #000;
+}
+
+.mypco-detail-meta-line {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.mypco-detail-meta-line span + span::before {
+    content: ", ";
+}
+
+.mypco-detail-image-container {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.mypco-detail-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.mypco-detail-section {
+    margin-bottom: 30px;
+}
+
+.mypco-detail-section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 15px 0;
+}
+
+.mypco-detail-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.mypco-detail-description p {
+    margin: 0 0 15px 0;
+}
+
+.mypco-detail-location-box {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.mypco-detail-location-box h3 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #666;
+    margin: 0 0 15px 0;
+}
+
+.mypco-location-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+    margin: 0 0 5px 0;
+}
+
+.mypco-location-address {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 15px 0;
+}
+
+.mypco-detail-location-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+#mypco-detail-signup-container {
+    flex: 1;
+}
+
+
+.mypco-detail-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border: none;
+}
+
+.mypco-detail-btn-outline {
+    background: white;
+    border: 1px solid #333;
+    color: #333;
+}
+
+.mypco-detail-btn-outline:hover {
+    background: #f5f5f5;
+}
+
+.mypco-detail-btn-primary {
+    background: #000;
+    color: #fff;
+    width: 100%;
+}
+
+.mypco-detail-btn-primary:hover {
+    background: #333;
+}
+
+#mypco-detail-signup-container {
+    flex: 1;
+    display: flex;  /* Must be flex container for button inside to size properly */
+}
+
+#mypco-detail-signup-container .mypco-detail-btn {
+    flex: none;  /* Override flex:1 from .mypco-detail-btn base style */
+    width: 100%;
+}
+
+#mypco-detail-signup-container .mypco-detail-btn > div {
+    pointer-events: none;  /* Allow clicks to pass through to button */
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .mypco-detail-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .mypco-detail-navigation {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .mypco-detail-title {
+        font-size: 28px;
+    }
+
+    .mypco-detail-meta-line {
+        font-size: 16px;
+    }
+
+    .mypco-detail-location-buttons {
+        flex-direction: column;
+    }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .mypco-detail-container,
+    .mypco-detail-container.no-signup {
+        grid-template-columns: 1fr;
+    }
+
+    .mypco-detail-sidebar {
+        position: static;
+    }
+}
+
+@media (max-width: 768px) {
+    .mypco-detail-navigation {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .mypco-detail-title {
+        font-size: 28px;
+    }
+
+    .mypco-detail-meta-line {
+        font-size: 16px;
+    }
+
+    .mypco-detail-location-buttons {
+        flex-direction: column;
+    }
+
+    .mypco-gallery-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mypco-mini-cal-grid > span {
+        font-size: 12px;
+    }
+
+    .mypco-mini-cal-nav {
+        padding: 5px 8px;
+        font-size: 20px;
+    }
+
+    .mypco-event-title {
+        font-size: 16px;
+    }
+
+    .mypco-event-time {
+        font-size: 13px;
+    }
+
+    .mypco-event-location {
+        font-size: 12px;
+    }
+
+    .mypco-featured-card {
+        flex-direction: column;
+    }
+
+    .mypco-featured-img {
+        width: 100%;
+    }
+
+    .mypco-signup-btn {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+
+    .mypco-month-day-cell {
+        height: 100px;  /* Smaller on mobile */
+        padding: 6px;
+    }
+
+    .mypco-month-day-number {
+        font-size: 14px;
+    }
+
+    .mypco-month-event {
+        font-size: 11px;
+        padding: 2px 3px;
+    }
+
+    .mypco-month-view-title {
+        font-size: 24px;
+    }
+
+    .mypco-month-nav-btn,
+    .mypco-month-nav-today {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+}
