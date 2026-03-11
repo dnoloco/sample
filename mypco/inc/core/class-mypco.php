@@ -68,7 +68,7 @@ class MyPCO {
 
         // Admin pages
         require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-admin.php';
-        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-settings-page.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-settings.php';
         require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-license-page.php';
         require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-shortcodes-admin.php';
 
@@ -188,10 +188,10 @@ class MyPCO {
         // 4. Add Modules menu at later priority (after active module menus)
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_modules_menu', 99);
 
-        // 5. Initialize the API Settings Page at later priority (after Modules)
-        $plugin_settings = new MyPCO_Settings_Page($this->plugin_name, $this->version, $this->api_model, $this->loader);
+        // 5. Initialize the React-powered Settings page (after Modules)
+        $plugin_settings = new MyPCO_Settings( $this->version, $this->api_model );
         $this->loader->add_action('admin_menu', $plugin_settings, 'add_settings_menu', 99);
-        $this->loader->add_action('admin_init', $plugin_settings, 'handle_settings_save');
+        $this->loader->add_action('admin_enqueue_scripts', $plugin_settings, 'enqueue_assets');
 
         // 6. Initialize the License Page — all hooks routed through the loader
         $license_page = new MyPCO_License_Page($this->plugin_name, $this->version);
