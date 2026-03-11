@@ -5,7 +5,7 @@
  * Handles Clearstream SMS integration for sending messages to team members.
  */
 
-require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-module-base.php';
+require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-module-base.php';
 
 class MyPCO_Contacts_Module extends MyPCO_Module_Base {
 

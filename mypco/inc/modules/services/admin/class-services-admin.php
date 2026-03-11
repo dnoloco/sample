@@ -593,7 +593,7 @@ class MyPCO_Services_Admin
     private function load_template($template_name, $data = [])
     {
         extract($data);
-        $template_path = MYPCO_PLUGIN_DIR . 'modules/services/admin/templates/' . $template_name . '.php';
+        $template_path = MYPCO_PLUGIN_DIR . 'templates/services/admin/' . $template_name . '.php';
 
         if (file_exists($template_path)) {
             include $template_path;

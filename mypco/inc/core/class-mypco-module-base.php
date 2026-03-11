@@ -188,7 +188,7 @@ abstract class MyPCO_Module_Base {
     protected function render_template($template_name, $variables = []) {
         extract($variables);
 
-        $template_path = MYPCO_PLUGIN_DIR . "modules/{$this->module_key}/templates/{$template_name}.php";
+        $template_path = MYPCO_PLUGIN_DIR . "templates/{$this->module_key}/{$template_name}.php";
 
         if (file_exists($template_path)) {
             include $template_path;

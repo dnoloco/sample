@@ -7,13 +7,13 @@
 
 class MyPCO_Credentials_Settings {
 
-    public function __construct() {
-        add_action('admin_menu', [$this, 'add_credentials_page'], 15);
-        add_action('admin_init', [$this, 'handle_credentials_save']);
+    public function __construct( $loader ) {
+        $loader->add_action('admin_menu', $this, 'add_credentials_page', 15);
+        $loader->add_action('admin_init', $this, 'handle_credentials_save');
 
         // AJAX handlers for connection testing
-        add_action('wp_ajax_mypco_test_pco_connection', [$this, 'test_pco_connection']);
-        add_action('wp_ajax_mypco_test_clearstream_connection', [$this, 'test_clearstream_connection']);
+        $loader->add_action('wp_ajax_mypco_test_pco_connection', $this, 'test_pco_connection');
+        $loader->add_action('wp_ajax_mypco_test_clearstream_connection', $this, 'test_clearstream_connection');
     }
 
     /**

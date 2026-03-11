@@ -53,7 +53,7 @@ class MyPCO_Calendar_Block_Registrar implements MyPCO_Block_Registrar_Interface 
 
         wp_register_style(
             'mypco-blocks-editor',
-            MYPCO_PLUGIN_URL . 'admin/assets/css/blocks-editor.css',
+            MYPCO_PLUGIN_URL . 'assets/admin/css/blocks-editor.css',
             [],
             MYPCO_VERSION
         );

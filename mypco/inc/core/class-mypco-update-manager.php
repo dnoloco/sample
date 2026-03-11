@@ -66,20 +66,15 @@ class MyPCO_Update_Manager {
     }
 
     /**
-     * Initialize update hooks.
+     * Initialize update hooks via the centralized loader.
+     *
+     * @param MyPCO_Loader $loader The centralized hook registry.
      */
-    public function init() {
-        // Check for updates
-        add_filter('pre_set_site_transient_update_plugins', [$this, 'check_for_updates']);
-
-        // Provide plugin information
-        add_filter('plugins_api', [$this, 'plugin_info'], 20, 3);
-
-        // Handle the update package
-        add_filter('upgrader_package_options', [$this, 'maybe_filter_package_options']);
-
-        // Clear cache on plugin update
-        add_action('upgrader_process_complete', [$this, 'clear_update_cache'], 10, 2);
+    public function init( $loader ) {
+        $loader->add_filter('pre_set_site_transient_update_plugins', $this, 'check_for_updates');
+        $loader->add_filter('plugins_api', $this, 'plugin_info', 20, 3);
+        $loader->add_filter('upgrader_package_options', $this, 'maybe_filter_package_options');
+        $loader->add_action('upgrader_process_complete', $this, 'clear_update_cache', 10, 2);
     }
 
     /**
@@ -111,8 +106,8 @@ class MyPCO_Update_Manager {
                 'tested' => get_bloginfo('version'),
                 'requires_php' => '7.4',
                 'icons' => [
-                    '1x' => MYPCO_PLUGIN_URL . 'admin/assets/images/icon-128x128.png',
-                    '2x' => MYPCO_PLUGIN_URL . 'admin/assets/images/icon-256x256.png'
+                    '1x' => MYPCO_PLUGIN_URL . 'assets/admin/images/icon-128x128.png',
+                    '2x' => MYPCO_PLUGIN_URL . 'assets/admin/images/icon-256x256.png'
                 ]
             ];
 
@@ -179,8 +174,8 @@ class MyPCO_Update_Manager {
             'changelog' => $this->get_changelog_html($update_data)
         ];
         $info->banners = [
-            'low' => MYPCO_PLUGIN_URL . 'admin/assets/images/banner-772x250.png',
-            'high' => MYPCO_PLUGIN_URL . 'admin/assets/images/banner-1544x500.png'
+            'low' => MYPCO_PLUGIN_URL . 'assets/admin/images/banner-772x250.png',
+            'high' => MYPCO_PLUGIN_URL . 'assets/admin/images/banner-1544x500.png'
         ];
 
         if (isset($update_data['download_url'])) {

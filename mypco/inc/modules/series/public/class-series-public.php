@@ -90,7 +90,7 @@ class MyPCO_Series_Public {
         // Load centralized shortcode settings when id is provided
         $id = absint($atts['id']);
         if ($id > 0) {
-            require_once MYPCO_PLUGIN_DIR . 'admin/class-mypco-shortcodes-admin.php';
+            require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-shortcodes-admin.php';
             $settings = MyPCO_Shortcodes_Admin::get_shortcode_settings($id, 'mypco_messages_list');
         } else {
             $settings = [];
@@ -266,7 +266,7 @@ class MyPCO_Series_Public {
 
         ob_start();
 
-        $template_path = MYPCO_PLUGIN_DIR . 'modules/series/public/templates/' . $template_name . '.php';
+        $template_path = MYPCO_PLUGIN_DIR . 'templates/series/public/' . $template_name . '.php';
 
         if (file_exists($template_path)) {
             include $template_path;

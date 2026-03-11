@@ -141,7 +141,7 @@ class MyPCO_Calendar_Admin {
      */
     private function load_template($template_name, $data = []) {
         extract($data);
-        $template_path = MYPCO_PLUGIN_DIR . 'modules/calendar/admin/templates/' . $template_name . '.php';
+        $template_path = MYPCO_PLUGIN_DIR . 'templates/calendar/admin/' . $template_name . '.php';
 
         if (file_exists($template_path)) {
             include $template_path;

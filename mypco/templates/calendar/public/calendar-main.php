@@ -95,16 +95,16 @@ $grid_class = $hide_sidebar ? ' pco-grid-full-width' : '';
         <!-- Main content area -->
         <div class="pco-main-content">
             <!-- List View -->
-            <?php include MYPCO_PLUGIN_DIR . 'modules/calendar/public/templates/event-list.php'; ?>
+            <?php include MYPCO_PLUGIN_DIR . 'templates/calendar/public/event-list.php'; ?>
 
             <!-- Month View -->
-            <?php include MYPCO_PLUGIN_DIR . 'modules/calendar/public/templates/event-month.php'; ?>
+            <?php include MYPCO_PLUGIN_DIR . 'templates/calendar/public/event-month.php'; ?>
 
             <!-- Gallery View -->
-            <?php include MYPCO_PLUGIN_DIR . 'modules/calendar/public/templates/event-gallery.php'; ?>
+            <?php include MYPCO_PLUGIN_DIR . 'templates/calendar/public/event-gallery.php'; ?>
 
             <!-- Event Detail View -->
-            <?php include MYPCO_PLUGIN_DIR . 'modules/calendar/public/templates/event-detail.php'; ?>
+            <?php include MYPCO_PLUGIN_DIR . 'templates/calendar/public/event-detail.php'; ?>
         </div>
     </div>
 </div>

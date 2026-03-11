@@ -21,7 +21,7 @@ class MyPCO_Calendar_Public {
         $this->api_model = $api_model;
 
         // Load date helper
-        require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-date-helper.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-date-helper.php';
         $this->timezone = MyPCO_Date_Helper::get_timezone();
     }
 
@@ -107,7 +107,7 @@ class MyPCO_Calendar_Public {
         // Load centralized shortcode settings when id is provided
         $id = absint($atts['id']);
         if ($id > 0) {
-            require_once MYPCO_PLUGIN_DIR . 'admin/class-mypco-shortcodes-admin.php';
+            require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-shortcodes-admin.php';
             $settings = MyPCO_Shortcodes_Admin::get_shortcode_settings($id, 'mypco_calendar_list');
         } else {
             $settings = [];
@@ -204,7 +204,7 @@ class MyPCO_Calendar_Public {
         // Load centralized shortcode settings when id is provided
         $id = absint($atts['id']);
         if ($id > 0) {
-            require_once MYPCO_PLUGIN_DIR . 'admin/class-mypco-shortcodes-admin.php';
+            require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-shortcodes-admin.php';
             $settings = MyPCO_Shortcodes_Admin::get_shortcode_settings($id, 'mypco_calendar_' . $view);
         } else {
             $settings = [];
@@ -692,7 +692,7 @@ class MyPCO_Calendar_Public {
 
         ob_start();
 
-        $template_path = MYPCO_PLUGIN_DIR . 'modules/calendar/public/templates/' . $template_name . '.php';
+        $template_path = MYPCO_PLUGIN_DIR . 'templates/calendar/public/' . $template_name . '.php';
 
         if (file_exists($template_path)) {
             include $template_path;

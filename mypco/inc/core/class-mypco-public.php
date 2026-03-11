@@ -22,7 +22,7 @@ class MyPCO_Public {
     public function enqueue_styles() {
         wp_enqueue_style(
             $this->plugin_name,
-            MYPCO_PLUGIN_URL . 'public/css/mypco-public.css',
+            MYPCO_PLUGIN_URL . 'assets/public/css/mypco-public.css',
             [],
             $this->version,
             'all'
@@ -35,7 +35,7 @@ class MyPCO_Public {
     public function enqueue_scripts() {
         wp_enqueue_script(
             $this->plugin_name,
-            MYPCO_PLUGIN_URL . 'public/js/mypco-public.js',
+            MYPCO_PLUGIN_URL . 'assets/public/js/mypco-public.js',
             ['jquery'],
             $this->version,
             false

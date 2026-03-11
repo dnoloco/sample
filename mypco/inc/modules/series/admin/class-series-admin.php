@@ -125,7 +125,7 @@ class MyPCO_Series_Admin {
 
         // Include Bible data only on the message editor
         if ($screen && $screen->post_type === 'mypco_message' && $screen->base === 'post') {
-            $localize_data['bibleData'] = include MYPCO_PLUGIN_DIR . 'modules/series/admin/bible-data.php';
+            $localize_data['bibleData'] = include MYPCO_PLUGIN_DIR . 'inc/modules/series/admin/bible-data.php';
             $localize_data['i18n'] = [
                 'selectBook' => __('Select Book', 'mypco-online'),
                 'chapter'    => __('Chapter', 'mypco-online'),

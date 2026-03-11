@@ -23,7 +23,7 @@ if (!defined('WPINC')) {
 define('MYPCO_VERSION', '3.0.0');
 define('MYPCO_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('MYPCO_PLUGIN_URL', plugin_dir_url(__FILE__));
-define('MYPCO_INCLUDES', MYPCO_PLUGIN_DIR . 'includes/');
+define('MYPCO_INCLUDES', MYPCO_PLUGIN_DIR . 'inc/core/');
 
 /**
  * License Server API URL
@@ -38,7 +38,7 @@ if (!defined('MYPCO_LICENSE_API_URL')) {
  * The code that runs during plugin activation.
  */
 function activate_mypco_online() {
-    require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-activator.php';
+    require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-activator.php';
     MyPCO_Activator::activate();
 }
 
@@ -46,7 +46,7 @@ function activate_mypco_online() {
  * The code that runs during plugin deactivation.
  */
 function deactivate_mypco_online() {
-    require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-deactivator.php';
+    require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-deactivator.php';
     MyPCO_Deactivator::deactivate();
 }
 
@@ -56,7 +56,7 @@ register_deactivation_hook(__FILE__, 'deactivate_mypco_online');
 /**
  * The core plugin class.
  */
-require MYPCO_PLUGIN_DIR . 'includes/class-mypco.php';
+require MYPCO_PLUGIN_DIR . 'inc/core/class-mypco.php';
 
 /**
  * Begins execution of the plugin.

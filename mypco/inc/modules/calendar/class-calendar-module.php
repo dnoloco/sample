@@ -15,7 +15,7 @@
  * for all data access instead of calling the API model.
  */
 
-require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-module-base.php';
+require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-module-base.php';
 
 class MyPCO_Calendar_Module extends MyPCO_Module_Base {
 
@@ -141,6 +141,6 @@ class MyPCO_Calendar_Module extends MyPCO_Module_Base {
      * Get path within this module.
      */
     private function get_module_path($relative_path) {
-        return MYPCO_PLUGIN_DIR . 'modules/calendar/' . $relative_path;
+        return MYPCO_PLUGIN_DIR . 'inc/modules/calendar/' . $relative_path;
     }
 }

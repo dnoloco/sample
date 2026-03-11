@@ -71,7 +71,7 @@ class MyPCO_Groups_Public {
         // Load centralized shortcode settings when id is provided
         $id = absint($atts['id']);
         if ($id > 0) {
-            require_once MYPCO_PLUGIN_DIR . 'admin/class-mypco-shortcodes-admin.php';
+            require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-shortcodes-admin.php';
             $settings = MyPCO_Shortcodes_Admin::get_shortcode_settings($id, 'mypco_groups');
         } else {
             $settings = [];
@@ -159,7 +159,7 @@ class MyPCO_Groups_Public {
      */
     private function load_template($template_name, $data = []) {
         extract($data);
-        $template_path = MYPCO_PLUGIN_DIR . 'modules/groups/public/templates/' . $template_name . '.php';
+        $template_path = MYPCO_PLUGIN_DIR . 'templates/groups/public/' . $template_name . '.php';
         
         if (file_exists($template_path)) {
             include $template_path;

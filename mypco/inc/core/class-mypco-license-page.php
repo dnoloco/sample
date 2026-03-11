@@ -28,10 +28,10 @@ class MyPCO_License_Page {
      * Initialize hooks
      */
     public function init($loader) {
-        add_action('admin_menu', [$this, 'add_license_menu']);
-        add_action('admin_menu', [$this, 'hide_license_menu'], 999);
-        add_filter('parent_file', [$this, 'set_license_menu_highlight']);
-        add_action('current_screen', [$this, 'set_license_page_title']);
+        $loader->add_action('admin_menu', $this, 'add_license_menu');
+        $loader->add_action('admin_menu', $this, 'hide_license_menu', 999);
+        $loader->add_filter('parent_file', $this, 'set_license_menu_highlight');
+        $loader->add_action('current_screen', $this, 'set_license_page_title');
 
         $loader->add_action('wp_ajax_mypco_activate_license', $this, 'ajax_activate_license');
         $loader->add_action('wp_ajax_mypco_deactivate_license', $this, 'ajax_deactivate_license');

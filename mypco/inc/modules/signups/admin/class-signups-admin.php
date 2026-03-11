@@ -341,7 +341,7 @@ class MyPCO_Signups_Admin {
      */
     private function load_template($template_name, $data = []) {
         extract($data);
-        $template_path = MYPCO_PLUGIN_DIR . 'modules/signups/admin/templates/' . $template_name . '.php';
+        $template_path = MYPCO_PLUGIN_DIR . 'templates/signups/admin/' . $template_name . '.php';
         
         if (file_exists($template_path)) {
             include $template_path;

@@ -6,7 +6,7 @@
  * as a standalone addon that can be enabled independently from the Calendar module.
  */
 
-require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-module-base.php';
+require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-module-base.php';
 
 class MyPCO_Calendar_Shortcodes_Module extends MyPCO_Module_Base {
 
@@ -36,8 +36,8 @@ class MyPCO_Calendar_Shortcodes_Module extends MyPCO_Module_Base {
      * Initialize the Calendar Shortcodes addon.
      */
     public function init() {
-        // Register shortcode types via filter
-        add_filter('mypco_shortcode_types', [$this, 'register_shortcode_types']);
+        // Register shortcode types via the centralized loader
+        $this->loader->add_filter('mypco_shortcode_types', $this, 'register_shortcode_types');
 
         // Load and initialize public component (always loaded for shortcodes)
         $this->load_public_component();
@@ -554,6 +554,6 @@ class MyPCO_Calendar_Shortcodes_Module extends MyPCO_Module_Base {
      * Get path within this module.
      */
     private function get_module_path($relative_path) {
-        return MYPCO_PLUGIN_DIR . 'modules/calendar-shortcodes/' . $relative_path;
+        return MYPCO_PLUGIN_DIR . 'inc/modules/calendar-shortcodes/' . $relative_path;
     }
 }

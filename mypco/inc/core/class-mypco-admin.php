@@ -13,20 +13,17 @@ class MyPCO_Admin {
     public function __construct($plugin_name, $version, $loader, $api_model) {
         $this->plugin_name = $plugin_name;
         $this->version     = $version;
-        $this->loader      = $loader;      // Store the loader
-        $this->api_model   = $api_model;   // Store the api_model
+        $this->loader      = $loader;
+        $this->api_model   = $api_model;
 
-        // We don't strictly need to pass $modules anymore because
-        // MyPCO_Modules will fetch them directly from the manager
-
-        add_action('wp_ajax_mypco_save_dashboard_order', [$this, 'ajax_save_dashboard_order']);
+        $loader->add_action('wp_ajax_mypco_save_dashboard_order', $this, 'ajax_save_dashboard_order');
     }
 
     public function enqueue_styles() {
         $screen = get_current_screen();
         if ($screen && $screen->id === 'toplevel_page_mypco-dashboard') {
             wp_enqueue_style('dashboard');
-            wp_enqueue_style($this->plugin_name . '-dashboard', MYPCO_PLUGIN_URL . 'admin/assets/css/mypco-dashboard.css', ['dashboard'], $this->version);
+            wp_enqueue_style($this->plugin_name . '-dashboard', MYPCO_PLUGIN_URL . 'assets/admin/css/mypco-dashboard.css', ['dashboard'], $this->version);
         }
     }
 
@@ -35,7 +32,7 @@ class MyPCO_Admin {
         if ($screen && $screen->id === 'toplevel_page_mypco-dashboard') {
             wp_enqueue_script('postbox');
             wp_enqueue_script('jquery-ui-sortable');
-            wp_enqueue_script($this->plugin_name . '-dashboard', MYPCO_PLUGIN_URL . 'admin/assets/js/mypco-dashboard.js', ['jquery', 'postbox', 'jquery-ui-sortable'], $this->version, true);
+            wp_enqueue_script($this->plugin_name . '-dashboard', MYPCO_PLUGIN_URL . 'assets/admin/js/mypco-dashboard.js', ['jquery', 'postbox', 'jquery-ui-sortable'], $this->version, true);
         }
     }
 

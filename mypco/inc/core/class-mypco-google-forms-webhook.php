@@ -7,7 +7,7 @@ class MyPCO_Google_Forms_Webhook {
     private $stripe_handler;
 
     public function __construct() {
-        add_action('rest_api_init', [$this, 'register_rest_route']);
+        // Hook registration moved to the centralized loader in class-mypco.php
     }
 
     /**

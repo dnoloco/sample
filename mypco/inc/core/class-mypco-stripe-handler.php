@@ -9,9 +9,6 @@ class MyPCO_Stripe_Handler {
     public function __construct() {
         $this->api_key = get_option('stripe_secret_key');
         $this->webhook_secret = get_option('stripe_webhook_secret');
-
-        // Register webhook endpoint
-        add_action('rest_api_init', [$this, 'register_webhook_endpoint']);
     }
 
     /**

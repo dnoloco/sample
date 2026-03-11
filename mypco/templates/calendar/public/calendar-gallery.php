@@ -57,10 +57,10 @@ $gallery_active = ' active';
     <div class="pco-layout-grid pco-grid-full-width">
         <!-- Main content area -->
         <div class="pco-main-content">
-            <?php include MYPCO_PLUGIN_DIR . 'modules/calendar/public/templates/event-gallery.php'; ?>
+            <?php include MYPCO_PLUGIN_DIR . 'templates/calendar/public/event-gallery.php'; ?>
 
             <!-- Event Detail View -->
-            <?php include MYPCO_PLUGIN_DIR . 'modules/calendar/public/templates/event-detail.php'; ?>
+            <?php include MYPCO_PLUGIN_DIR . 'templates/calendar/public/event-detail.php'; ?>
         </div>
     </div>
 </div>

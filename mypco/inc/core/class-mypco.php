@@ -37,49 +37,49 @@ class MyPCO {
 
     private function load_dependencies() {
         // --- Blended Architecture: Interfaces & Traits ---
-        require_once MYPCO_PLUGIN_DIR . 'includes/interfaces/class-repository-interface.php';
-        require_once MYPCO_PLUGIN_DIR . 'includes/interfaces/class-block-registrar-interface.php';
-        require_once MYPCO_PLUGIN_DIR . 'includes/traits/class-has-repositories.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/interfaces/class-repository-interface.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/interfaces/class-block-registrar-interface.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/traits/class-has-repositories.php';
 
         // --- Core classes ---
-        require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-loader.php';
-        require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-i18n.php';
-        require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-credentials-manager.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-loader.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-i18n.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-credentials-manager.php';
 
         // License and Update Managers (load early as other components depend on them)
-        require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-license-manager.php';
-        require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-update-manager.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-license-manager.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-update-manager.php';
 
         // Module system
-        require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-module-base.php';
-        require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-module-manager.php';
-        require_once MYPCO_PLUGIN_DIR . 'modules/class-mypco-modules.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-module-base.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-module-manager.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/modules/class-mypco-modules.php';
 
         // API and core functionality
-        require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-api-model.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-api-model.php';
 
         // --- Blended Architecture: Repositories ("Muscle") ---
-        require_once MYPCO_PLUGIN_DIR . 'includes/repositories/class-event-repository.php';
-        require_once MYPCO_PLUGIN_DIR . 'includes/repositories/class-service-repository.php';
-        require_once MYPCO_PLUGIN_DIR . 'includes/repositories/class-publishing-repository.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/repositories/class-event-repository.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/repositories/class-service-repository.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/repositories/class-publishing-repository.php';
 
         // --- Blended Architecture: REST API (powers the React "Skin") ---
-        require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-rest-controller.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-rest-controller.php';
 
         // Admin pages
-        require_once MYPCO_PLUGIN_DIR . 'admin/class-mypco-admin.php';
-        require_once MYPCO_PLUGIN_DIR . 'admin/class-mypco-settings-page.php';
-        require_once MYPCO_PLUGIN_DIR . 'admin/class-mypco-license-page.php';
-        require_once MYPCO_PLUGIN_DIR . 'admin/class-mypco-shortcodes-admin.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-admin.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-settings-page.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-license-page.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-shortcodes-admin.php';
 
         // Public functionality
-        require_once MYPCO_PLUGIN_DIR . 'public/class-mypco-public.php';
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-public.php';
 
         $this->loader = new MyPCO_Loader();
 
-        // Initialize update manager for automatic updates
+        // Initialize update manager — routes its hooks through the loader
         $update_manager = MyPCO_Update_Manager::get_instance();
-        $update_manager->init();
+        $update_manager->init( $this->loader );
     }
 
     private function set_locale() {
@@ -143,7 +143,7 @@ class MyPCO {
 
         foreach ($available_modules as $key => $config) {
             if ($module_manager->is_module_enabled($key) && $module_manager->can_enable_module($key)) {
-                $module_file = MYPCO_PLUGIN_DIR . 'modules/' . $config['file'];
+                $module_file = MYPCO_PLUGIN_DIR . 'inc/modules/' . $config['file'];
 
                 if (file_exists($module_file)) {
                     require_once $module_file;
@@ -189,15 +189,25 @@ class MyPCO {
         $this->loader->add_action('admin_menu', $plugin_admin, 'add_modules_menu', 99);
 
         // 5. Initialize the API Settings Page at later priority (after Modules)
-        $plugin_settings = new MyPCO_Settings_Page($this->plugin_name, $this->version, $this->api_model);
+        $plugin_settings = new MyPCO_Settings_Page($this->plugin_name, $this->version, $this->api_model, $this->loader);
         $this->loader->add_action('admin_menu', $plugin_settings, 'add_settings_menu', 99);
         $this->loader->add_action('admin_init', $plugin_settings, 'handle_settings_save');
 
-        // 6. Initialize the License Page (hidden from menu)
+        // 6. Initialize the License Page — all hooks routed through the loader
         $license_page = new MyPCO_License_Page($this->plugin_name, $this->version);
         $license_page->init($this->loader);
 
-        // 7. Blended Architecture: Register REST API routes for React UI
+        // 7. Initialize Stripe handler — hooks through the loader
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-stripe-handler.php';
+        $stripe_handler = new MyPCO_Stripe_Handler();
+        $this->loader->add_action('rest_api_init', $stripe_handler, 'register_webhook_endpoint');
+
+        // 8. Initialize Google Forms webhook — hooks through the loader
+        require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-google-forms-webhook.php';
+        $forms_webhook = new MyPCO_Google_Forms_Webhook();
+        $this->loader->add_action('rest_api_init', $forms_webhook, 'register_rest_route');
+
+        // 9. Blended Architecture: Register REST API routes for React UI
         $rest_controller = new MyPCO_REST_Controller( $this->loader );
         $this->loader->add_action( 'rest_api_init', $rest_controller, 'register_routes' );
     }

@@ -11,7 +11,7 @@
  * Note: This is primarily an admin-only module with no public component.
  */
 
-require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-module-base.php';
+require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-module-base.php';
 
 class MyPCO_Services_Module extends MyPCO_Module_Base {
 
@@ -70,6 +70,6 @@ class MyPCO_Services_Module extends MyPCO_Module_Base {
      * Get path within this module.
      */
     private function get_module_path($relative_path) {
-        return MYPCO_PLUGIN_DIR . 'modules/services/' . $relative_path;
+        return MYPCO_PLUGIN_DIR . 'inc/modules/services/' . $relative_path;
     }
 }

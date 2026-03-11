@@ -3,10 +3,12 @@ if ( ! class_exists( 'MyPCO_Settings_Page' ) ) {
     class MyPCO_Settings_Page {
         private $api_model;
 
-        public function __construct($plugin_name, $version, $api_model) {
+        public function __construct($plugin_name, $version, $api_model, $loader = null) {
             $this->api_model = $api_model;
-            add_action('wp_ajax_mypco_test_pco_connection', [$this, 'ajax_test_pco_connection']);
-            add_action('wp_ajax_mypco_test_clearstream_connection', [$this, 'ajax_test_clearstream_connection']);
+            if ( $loader ) {
+                $loader->add_action('wp_ajax_mypco_test_pco_connection', $this, 'ajax_test_pco_connection');
+                $loader->add_action('wp_ajax_mypco_test_clearstream_connection', $this, 'ajax_test_clearstream_connection');
+            }
         }
 
         public function add_settings_menu() {

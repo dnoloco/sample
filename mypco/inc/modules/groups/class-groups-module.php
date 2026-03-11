@@ -10,7 +10,7 @@
  * - Admin settings and cache management
  */
 
-require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-module-base.php';
+require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-module-base.php';
 
 class MyPCO_Groups_Module extends MyPCO_Module_Base {
 
@@ -83,6 +83,6 @@ class MyPCO_Groups_Module extends MyPCO_Module_Base {
      * Get path within this module.
      */
     private function get_module_path($relative_path) {
-        return MYPCO_PLUGIN_DIR . 'modules/groups/' . $relative_path;
+        return MYPCO_PLUGIN_DIR . 'inc/modules/groups/' . $relative_path;
     }
 }

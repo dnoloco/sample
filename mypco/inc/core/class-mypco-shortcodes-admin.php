@@ -465,7 +465,7 @@ class MyPCO_Shortcodes_Admin {
 
         wp_enqueue_style(
             'mypco-shortcodes-admin',
-            MYPCO_PLUGIN_URL . 'admin/assets/css/mypco-shortcodes-admin.css',
+            MYPCO_PLUGIN_URL . 'assets/admin/css/mypco-shortcodes-admin.css',
             [],
             MYPCO_VERSION
         );
@@ -735,7 +735,7 @@ class MyPCO_Shortcodes_Admin {
      */
     private function load_template($template_name, $data = []) {
         extract($data);
-        $template_path = MYPCO_PLUGIN_DIR . 'admin/templates/' . $template_name . '.php';
+        $template_path = MYPCO_PLUGIN_DIR . 'templates/admin/' . $template_name . '.php';
 
         if (file_exists($template_path)) {
             include $template_path;
