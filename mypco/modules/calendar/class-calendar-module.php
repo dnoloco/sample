@@ -1,8 +1,18 @@
 <?php
 /**
- * Calendar Module - Main Orchestrator
+ * Calendar Module — Blended Architecture Orchestrator
  *
- * This class coordinates the admin and public components of the Calendar module.
+ * This class demonstrates the complete blended architecture pattern:
+ *
+ * 1. SKELETON: Uses the centralized Loader for all hook registration.
+ * 2. MUSCLE:   Registers an Event Repository so that admin, public,
+ *              and block code never touches the API model directly.
+ * 3. SKIN:     Provides a Block Registrar for the Gutenberg
+ *              "Calendar Events" block with live preview.
+ *
+ * The admin and public components still work as before (shortcodes,
+ * settings pages) but now they can use $this->repository('events')
+ * for all data access instead of calling the API model.
  */
 
 require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-module-base.php';
@@ -32,7 +42,8 @@ class MyPCO_Calendar_Module extends MyPCO_Module_Base {
             'basic_shortcode',
             'list_view',
             'month_view',
-            'gallery_view'
+            'gallery_view',
+            'gutenberg_block'    // NEW: Gutenberg block is free
         ],
         'premium' => [
             'custom_css',
@@ -53,6 +64,47 @@ class MyPCO_Calendar_Module extends MyPCO_Module_Base {
      * Public component instance
      */
     private $public;
+
+    // =========================================================================
+    // Blended Architecture: Repository Registration ("Muscle")
+    // =========================================================================
+
+    /**
+     * Register the Event Repository with the Loader.
+     *
+     * This is called by the main MyPCO class before init(), ensuring
+     * the repository is available to all components (admin, public, blocks).
+     */
+    public function register_repositories() {
+        // The core Event Repository is already registered by the main plugin.
+        // Modules can register additional repositories here if needed.
+        // For example, a calendar-specific settings repository:
+        //   $this->loader->register_repository('calendar_settings', new MyPCO_Calendar_Settings_Repository());
+    }
+
+    // =========================================================================
+    // Blended Architecture: Block Registration ("Skin")
+    // =========================================================================
+
+    /**
+     * Return the block registrar for the Calendar Events Gutenberg block.
+     *
+     * @return MyPCO_Block_Registrar_Interface|null
+     */
+    public function get_block_registrar() {
+        $event_repo = $this->repository( 'events' );
+
+        if ( ! $event_repo ) {
+            return null;
+        }
+
+        require_once $this->get_module_path( 'class-calendar-block-registrar.php' );
+        return new MyPCO_Calendar_Block_Registrar( $event_repo );
+    }
+
+    // =========================================================================
+    // Module Initialization (Original + Blended)
+    // =========================================================================
 
     /**
      * Initialize the Calendar module.

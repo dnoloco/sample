@@ -2,8 +2,8 @@
 /**
  * Plugin Name: MyPCO Online
  * Plugin URI: https://example.com/mypco-online
- * Description: Comprehensive Planning Center Online integration with modular architecture for churches
- * Version: 2.0.0
+ * Description: Comprehensive Planning Center Online integration with blended architecture for churches
+ * Version: 3.0.0
  * Author: David Dean
  * Author URI: https://example.com
  * License: GPL-2.0+
@@ -20,7 +20,7 @@ if (!defined('WPINC')) {
 /**
  * Current plugin version.
  */
-define('MYPCO_VERSION', '2.0.0');
+define('MYPCO_VERSION', '3.0.0');
 define('MYPCO_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('MYPCO_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('MYPCO_INCLUDES', MYPCO_PLUGIN_DIR . 'includes/');

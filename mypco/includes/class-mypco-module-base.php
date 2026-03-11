@@ -1,8 +1,17 @@
 <?php
 /**
- * Base Module Class
+ * Base Module Class — Blended Architecture
  *
- * All modules should extend this class to maintain consistency.
+ * All modules extend this class. In the blended architecture it provides:
+ *
+ * 1. Skeleton: Access to the centralized Loader for hook registration.
+ * 2. Muscle:   A register_repositories() hook so modules can provide
+ *              their own Repository classes for clean data access.
+ * 3. Skin:     A get_block_registrar() hook so modules can declare
+ *              their Gutenberg blocks and React-powered UI components.
+ *
+ * Subclasses override init(), and optionally register_repositories()
+ * and get_block_registrar().
  */
 
 abstract class MyPCO_Module_Base {
@@ -81,6 +90,62 @@ abstract class MyPCO_Module_Base {
      */
     abstract public function init();
 
+    // =========================================================================
+    // Blended Architecture: Repository Pattern ("Muscle")
+    // =========================================================================
+
+    /**
+     * Register this module's repositories with the Loader.
+     *
+     * Override in subclasses to register module-specific repositories.
+     * Repositories are the data access layer — display code should
+     * never call the API model or run raw queries directly.
+     *
+     * Example override:
+     *   public function register_repositories() {
+     *       $this->loader->register_repository(
+     *           'events',
+     *           new MyPCO_Event_Repository( $this->api_model )
+     *       );
+     *   }
+     *
+     * @return void
+     */
+    public function register_repositories() {
+        // Default: no repositories. Override in subclasses.
+    }
+
+    /**
+     * Convenience: get a repository from the Loader.
+     *
+     * @param string $key Repository identifier.
+     * @return MyPCO_Repository_Interface|null
+     */
+    protected function repository( $key ) {
+        return $this->loader->get_repository( $key );
+    }
+
+    // =========================================================================
+    // Blended Architecture: Block Registration ("Skin")
+    // =========================================================================
+
+    /**
+     * Return a block registrar if this module provides Gutenberg blocks.
+     *
+     * Override in subclasses to return a MyPCO_Block_Registrar_Interface
+     * instance. The Loader will call register_blocks() on init at
+     * priority 12 (after CPTs).
+     *
+     * @return MyPCO_Block_Registrar_Interface|null
+     */
+    public function get_block_registrar() {
+        return null;
+    }
+
+    // =========================================================================
+    // Original helpers (unchanged)
+    // =========================================================================
+
     /**
      * Register a shortcode for this module.
      */
@@ -106,6 +171,8 @@ abstract class MyPCO_Module_Base {
 
     /**
      * Get data with caching using the API model.
+     *
+     * @deprecated 3.0.0 Use a Repository instead of calling the API model directly.
      */
     protected function get_cached_data($app_domain, $endpoint_path, $params, $transient_key, $expiration = null) {
         if (!$this->api_model) {
@@ -129,74 +196,59 @@ abstract class MyPCO_Module_Base {
     }
 
     /**
-     * Get module key.
+     * Render a template file and return the output as a string.
+     *
+     * @param string $template_name Template filename without .php extension.
+     * @param array  $variables     Variables to extract into the template scope.
+     * @return string Rendered HTML.
      */
+    protected function fetch_template($template_name, $variables = []) {
+        ob_start();
+        $this->render_template($template_name, $variables);
+        return ob_get_clean();
+    }
+
+    // =========================================================================
+    // Module metadata (unchanged)
+    // =========================================================================
+
     public function get_module_key() {
         return $this->module_key;
     }
 
-    /**
-     * Get module name.
-     */
     public function get_module_name() {
         return $this->module_name;
     }
 
-    /**
-     * Get module description.
-     */
     public function get_module_description() {
         return $this->module_description;
     }
 
-    /**
-     * Get module tier.
-     */
     public function get_tier() {
         return $this->tier;
     }
 
-    /**
-     * Check if module requires a license.
-     */
     public function requires_license() {
         return $this->requires_license;
     }
 
-    /**
-     * Get minimum license tier required.
-     */
     public function get_min_license_tier() {
         return $this->min_license_tier;
     }
 
-    /**
-     * Get module dependencies.
-     */
     public function get_dependencies() {
         return $this->dependencies;
     }
 
-    /**
-     * Get module features.
-     */
     public function get_features() {
         return $this->features;
     }
 
-    /**
-     * Check if a specific feature is available.
-     *
-     * @param string $feature Feature name to check
-     * @return bool
-     */
     public function is_feature_available($feature) {
-        // Free features are always available
         if (in_array($feature, $this->features['free'])) {
             return true;
         }
 
-        // Premium features require license check
         if (in_array($feature, $this->features['premium'])) {
             return $this->has_premium_access();
         }
@@ -204,11 +256,6 @@ abstract class MyPCO_Module_Base {
         return false;
     }
 
-    /**
-     * Check if user has premium access for this module.
-     *
-     * @return bool
-     */
     public function has_premium_access() {
         if (!class_exists('MyPCO_License_Manager')) {
             return false;
@@ -218,11 +265,6 @@ abstract class MyPCO_Module_Base {
         return $license_manager->has_module_access($this->module_key);
     }
 
-    /**
-     * Get module configuration array for registration.
-     *
-     * @return array
-     */
     public function get_module_config() {
         return [
             'key' => $this->module_key,

@@ -1,9 +1,23 @@
 <?php
 /**
- * Register all actions and filters for the plugin.
+ * Centralized Loader — The "Skeleton" of the Blended Architecture.
+ *
+ * This class is the single registry for everything the plugin does.
+ * Instead of scattered add_action/add_filter calls, all hooks are
+ * queued here and executed in one run() call.
+ *
+ * In the blended architecture it also manages:
+ *  - Repository registration (the "Muscle" — SSP-style data access)
+ *  - Block registrar tracking (the "Skin" — React-powered Gutenberg blocks)
+ *
+ * @package MyPCO
+ * @since 2.0.0 Original loader.
+ * @since 3.0.0 Extended with repository and block registrar support.
  */
 
 class MyPCO_Loader {
+
+    use MyPCO_Has_Repositories;
 
     /**
      * The array of actions registered with WordPress.
@@ -14,6 +28,13 @@ class MyPCO_Loader {
      * The array of filters registered with WordPress.
      */
     protected $filters;
+
+    /**
+     * Block registrars collected from modules.
+     *
+     * @var MyPCO_Block_Registrar_Interface[]
+     */
+    protected $block_registrars = [];
 
     /**
      * Initialize the collections used to maintain the actions and filters.
@@ -53,7 +74,18 @@ class MyPCO_Loader {
     }
 
     /**
-     * Register the filters and actions with WordPress.
+     * Register a block registrar to be initialized during run().
+     *
+     * @param MyPCO_Block_Registrar_Interface $registrar A module's block registrar.
+     * @return void
+     */
+    public function add_block_registrar( MyPCO_Block_Registrar_Interface $registrar ) {
+        $this->block_registrars[] = $registrar;
+    }
+
+    /**
+     * Register the filters and actions with WordPress, then
+     * fire block registrars on the 'init' hook at priority 12.
      */
     public function run() {
         foreach ($this->filters as $hook) {
@@ -72,6 +104,22 @@ class MyPCO_Loader {
                 $hook['priority'],
                 $hook['accepted_args']
             );
+        }
+
+        // Register Gutenberg blocks after CPTs (priority 12).
+        if ( ! empty( $this->block_registrars ) ) {
+            add_action( 'init', [ $this, 'register_all_blocks' ], 12 );
+        }
+    }
+
+    /**
+     * Callback: register blocks from all collected registrars.
+     *
+     * @return void
+     */
+    public function register_all_blocks() {
+        foreach ( $this->block_registrars as $registrar ) {
+            $registrar->register_blocks();
         }
     }
 }

@@ -1,6 +1,17 @@
 <?php
 /**
- * The core plugin class.
+ * The core plugin class — Blended Architecture Orchestrator.
+ *
+ * This class wires together the three layers of the blended architecture:
+ *
+ * 1. SKELETON (MyPCO Loader): Centralized hook registration.
+ * 2. MUSCLE  (Repositories):  Data access abstraction via the Repository Pattern.
+ * 3. SKIN    (React UI):      Gutenberg blocks and React-powered settings pages.
+ *
+ * Boot sequence:
+ *   load_dependencies() → set_locale() → init_api_model()
+ *   → init_repositories() → define_admin_hooks() → define_public_hooks()
+ *   → run()
  */
 
 class MyPCO {
@@ -19,11 +30,18 @@ class MyPCO {
         $this->load_dependencies();
         $this->set_locale();
         $this->init_api_model();
+        $this->init_repositories();
         $this->define_admin_hooks();
         $this->define_public_hooks();
     }
 
     private function load_dependencies() {
+        // --- Blended Architecture: Interfaces & Traits ---
+        require_once MYPCO_PLUGIN_DIR . 'includes/interfaces/class-repository-interface.php';
+        require_once MYPCO_PLUGIN_DIR . 'includes/interfaces/class-block-registrar-interface.php';
+        require_once MYPCO_PLUGIN_DIR . 'includes/traits/class-has-repositories.php';
+
+        // --- Core classes ---
         require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-loader.php';
         require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-i18n.php';
         require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-credentials-manager.php';
@@ -39,6 +57,14 @@ class MyPCO {
 
         // API and core functionality
         require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-api-model.php';
+
+        // --- Blended Architecture: Repositories ("Muscle") ---
+        require_once MYPCO_PLUGIN_DIR . 'includes/repositories/class-event-repository.php';
+        require_once MYPCO_PLUGIN_DIR . 'includes/repositories/class-service-repository.php';
+        require_once MYPCO_PLUGIN_DIR . 'includes/repositories/class-publishing-repository.php';
+
+        // --- Blended Architecture: REST API (powers the React "Skin") ---
+        require_once MYPCO_PLUGIN_DIR . 'includes/class-mypco-rest-controller.php';
 
         // Admin pages
         require_once MYPCO_PLUGIN_DIR . 'admin/class-mypco-admin.php';
@@ -69,8 +95,37 @@ class MyPCO {
         }
 
         $timezone = get_option('timezone_string') ?: 'America/Chicago';
-        // Initialize the model and store it in the class property
         $this->api_model = new MyPCO_API_Model($credentials['client_id'], $credentials['secret_key'], $timezone);
+    }
+
+    /**
+     * Initialize core repositories and register them with the Loader.
+     *
+     * This is the "Muscle" layer. Repositories abstract away data access
+     * so that modules, blocks, and settings pages never touch the API
+     * model or raw queries directly.
+     */
+    private function init_repositories() {
+        if ( ! $this->api_model ) {
+            return;
+        }
+
+        $date_helper = class_exists( 'MyPCO_Date_Helper' ) ? new MyPCO_Date_Helper() : null;
+
+        $this->loader->register_repository(
+            'events',
+            new MyPCO_Event_Repository( $this->api_model, $date_helper )
+        );
+
+        $this->loader->register_repository(
+            'services',
+            new MyPCO_Service_Repository( $this->api_model )
+        );
+
+        $this->loader->register_repository(
+            'publishing',
+            new MyPCO_Publishing_Repository( $this->api_model )
+        );
     }
 
     private function load_modules() {
@@ -95,6 +150,16 @@ class MyPCO {
 
                     if (class_exists($config['class'])) {
                         $module_instance = new $config['class']($this->loader, $this->api_model);
+
+                        // Blended Architecture: let the module register its repositories
+                        $module_instance->register_repositories();
+
+                        // Blended Architecture: collect block registrars from modules
+                        $block_registrar = $module_instance->get_block_registrar();
+                        if ( $block_registrar ) {
+                            $this->loader->add_block_registrar( $block_registrar );
+                        }
+
                         $module_instance->init();
                     }
                 }
@@ -131,6 +196,10 @@ class MyPCO {
         // 6. Initialize the License Page (hidden from menu)
         $license_page = new MyPCO_License_Page($this->plugin_name, $this->version);
         $license_page->init($this->loader);
+
+        // 7. Blended Architecture: Register REST API routes for React UI
+        $rest_controller = new MyPCO_REST_Controller( $this->loader );
+        $this->loader->add_action( 'rest_api_init', $rest_controller, 'register_routes' );
     }
 
     private function define_public_hooks() {
