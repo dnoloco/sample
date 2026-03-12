@@ -52,12 +52,12 @@ class SimplePCO_Calendar_Shortcodes_Module extends SimplePCO_Module_Base {
     public function register_shortcode_types($types) {
         $category_options = $this->fetch_category_options();
 
-        $types['simplepco_next_sunday'] = [
+        $types['simplepco_custom_single'] = [
             'module'      => 'calendar',
             'module_name' => 'Calendar',
             'name'        => 'Custom Single Event',
             'description' => 'Show the next upcoming event matching a custom filter.',
-            'tag'         => 'simplepco_next_sunday',
+            'tag'         => 'simplepco_custom_single',
             'is_addon'    => true,
             'addon_key'   => 'calendar_shortcodes',
             'addon_name'  => 'Calendar Shortcodes Addon',
@@ -187,12 +187,12 @@ class SimplePCO_Calendar_Shortcodes_Module extends SimplePCO_Module_Base {
             ],
         ];
 
-        $types['simplepco_featured_event'] = [
+        $types['simplepco_custom_featured'] = [
             'module'      => 'calendar',
             'module_name' => 'Calendar',
             'name'        => 'Custom Featured Event',
             'description' => 'Display featured events from Planning Center with full details and optional signup.',
-            'tag'         => 'simplepco_featured_event',
+            'tag'         => 'simplepco_custom_featured',
             'is_addon'    => true,
             'addon_key'   => 'calendar_shortcodes',
             'addon_name'  => 'Calendar Shortcodes Addon',
@@ -349,12 +349,12 @@ class SimplePCO_Calendar_Shortcodes_Module extends SimplePCO_Module_Base {
             ],
         ];
 
-        $types['simplepco_sunday_list'] = [
+        $types['simplepco_custom_event_list'] = [
             'module'      => 'calendar',
             'module_name' => 'Calendar',
             'name'        => 'Custom List',
             'description' => 'List multiple upcoming events matching a custom filter.',
-            'tag'         => 'simplepco_sunday_list',
+            'tag'         => 'simplepco_custom_event_list',
             'is_addon'    => true,
             'addon_key'   => 'calendar_shortcodes',
             'addon_name'  => 'Calendar Shortcodes Addon',

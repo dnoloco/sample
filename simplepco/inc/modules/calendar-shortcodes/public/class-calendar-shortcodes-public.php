@@ -28,9 +28,9 @@ class SimplePCO_Calendar_Shortcodes_Public {
      * Initialize public functionality.
      */
     public function init() {
-        add_shortcode('simplepco_next_sunday', [$this, 'render_custom_event_shortcode']);
-        add_shortcode('simplepco_featured_event', [$this, 'render_featured_event_shortcode']);
-        add_shortcode('simplepco_sunday_list', [$this, 'render_custom_list_shortcode']);
+        add_shortcode('simplepco_custom_single', [$this, 'render_custom_event_shortcode']);
+        add_shortcode('simplepco_custom_featured', [$this, 'render_featured_event_shortcode']);
+        add_shortcode('simplepco_custom_event_list', [$this, 'render_custom_list_shortcode']);
 
         $this->loader->add_action('wp_enqueue_scripts', $this, 'enqueue_public_assets');
     }
@@ -45,9 +45,9 @@ class SimplePCO_Calendar_Shortcodes_Public {
             return;
         }
 
-        $has_custom_event = has_shortcode($post->post_content, 'simplepco_next_sunday') ||
-                            has_shortcode($post->post_content, 'simplepco_featured_event') ||
-                            has_shortcode($post->post_content, 'simplepco_sunday_list');
+        $has_custom_event = has_shortcode($post->post_content, 'simplepco_custom_single') ||
+                            has_shortcode($post->post_content, 'simplepco_custom_featured') ||
+                            has_shortcode($post->post_content, 'simplepco_custom_event_list');
 
         if (!$has_custom_event) {
             return;
@@ -88,12 +88,12 @@ class SimplePCO_Calendar_Shortcodes_Public {
             'layout'     => '',
             'show_title' => '',
             'show_map'   => '',
-        ], $atts, 'simplepco_next_sunday');
+        ], $atts, 'simplepco_custom_single');
 
         $id = absint($atts['id']);
         if ($id > 0) {
             require_once SIMPLEPCO_PLUGIN_DIR . 'inc/core/class-simplepco-shortcodes-admin.php';
-            $settings = SimplePCO_Shortcodes_Admin::get_shortcode_settings($id, 'simplepco_next_sunday');
+            $settings = SimplePCO_Shortcodes_Admin::get_shortcode_settings($id, 'simplepco_custom_single');
         } else {
             $settings = [];
         }
@@ -169,12 +169,12 @@ class SimplePCO_Calendar_Shortcodes_Public {
             'layout'     => '',
             'show_title' => '',
             'show_map'   => '',
-        ], $atts, 'simplepco_featured_event');
+        ], $atts, 'simplepco_custom_featured');
 
         $id = absint($atts['id']);
         if ($id > 0) {
             require_once SIMPLEPCO_PLUGIN_DIR . 'inc/core/class-simplepco-shortcodes-admin.php';
-            $settings = SimplePCO_Shortcodes_Admin::get_shortcode_settings($id, 'simplepco_featured_event');
+            $settings = SimplePCO_Shortcodes_Admin::get_shortcode_settings($id, 'simplepco_custom_featured');
         } else {
             $settings = [];
         }
@@ -274,7 +274,7 @@ class SimplePCO_Calendar_Shortcodes_Public {
             'include' => 'event,event.tags'
         ];
 
-        $transient_key = 'simplepco_featured_events_' . md5(serialize($params) . $event_name . $category);
+        $transient_key = 'simplepco_custom_featureds_' . md5(serialize($params) . $event_name . $category);
 
         $response = $this->api_model->get_data_with_caching(
             'calendar',
@@ -398,12 +398,12 @@ class SimplePCO_Calendar_Shortcodes_Public {
             'id'    => 0,
             'event' => '',
             'count' => '',
-        ], $atts, 'simplepco_sunday_list');
+        ], $atts, 'simplepco_custom_event_list');
 
         $id = absint($atts['id']);
         if ($id > 0) {
             require_once SIMPLEPCO_PLUGIN_DIR . 'inc/core/class-simplepco-shortcodes-admin.php';
-            $settings = SimplePCO_Shortcodes_Admin::get_shortcode_settings($id, 'simplepco_sunday_list');
+            $settings = SimplePCO_Shortcodes_Admin::get_shortcode_settings($id, 'simplepco_custom_event_list');
         } else {
             $settings = [];
         }

@@ -696,8 +696,8 @@ function simple_church_features_shortcode() {
 				<h3 class="module-card__title"><?php esc_html_e( 'Events', 'simple-church' ); ?></h3>
 				<div class="module-card__text">
 					<?php
-					if ( shortcode_exists( 'simplepco_featured_event' ) ) {
-						echo do_shortcode( '[simplepco_featured_event layout="minimal" show_map="no"]' );
+					if ( shortcode_exists( 'simplepco_custom_featured' ) ) {
+						echo do_shortcode( '[simplepco_custom_featured layout="minimal" show_map="no"]' );
 					} elseif ( shortcode_exists( 'simplepco_calendar' ) ) {
 						echo do_shortcode( '[simplepco_calendar count="1" view="list"]' );
 					} else {
