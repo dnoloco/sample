@@ -51,8 +51,14 @@ class MyPCO_Settings_Repository implements MyPCO_Repository_Interface {
 
     /**
      * Store encrypted PCO API credentials.
+     *
+     * @param string $client_id PCO application ID.
+     * @param string $secret_key PCO secret key.
      */
     public function save_pco_credentials( $client_id, $secret_key ) {
+        $client_id  = sanitize_text_field( $client_id );
+        $secret_key = sanitize_text_field( $secret_key );
+
         update_option( self::OPT_PCO_CLIENT_ID, MyPCO_Credentials_Manager::encrypt( $client_id ) );
         update_option( self::OPT_PCO_SECRET_KEY, MyPCO_Credentials_Manager::encrypt( $secret_key ) );
     }
@@ -88,9 +94,15 @@ class MyPCO_Settings_Repository implements MyPCO_Repository_Interface {
 
     /**
      * Store Clearstream credentials.
+     *
+     * @param string $api_key        Clearstream API key.
+     * @param string $message_header Optional message header.
      */
     public function save_clearstream_credentials( $api_key, $message_header = '' ) {
-        $data = [ 'api_key' => $api_key, 'message_header' => $message_header ];
+        $data = [
+            'api_key'        => sanitize_text_field( $api_key ),
+            'message_header' => sanitize_text_field( $message_header ),
+        ];
         update_option( self::OPT_CLEARSTREAM_CREDS, base64_encode( json_encode( $data ) ) );
     }
 
@@ -117,9 +129,18 @@ class MyPCO_Settings_Repository implements MyPCO_Repository_Interface {
 
     /**
      * Save active modules map.
+     *
+     * @param array $modules Associative array of module_key => { enabled, updated_at }.
      */
     public function save_active_modules( $modules ) {
-        update_option( self::OPT_ACTIVE_MODULES, $modules );
+        $clean = [];
+        foreach ( (array) $modules as $key => $data ) {
+            $clean[ sanitize_key( $key ) ] = [
+                'enabled'    => ! empty( $data['enabled'] ),
+                'updated_at' => absint( $data['updated_at'] ?? time() ),
+            ];
+        }
+        update_option( self::OPT_ACTIVE_MODULES, $clean );
     }
 
     /*----------------------------------------------------------------------
@@ -141,9 +162,13 @@ class MyPCO_Settings_Repository implements MyPCO_Repository_Interface {
      * Save a single setting.
      *
      * @param string $key   Option name.
-     * @param mixed  $value Value to store.
+     * @param mixed  $value Value to store (strings are sanitized).
      */
     public function save( $key, $value ) {
+        $key = sanitize_key( $key );
+        if ( is_string( $value ) ) {
+            $value = sanitize_text_field( $value );
+        }
         update_option( $key, $value );
     }
 
