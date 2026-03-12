@@ -96,13 +96,23 @@ class SimplePCO_Settings {
             }
         }
 
+        // OAuth connection status.
+        $oauth_connected = $this->settings_repo->has_pco_oauth_connection();
+
+        // Check for OAuth redirect status messages.
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display hint.
+        $oauth_status = isset( $_GET['simplepco_oauth'] ) ? sanitize_text_field( wp_unslash( $_GET['simplepco_oauth'] ) ) : '';
+
         return [
-            'pcoClientId'    => $this->settings_repo->get_masked_value( $pco_creds['client_id'] ?? '', 5 ),
-            'pcoSecretKey'   => '',
-            'clearstreamKey' => $this->settings_repo->get_masked_value( $cs_creds['api_key'] ?? '', 5 ),
-            'modules'        => $modules_data,
-            'nonce'          => wp_create_nonce( 'wp_rest' ),
-            'restBase'       => esc_url_raw( rest_url( 'simplepco/v1/' ) ),
+            'pcoClientId'     => $this->settings_repo->get_masked_value( $pco_creds['client_id'] ?? '', 5 ),
+            'pcoSecretKey'    => '',
+            'clearstreamKey'  => $this->settings_repo->get_masked_value( $cs_creds['api_key'] ?? '', 5 ),
+            'modules'         => $modules_data,
+            'nonce'           => wp_create_nonce( 'wp_rest' ),
+            'restBase'        => esc_url_raw( rest_url( 'simplepco/v1/' ) ),
+            'oauthConnected'  => $oauth_connected,
+            'oauthExpiresAt'  => $oauth_connected ? gmdate( 'Y-m-d H:i:s', $this->settings_repo->get_pco_token_expires() ) : null,
+            'oauthStatus'     => $oauth_status,
         ];
     }
 }

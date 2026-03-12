@@ -36,14 +36,21 @@ class SimplePCO_REST_Controller {
     protected $loader;
 
     /**
+     * @var SimplePCO_OAuth_Handler|null  OAuth handler for token-based auth.
+     */
+    private $oauth_handler;
+
+    /**
      * @param SimplePCO_Settings_Repository $settings_repo   The settings data repository.
      * @param SimplePCO_License_Manager     $license_manager The license verifier.
      * @param SimplePCO_Loader              $loader          The loader (for event repos, cache clearing).
+     * @param SimplePCO_OAuth_Handler|null  $oauth_handler   OAuth handler (optional).
      */
-    public function __construct( SimplePCO_Settings_Repository $settings_repo, SimplePCO_License_Manager $license_manager, SimplePCO_Loader $loader ) {
+    public function __construct( SimplePCO_Settings_Repository $settings_repo, SimplePCO_License_Manager $license_manager, SimplePCO_Loader $loader, $oauth_handler = null ) {
         $this->settings_repo   = $settings_repo;
         $this->license_manager = $license_manager;
         $this->loader          = $loader;
+        $this->oauth_handler   = $oauth_handler;
     }
 
     /**
@@ -114,6 +121,25 @@ class SimplePCO_REST_Controller {
         register_rest_route( self::NAMESPACE, '/license/deactivate', [
             'methods'             => 'POST',
             'callback'            => [ $this, 'deactivate_license' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        // OAuth 2.0 endpoints
+        register_rest_route( self::NAMESPACE, '/oauth/authorize-url', [
+            'methods'             => 'GET',
+            'callback'            => [ $this, 'get_oauth_authorize_url' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        register_rest_route( self::NAMESPACE, '/oauth/status', [
+            'methods'             => 'GET',
+            'callback'            => [ $this, 'get_oauth_status' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        register_rest_route( self::NAMESPACE, '/oauth/disconnect', [
+            'methods'             => 'POST',
+            'callback'            => [ $this, 'oauth_disconnect' ],
             'permission_callback' => [ $this, 'check_admin_permission' ],
         ] );
     }
@@ -241,6 +267,51 @@ class SimplePCO_REST_Controller {
         $result = $this->license_manager->deactivate_license();
 
         return rest_ensure_response( $result );
+    }
+
+    /**
+     * GET /oauth/authorize-url — Returns the URL to redirect the user to.
+     */
+    public function get_oauth_authorize_url() {
+        if ( ! $this->oauth_handler ) {
+            return new WP_Error( 'oauth_not_configured', __( 'OAuth is not configured.', 'simplepco' ), [ 'status' => 500 ] );
+        }
+
+        return rest_ensure_response( [
+            'authorize_url' => $this->oauth_handler->get_authorize_url(),
+        ] );
+    }
+
+    /**
+     * GET /oauth/status — Returns current OAuth connection status.
+     */
+    public function get_oauth_status() {
+        $connected = $this->settings_repo->has_pco_oauth_connection();
+        $expires   = $this->settings_repo->get_pco_token_expires();
+
+        return rest_ensure_response( [
+            'connected'  => $connected,
+            'expires_at' => $connected ? gmdate( 'Y-m-d H:i:s', $expires ) : null,
+        ] );
+    }
+
+    /**
+     * POST /oauth/disconnect — Remove stored OAuth tokens.
+     */
+    public function oauth_disconnect() {
+        if ( ! $this->oauth_handler ) {
+            return new WP_Error( 'oauth_not_configured', __( 'OAuth is not configured.', 'simplepco' ), [ 'status' => 500 ] );
+        }
+
+        $this->oauth_handler->disconnect();
+
+        // Also clear API caches since the connection is gone.
+        SimplePCO_API_Model::clear_all_cache();
+
+        return rest_ensure_response( [
+            'success' => true,
+            'message' => __( 'Disconnected from Planning Center.', 'simplepco' ),
+        ] );
     }
 
     /**

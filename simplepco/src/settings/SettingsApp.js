@@ -27,48 +27,63 @@ import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 
 /**
- * API Credentials Tab
+ * Planning Center OAuth Connection Card
+ *
+ * Shows either a "Connect" button or the connected status with "Disconnect".
  */
-function CredentialsTab() {
-    const [ clientId, setClientId ] = useState( '' );
-    const [ secretKey, setSecretKey ] = useState( '' );
-    const [ clearstreamKey, setClearstreamKey ] = useState( '' );
-    const [ saving, setSaving ] = useState( false );
-    const [ notice, setNotice ] = useState( null );
-
-    useEffect( () => {
-        // Load existing settings from localized data
-        if ( window.simplepcoSettings ) {
-            setClientId( window.simplepcoSettings.pcoClientId || '' );
-            setSecretKey( window.simplepcoSettings.pcoSecretKey || '' );
-            setClearstreamKey( window.simplepcoSettings.clearstreamKey || '' );
+function PcoOAuthCard() {
+    const settings = window.simplepcoSettings || {};
+    const [ connected, setConnected ] = useState( settings.oauthConnected || false );
+    const [ busy, setBusy ] = useState( false );
+    const [ notice, setNotice ] = useState( () => {
+        // Show notice from OAuth redirect (PHP sets oauthStatus on the page load after callback).
+        const status = settings.oauthStatus;
+        if ( status === 'connected' ) {
+            return { status: 'success', message: __( 'Successfully connected to Planning Center!', 'simplepco' ) };
         }
-    }, [] );
+        if ( status === 'oauth_denied' ) {
+            return { status: 'error', message: __( 'Authorization was denied. Please try again.', 'simplepco' ) };
+        }
+        if ( status === 'invalid_state' || status === 'missing_code' || status === 'token_exchange_failed' ) {
+            return { status: 'error', message: __( 'Connection failed. Please try again.', 'simplepco' ) };
+        }
+        return null;
+    } );
 
-    const handleSave = async () => {
-        setSaving( true );
+    const handleConnect = async () => {
+        setBusy( true );
         setNotice( null );
 
         try {
-            await apiFetch( {
-                path: '/simplepco/v1/settings/credentials',
-                method: 'POST',
-                data: {
-                    pco_client_id: clientId,
-                    pco_secret_key: secretKey,
-                    clearstream_api_key: clearstreamKey,
-                },
-            } );
-            setNotice( { status: 'success', message: __( 'Credentials saved.', 'simplepco' ) } );
+            const result = await apiFetch( { path: '/simplepco/v1/oauth/authorize-url' } );
+            // Redirect the browser to the external OAuth server.
+            window.location.href = result.authorize_url;
         } catch ( err ) {
-            setNotice( { status: 'error', message: err.message || __( 'Save failed.', 'simplepco' ) } );
+            setNotice( { status: 'error', message: err.message || __( 'Could not start OAuth flow.', 'simplepco' ) } );
+            setBusy( false );
+        }
+    };
+
+    const handleDisconnect = async () => {
+        setBusy( true );
+        setNotice( null );
+
+        try {
+            const result = await apiFetch( {
+                path: '/simplepco/v1/oauth/disconnect',
+                method: 'POST',
+            } );
+            setConnected( false );
+            setNotice( { status: 'success', message: result.message } );
+        } catch ( err ) {
+            setNotice( { status: 'error', message: err.message } );
         }
 
-        setSaving( false );
+        setBusy( false );
     };
 
     const handleTestConnection = async () => {
-        setSaving( true );
+        setBusy( true );
         setNotice( null );
 
         try {
@@ -80,10 +95,93 @@ function CredentialsTab() {
                 status: result.connected ? 'success' : 'error',
                 message: result.connected
                     ? __( 'Connected to Planning Center!', 'simplepco' )
-                    : __( 'Connection failed. Check your credentials.', 'simplepco' ),
+                    : __( 'Connection failed. Try disconnecting and reconnecting.', 'simplepco' ),
             } );
         } catch ( err ) {
             setNotice( { status: 'error', message: err.message } );
+        }
+
+        setBusy( false );
+    };
+
+    return (
+        <Card>
+            <CardHeader>
+                <h3>{ __( 'Planning Center Online', 'simplepco' ) }</h3>
+            </CardHeader>
+            <CardBody>
+                { notice && (
+                    <Notice status={ notice.status } isDismissible onDismiss={ () => setNotice( null ) }
+                        style={ { marginBottom: '12px' } }>
+                        { notice.message }
+                    </Notice>
+                ) }
+
+                { connected ? (
+                    <div>
+                        <p style={ { color: '#00a32a', fontWeight: 600 } }>
+                            { __( 'Connected via OAuth', 'simplepco' ) }
+                        </p>
+                        { settings.oauthExpiresAt && (
+                            <p className="description">
+                                { __( 'Token expires:', 'simplepco' ) } { settings.oauthExpiresAt }
+                                { ' — ' }
+                                { __( 'tokens refresh automatically.', 'simplepco' ) }
+                            </p>
+                        ) }
+                        <div style={ { display: 'flex', gap: '8px', marginTop: '12px' } }>
+                            <Button variant="secondary" onClick={ handleTestConnection } disabled={ busy }>
+                                { busy ? <Spinner /> : __( 'Test Connection', 'simplepco' ) }
+                            </Button>
+                            <Button variant="secondary" isDestructive onClick={ handleDisconnect } disabled={ busy }>
+                                { busy ? <Spinner /> : __( 'Disconnect', 'simplepco' ) }
+                            </Button>
+                        </div>
+                    </div>
+                ) : (
+                    <div>
+                        <p className="description" style={ { marginBottom: '12px' } }>
+                            { __( 'Connect your Planning Center account using secure OAuth 2.0 authorization. You will be redirected to approve access.', 'simplepco' ) }
+                        </p>
+                        <Button variant="primary" onClick={ handleConnect } isBusy={ busy } disabled={ busy }>
+                            { busy ? __( 'Redirecting...', 'simplepco' ) : __( 'Connect to Planning Center', 'simplepco' ) }
+                        </Button>
+                    </div>
+                ) }
+            </CardBody>
+        </Card>
+    );
+}
+
+/**
+ * API Credentials Tab
+ */
+function CredentialsTab() {
+    const [ clearstreamKey, setClearstreamKey ] = useState( '' );
+    const [ saving, setSaving ] = useState( false );
+    const [ notice, setNotice ] = useState( null );
+
+    useEffect( () => {
+        if ( window.simplepcoSettings ) {
+            setClearstreamKey( window.simplepcoSettings.clearstreamKey || '' );
+        }
+    }, [] );
+
+    const handleSaveClearstream = async () => {
+        setSaving( true );
+        setNotice( null );
+
+        try {
+            await apiFetch( {
+                path: '/simplepco/v1/settings/credentials',
+                method: 'POST',
+                data: {
+                    clearstream_api_key: clearstreamKey,
+                },
+            } );
+            setNotice( { status: 'success', message: __( 'Credentials saved.', 'simplepco' ) } );
+        } catch ( err ) {
+            setNotice( { status: 'error', message: err.message || __( 'Save failed.', 'simplepco' ) } );
         }
 
         setSaving( false );
@@ -91,34 +189,14 @@ function CredentialsTab() {
 
     return (
         <div>
+            <PcoOAuthCard />
+
             { notice && (
-                <Notice status={ notice.status } isDismissible onDismiss={ () => setNotice( null ) }>
+                <Notice status={ notice.status } isDismissible onDismiss={ () => setNotice( null ) }
+                    style={ { marginTop: '16px' } }>
                     { notice.message }
                 </Notice>
             ) }
-
-            <Card>
-                <CardHeader>
-                    <h3>{ __( 'Planning Center Online', 'simplepco' ) }</h3>
-                </CardHeader>
-                <CardBody>
-                    <TextControl
-                        label={ __( 'Application ID', 'simplepco' ) }
-                        value={ clientId }
-                        onChange={ setClientId }
-                        help={ __( 'Found at api.planningcenteronline.com/oauth/applications', 'simplepco' ) }
-                    />
-                    <TextControl
-                        label={ __( 'Secret Key', 'simplepco' ) }
-                        type="password"
-                        value={ secretKey }
-                        onChange={ setSecretKey }
-                    />
-                    <Button variant="secondary" onClick={ handleTestConnection } disabled={ saving }>
-                        { saving ? <Spinner /> : __( 'Test Connection', 'simplepco' ) }
-                    </Button>
-                </CardBody>
-            </Card>
 
             <Card style={ { marginTop: '16px' } }>
                 <CardHeader>
@@ -135,7 +213,7 @@ function CredentialsTab() {
             </Card>
 
             <div style={ { marginTop: '16px' } }>
-                <Button variant="primary" onClick={ handleSave } disabled={ saving }>
+                <Button variant="primary" onClick={ handleSaveClearstream } disabled={ saving }>
                     { saving ? <Spinner /> : __( 'Save Credentials', 'simplepco' ) }
                 </Button>
             </div>

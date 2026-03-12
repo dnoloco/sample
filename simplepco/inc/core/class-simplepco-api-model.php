@@ -8,12 +8,34 @@ class SimplePCO_API_Model {
     private $local_timezone;
     const CACHE_DURATION = 3600; // 1 hour
 
+    /**
+     * Create an API model with Basic Auth (client_id + secret_key).
+     */
     public function __construct($client_id, $secret_key, $timezone_string = 'America/Chicago') {
-        // Setup Authentication Context
         $credentials = base64_encode($client_id . ":" . $secret_key);
+        $this->init_context("Authorization: Basic " . $credentials, $timezone_string);
+    }
+
+    /**
+     * Create an API model using an OAuth 2.0 Bearer token.
+     *
+     * @param string $access_token  OAuth access token.
+     * @param string $timezone_string WordPress timezone.
+     * @return self
+     */
+    public static function from_oauth_token($access_token, $timezone_string = 'America/Chicago') {
+        $instance = new self('', '', $timezone_string);
+        $instance->init_context("Authorization: Bearer " . $access_token, $timezone_string);
+        return $instance;
+    }
+
+    /**
+     * Initialize the stream context with the given auth header.
+     */
+    private function init_context($auth_header, $timezone_string = 'America/Chicago') {
         $options = [
             'http' => [
-                'header' => "Authorization: Basic " . $credentials . "\r\n" .
+                'header' => $auth_header . "\r\n" .
                     "Accept: application/vnd.api+json\r\n",
                 'method' => 'GET',
                 'ignore_errors' => true

@@ -33,6 +33,11 @@ class SimplePCO_Settings_Repository implements SimplePCO_Repository_Interface {
     const OPT_STRIPE_SECRET_KEY     = 'stripe_secret_key';
     const OPT_STRIPE_WEBHOOK_SECRET = 'stripe_webhook_secret';
 
+    // OAuth 2.0 token storage
+    const OPT_PCO_ACCESS_TOKEN  = 'simplepco_pco_access_token';
+    const OPT_PCO_REFRESH_TOKEN = 'simplepco_pco_refresh_token';
+    const OPT_PCO_TOKEN_EXPIRES = 'simplepco_pco_token_expires';
+
     /*----------------------------------------------------------------------
      * PCO Credentials
      *--------------------------------------------------------------------*/
@@ -69,6 +74,82 @@ class SimplePCO_Settings_Repository implements SimplePCO_Repository_Interface {
     public function has_pco_credentials() {
         $creds = $this->get_pco_credentials();
         return ! empty( $creds['client_id'] ) && ! empty( $creds['secret_key'] );
+    }
+
+    /*----------------------------------------------------------------------
+     * PCO OAuth 2.0 Tokens
+     *--------------------------------------------------------------------*/
+
+    /**
+     * Store OAuth 2.0 tokens (encrypted).
+     *
+     * @param string $access_token  Access token from OAuth exchange.
+     * @param string $refresh_token Refresh token for obtaining new access tokens.
+     * @param int    $expires_in    Token lifetime in seconds.
+     */
+    public function save_pco_oauth_tokens( $access_token, $refresh_token, $expires_in ) {
+        update_option( self::OPT_PCO_ACCESS_TOKEN, SimplePCO_Credentials_Manager::encrypt( $access_token ) );
+        update_option( self::OPT_PCO_REFRESH_TOKEN, SimplePCO_Credentials_Manager::encrypt( $refresh_token ) );
+        update_option( self::OPT_PCO_TOKEN_EXPIRES, time() + (int) $expires_in );
+    }
+
+    /**
+     * Get decrypted OAuth access token.
+     *
+     * @return string
+     */
+    public function get_pco_access_token() {
+        return SimplePCO_Credentials_Manager::decrypt( get_option( self::OPT_PCO_ACCESS_TOKEN, '' ) );
+    }
+
+    /**
+     * Get decrypted OAuth refresh token.
+     *
+     * @return string
+     */
+    public function get_pco_refresh_token() {
+        return SimplePCO_Credentials_Manager::decrypt( get_option( self::OPT_PCO_REFRESH_TOKEN, '' ) );
+    }
+
+    /**
+     * Get token expiry timestamp.
+     *
+     * @return int Unix timestamp.
+     */
+    public function get_pco_token_expires() {
+        return (int) get_option( self::OPT_PCO_TOKEN_EXPIRES, 0 );
+    }
+
+    /**
+     * Check if a valid (non-expired) OAuth token exists.
+     *
+     * @return bool
+     */
+    public function has_pco_oauth_token() {
+        $token = $this->get_pco_access_token();
+        if ( empty( $token ) ) {
+            return false;
+        }
+        // Consider token valid if it expires more than 60 seconds from now.
+        return $this->get_pco_token_expires() > ( time() + 60 );
+    }
+
+    /**
+     * Check if any OAuth tokens are stored (even if expired — refresh may work).
+     *
+     * @return bool
+     */
+    public function has_pco_oauth_connection() {
+        return ! empty( $this->get_pco_refresh_token() );
+    }
+
+    /**
+     * Remove all stored OAuth tokens (disconnect).
+     */
+    public function delete_pco_oauth_tokens() {
+        delete_option( self::OPT_PCO_ACCESS_TOKEN );
+        delete_option( self::OPT_PCO_REFRESH_TOKEN );
+        delete_option( self::OPT_PCO_TOKEN_EXPIRES );
     }
 
     /*----------------------------------------------------------------------
@@ -200,6 +281,9 @@ class SimplePCO_Settings_Repository implements SimplePCO_Repository_Interface {
     public function delete_all() {
         delete_option( self::OPT_PCO_CLIENT_ID );
         delete_option( self::OPT_PCO_SECRET_KEY );
+        delete_option( self::OPT_PCO_ACCESS_TOKEN );
+        delete_option( self::OPT_PCO_REFRESH_TOKEN );
+        delete_option( self::OPT_PCO_TOKEN_EXPIRES );
         delete_option( self::OPT_CLEARSTREAM_CREDS );
         delete_option( self::OPT_ACTIVE_MODULES );
     }

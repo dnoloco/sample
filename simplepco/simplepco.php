@@ -67,15 +67,27 @@ $settings_repo = new SimplePCO_Settings_Repository();
 $loader->register_repository( 'settings', $settings_repo );
 
 /*--------------------------------------------------------------------------
- * 7. API MODEL
+ * 7. OAUTH HANDLER & API MODEL
  *------------------------------------------------------------------------*/
 
-$api_model   = null;
-$credentials = $settings_repo->get_pco_credentials();
+$oauth_handler = new SimplePCO_OAuth_Handler( $settings_repo );
 
-if ( ! empty( $credentials['client_id'] ) && ! empty( $credentials['secret_key'] ) ) {
-    $timezone  = get_option( 'timezone_string' ) ?: 'America/Chicago';
-    $api_model = new SimplePCO_API_Model( $credentials['client_id'], $credentials['secret_key'], $timezone );
+$api_model = null;
+$timezone  = get_option( 'timezone_string' ) ?: 'America/Chicago';
+
+// Prefer OAuth token-based auth; fall back to legacy client_id/secret_key.
+if ( $settings_repo->has_pco_oauth_connection() ) {
+    $access_token = $oauth_handler->get_valid_access_token();
+    if ( ! is_wp_error( $access_token ) ) {
+        $api_model = SimplePCO_API_Model::from_oauth_token( $access_token, $timezone );
+    }
+}
+
+if ( ! $api_model ) {
+    $credentials = $settings_repo->get_pco_credentials();
+    if ( ! empty( $credentials['client_id'] ) && ! empty( $credentials['secret_key'] ) ) {
+        $api_model = new SimplePCO_API_Model( $credentials['client_id'], $credentials['secret_key'], $timezone );
+    }
 }
 
 /*--------------------------------------------------------------------------
@@ -144,6 +156,18 @@ $settings = new SimplePCO_Settings( SIMPLEPCO_VERSION, $api_model, $settings_rep
 $loader->add_action( 'admin_menu',            $settings, 'add_settings_menu', 99 );
 $loader->add_action( 'admin_enqueue_scripts', $settings, 'enqueue_assets' );
 
+// OAuth callback — hidden admin page that handles the redirect from the external server.
+add_action( 'admin_menu', function () use ( $oauth_handler ) {
+    add_submenu_page(
+        null, // Hidden page (no menu item).
+        'OAuth Callback',
+        'OAuth Callback',
+        'manage_options',
+        'simplepco-oauth-callback',
+        [ $oauth_handler, 'handle_callback' ]
+    );
+} );
+
 // Credentials settings — legacy admin page (hooks registered in constructor)
 $credentials_settings = new SimplePCO_Credentials_Settings( $loader, $settings_repo );
 
@@ -161,7 +185,7 @@ $loader->add_action( 'rest_api_init', $forms_webhook, 'register_rest_route' );
 
 // REST API routes for React UI
 $license_manager = SimplePCO_License_Manager::get_instance();
-$rest_controller = new SimplePCO_REST_Controller( $settings_repo, $license_manager, $loader );
+$rest_controller = new SimplePCO_REST_Controller( $settings_repo, $license_manager, $loader, $oauth_handler );
 $loader->add_action( 'rest_api_init', $rest_controller, 'register_routes' );
 
 /*--------------------------------------------------------------------------
