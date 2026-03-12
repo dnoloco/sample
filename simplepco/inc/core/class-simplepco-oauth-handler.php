@@ -42,11 +42,11 @@ class SimplePCO_OAuth_Handler {
 
         $this->authorize_url = defined( 'SIMPLEPCO_OAUTH_AUTHORIZE_URL' )
             ? SIMPLEPCO_OAUTH_AUTHORIZE_URL
-            : 'https://your-server.com/oauth/authorize';
+            : 'https://api.planningcenteronline.com/oauth/authorize';
 
         $this->token_url = defined( 'SIMPLEPCO_OAUTH_TOKEN_URL' )
             ? SIMPLEPCO_OAUTH_TOKEN_URL
-            : 'https://your-server.com/oauth/token';
+            : 'https://api.planningcenteronline.com/oauth/token';
 
         $this->client_id = defined( 'SIMPLEPCO_OAUTH_CLIENT_ID' )
             ? SIMPLEPCO_OAUTH_CLIENT_ID
