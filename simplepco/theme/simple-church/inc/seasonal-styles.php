@@ -1016,6 +1016,31 @@ function simple_church_seasonal_inline_css() {
 			$css .= "body.seasonal-theme-active .pco-accordion-date-badge--light { background: " . $secondary . "66; color: #ffffff; }\n";
 			$css .= "body.seasonal-theme-active .pco-accordion-row:hover .pco-accordion-date-badge--light { background: " . $secondary . "; color: #ffffff; }\n";
 		}
+
+		// Custom event list shortcode overrides.
+		// Map seasonal colors to --simplepco-loc-* custom properties.
+		if ( $season['text_color'] ) {
+			$tc = esc_attr( $season['text_color'] );
+			$css .= "body.seasonal-theme-active .simplepco-location-list { --simplepco-loc-text: " . $tc . "; --simplepco-loc-muted: " . $tc . "99; }\n";
+			$css .= "body.seasonal-theme-active .simplepco-list-nav-btn { border-color: " . $tc . "; color: " . $tc . "; }\n";
+		}
+		if ( $season['bg_color'] ) {
+			$bg = esc_attr( $season['bg_color'] );
+			$css .= "body.seasonal-theme-active .simplepco-location-list { --simplepco-loc-bg: " . $bg . "; --simplepco-loc-border: " . $bg . "; }\n";
+		}
+		if ( $primary ) {
+			$css .= "body.seasonal-theme-active .simplepco-location-list { --simplepco-loc-primary: " . $primary . "; }\n";
+		}
+		if ( $season['dark_text_color'] ) {
+			$dtc = esc_attr( $season['dark_text_color'] );
+			$css .= "body.seasonal-theme-active .simplepco-location-list-date-badge { color: " . $dtc . "; }\n";
+			$css .= "body.seasonal-theme-active .simplepco-location-list-day,\n";
+			$css .= "body.seasonal-theme-active .simplepco-location-list-month { color: " . $dtc . "cc; }\n";
+		}
+		if ( $season['link_color'] ) {
+			$lc = esc_attr( $season['link_color'] );
+			$css .= "body.seasonal-theme-active .simplepco-location-list-link { color: " . $lc . "; }\n";
+		}
 	}
 
 	if ( $css ) {
