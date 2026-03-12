@@ -6,7 +6,6 @@
  *
  * Tabs:
  *  - API Credentials (PCO + Clearstream)
- *  - Modules (enable/disable with feature toggles)
  *  - License (activate/deactivate via remote server verification)
  *  - Cache (clear transient caches per-module)
  */
@@ -21,7 +20,6 @@ import {
     Button,
     Notice,
     Spinner,
-    ToggleControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
@@ -222,64 +220,6 @@ function CredentialsTab() {
 }
 
 /**
- * Modules Tab
- */
-function ModulesTab() {
-    const [ modules, setModules ] = useState( [] );
-    const [ loading, setLoading ] = useState( true );
-
-    useEffect( () => {
-        if ( window.simplepcoSettings && window.simplepcoSettings.modules ) {
-            setModules( window.simplepcoSettings.modules );
-            setLoading( false );
-        }
-    }, [] );
-
-    const handleToggle = async ( key, enabled ) => {
-        try {
-            await apiFetch( {
-                path: `/simplepco/v1/modules/${ key }`,
-                method: 'POST',
-                data: { enabled },
-            } );
-
-            setModules( ( prev ) =>
-                prev.map( ( m ) => ( m.key === key ? { ...m, enabled } : m ) )
-            );
-        } catch ( err ) {
-            // Revert on failure
-            setModules( ( prev ) =>
-                prev.map( ( m ) => ( m.key === key ? { ...m, enabled: ! enabled } : m ) )
-            );
-        }
-    };
-
-    if ( loading ) {
-        return <Spinner />;
-    }
-
-    return (
-        <Card>
-            <CardHeader>
-                <h3>{ __( 'Manage Modules', 'simplepco' ) }</h3>
-            </CardHeader>
-            <CardBody>
-                { modules.map( ( mod ) => (
-                    <ToggleControl
-                        key={ mod.key }
-                        label={ mod.name }
-                        help={ mod.description }
-                        checked={ mod.enabled }
-                        onChange={ ( val ) => handleToggle( mod.key, val ) }
-                        disabled={ mod.tier === 'premium' && ! mod.has_license }
-                    />
-                ) ) }
-            </CardBody>
-        </Card>
-    );
-}
-
-/**
  * Cache Management Tab
  */
 function CacheTab() {
@@ -464,11 +404,6 @@ export function SettingsApp() {
             className: 'simplepco-tab-credentials',
         },
         {
-            name: 'modules',
-            title: __( 'Modules', 'simplepco' ),
-            className: 'simplepco-tab-modules',
-        },
-        {
             name: 'license',
             title: __( 'License', 'simplepco' ),
             className: 'simplepco-tab-license',
@@ -488,8 +423,6 @@ export function SettingsApp() {
                     switch ( tab.name ) {
                         case 'credentials':
                             return <CredentialsTab />;
-                        case 'modules':
-                            return <ModulesTab />;
                         case 'license':
                             return <LicenseTab />;
                         case 'cache':

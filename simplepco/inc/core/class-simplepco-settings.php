@@ -79,23 +79,6 @@ class SimplePCO_Settings {
         $pco_creds = $this->settings_repo->get_pco_credentials();
         $cs_creds  = $this->settings_repo->get_clearstream_credentials();
 
-        $modules_data = [];
-        if ( class_exists( 'SimplePCO_Module_Manager' ) ) {
-            $manager = new SimplePCO_Module_Manager( null, $this->api_model );
-            $manager->init_modules();
-
-            foreach ( $manager->get_registered_modules() as $key => $mod ) {
-                $modules_data[] = [
-                    'key'         => $key,
-                    'name'        => $mod['name'],
-                    'description' => $mod['description'],
-                    'tier'        => $mod['tier'] ?? 'premium',
-                    'enabled'     => $manager->is_module_enabled( $key ),
-                    'has_license' => $manager->can_enable_module( $key ),
-                ];
-            }
-        }
-
         // OAuth connection status.
         $oauth_connected = $this->settings_repo->has_pco_oauth_connection();
 
@@ -107,7 +90,6 @@ class SimplePCO_Settings {
             'pcoClientId'     => $this->settings_repo->get_masked_value( $pco_creds['client_id'] ?? '', 5 ),
             'pcoSecretKey'    => '',
             'clearstreamKey'  => $this->settings_repo->get_masked_value( $cs_creds['api_key'] ?? '', 5 ),
-            'modules'         => $modules_data,
             'nonce'           => wp_create_nonce( 'wp_rest' ),
             'restBase'        => esc_url_raw( rest_url( 'simplepco/v1/' ) ),
             'oauthConnected'  => $oauth_connected,

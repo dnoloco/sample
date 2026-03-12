@@ -91,13 +91,6 @@ class SimplePCO_REST_Controller {
             'permission_callback' => [ $this, 'check_admin_permission' ],
         ] );
 
-        // Module management
-        register_rest_route( self::NAMESPACE, '/modules/(?P<key>[a-z_]+)', [
-            'methods'             => 'POST',
-            'callback'            => [ $this, 'toggle_module' ],
-            'permission_callback' => [ $this, 'check_admin_permission' ],
-        ] );
-
         // Cache clearing
         register_rest_route( self::NAMESPACE, '/cache/clear', [
             'methods'             => 'POST',
@@ -203,24 +196,6 @@ class SimplePCO_REST_Controller {
             'connected' => $connected,
             'message'   => $connected ? 'Connected' : ( $result['error'] ?? 'Unknown error' ),
         ] );
-    }
-
-    /**
-     * POST /modules/{key} — Enable or disable a module.
-     */
-    public function toggle_module( $request ) {
-        $key     = $request->get_param( 'key' );
-        $params  = $request->get_json_params();
-        $enabled = ! empty( $params['enabled'] );
-
-        $active_modules = $this->settings_repo->get_active_modules();
-        $active_modules[ $key ] = [
-            'enabled'    => $enabled,
-            'updated_at' => time(),
-        ];
-        $this->settings_repo->save_active_modules( $active_modules );
-
-        return rest_ensure_response( [ 'success' => true, 'module' => $key, 'enabled' => $enabled ] );
     }
 
     /**
