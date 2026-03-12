@@ -31,6 +31,7 @@ return array(
     'SimplePCO_License_Manager' => $baseDir . '/inc/core/class-simplepco-license-manager.php',
     'SimplePCO_License_Page' => $baseDir . '/inc/core/class-simplepco-license-page.php',
     'SimplePCO_Loader' => $baseDir . '/inc/core/class-simplepco-loader.php',
+    'SimplePCO_OAuth_Handler' => $baseDir . '/inc/core/class-simplepco-oauth-handler.php',
     'SimplePCO_Module_Base' => $baseDir . '/inc/core/class-simplepco-module-base.php',
     'SimplePCO_Module_Manager' => $baseDir . '/inc/core/class-simplepco-module-manager.php',
     'SimplePCO_Modules' => $baseDir . '/inc/modules/class-simplepco-modules.php',
