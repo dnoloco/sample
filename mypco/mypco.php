@@ -33,59 +33,18 @@ if ( ! defined( 'MYPCO_LICENSE_API_URL' ) ) {
  * 2. ACTIVATION / DEACTIVATION
  *------------------------------------------------------------------------*/
 
-function activate_mypco() {
-    require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-activator.php';
-    MyPCO_Activator::activate();
-}
-
-function deactivate_mypco() {
-    require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-deactivator.php';
-    MyPCO_Deactivator::deactivate();
-}
-
-register_activation_hook( __FILE__, 'activate_mypco' );
-register_deactivation_hook( __FILE__, 'deactivate_mypco' );
-
 /*--------------------------------------------------------------------------
- * 3. LOAD DEPENDENCIES
+ * 3. LOAD DEPENDENCIES (Composer Classmap Autoloader)
  *------------------------------------------------------------------------*/
 
-// Interfaces & Traits
-require_once MYPCO_PLUGIN_DIR . 'inc/core/interfaces/class-repository-interface.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/interfaces/class-block-registrar-interface.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/traits/class-has-repositories.php';
+require_once MYPCO_PLUGIN_DIR . 'vendor/autoload.php';
 
-// Core classes
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-loader.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-i18n.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-credentials-manager.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-license-manager.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-update-manager.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-module-base.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-module-manager.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-api-model.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-rest-controller.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-stripe-handler.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-google-forms-webhook.php';
+/*--------------------------------------------------------------------------
+ * 2. ACTIVATION / DEACTIVATION
+ *------------------------------------------------------------------------*/
 
-// Repositories ("Muscle")
-require_once MYPCO_PLUGIN_DIR . 'inc/repositories/class-settings-repository.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/repositories/class-event-repository.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/repositories/class-service-repository.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/repositories/class-publishing-repository.php';
-
-// Module UI
-require_once MYPCO_PLUGIN_DIR . 'inc/modules/class-mypco-modules.php';
-
-// Admin
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-admin.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-settings.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-license-page.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-credentials-settings.php';
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-shortcodes-admin.php';
-
-// Public
-require_once MYPCO_PLUGIN_DIR . 'inc/core/class-mypco-public.php';
+register_activation_hook( __FILE__, [ 'MyPCO_Activator', 'activate' ] );
+register_deactivation_hook( __FILE__, [ 'MyPCO_Deactivator', 'deactivate' ] );
 
 /*--------------------------------------------------------------------------
  * 4. INITIALIZE THE LOADER  (the single hook registry)
@@ -159,20 +118,16 @@ $modules_ui->init();
 
 foreach ( $module_manager->get_modules() as $key => $config ) {
     if ( $module_manager->is_module_enabled( $key ) && $module_manager->can_enable_module( $key ) ) {
-        $module_file = MYPCO_PLUGIN_DIR . 'inc/modules/' . $config['file'];
-        if ( file_exists( $module_file ) ) {
-            require_once $module_file;
-            if ( class_exists( $config['class'] ) ) {
-                $module_instance = new $config['class']( $loader, $api_model );
-                $module_instance->register_repositories();
+        if ( class_exists( $config['class'] ) ) {
+            $module_instance = new $config['class']( $loader, $api_model );
+            $module_instance->register_repositories();
 
-                $block_registrar = $module_instance->get_block_registrar();
-                if ( $block_registrar ) {
-                    $loader->add_block_registrar( $block_registrar );
-                }
-
-                $module_instance->init();
+            $block_registrar = $module_instance->get_block_registrar();
+            if ( $block_registrar ) {
+                $loader->add_block_registrar( $block_registrar );
             }
+
+            $module_instance->init();
         }
     }
 }

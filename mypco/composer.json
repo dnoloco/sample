@@ -1,0 +1,19 @@
+{
+    "name": "mypco/mypco-online",
+    "description": "Planning Center Online integration with blended architecture for churches",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "autoload": {
+        "classmap": [
+            "inc/core/",
+            "inc/repositories/",
+            "inc/modules/"
+        ],
+        "exclude-from-classmap": [
+            "inc/core/class-shortcodes-admin.php"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
