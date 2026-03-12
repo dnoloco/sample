@@ -118,12 +118,15 @@ class SimplePCO_Admin {
         $pco_creds     = $settings_repo->get_pco_credentials();
         $cs_creds      = $settings_repo->get_clearstream_credentials();
 
-        $pco_ok = !empty($pco_creds['client_id']);
+        // Connected via OAuth tokens OR legacy API keys.
+        $pco_ok = $settings_repo->has_pco_oauth_connection() || !empty($pco_creds['client_id']);
         $cs_ok  = !empty($cs_creds['api_key']);
+
+        $pco_method = $settings_repo->has_pco_oauth_connection() ? 'OAuth' : 'API Key';
         ?>
         <div class="simplepco-status-card <?php echo $pco_ok ? 'connected' : 'disconnected'; ?>">
             <h4><?php echo $pco_ok ? '✅ PCO Connected' : '❌ PCO Disconnected'; ?></h4>
-            <p>API credentials configured and ready.</p>
+            <p><?php echo $pco_ok ? esc_html( "Connected via {$pco_method}." ) : 'Not connected. Configure in Settings.'; ?></p>
         </div>
 
         <div class="simplepco-status-card <?php echo $cs_ok ? 'connected' : 'disconnected'; ?>">
