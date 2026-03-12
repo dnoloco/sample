@@ -54,7 +54,7 @@ class SimplePCO_Settings {
 
         wp_enqueue_script(
             'simplepco-settings-app',
-            SIMPLEPCO_PLUGIN_URL . 'assets/admin/js/settings.js',
+            SIMPLEPCO_PLUGIN_URL . 'build/settings.js',
             [ 'wp-element', 'wp-components', 'wp-api-fetch', 'wp-i18n' ],
             $this->version,
             true
