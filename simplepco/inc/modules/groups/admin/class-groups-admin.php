@@ -36,8 +36,8 @@ class SimplePCO_Groups_Admin {
     public function add_admin_pages() {
         add_submenu_page(
             'simplepco-settings',
-            __('Groups Settings', 'simplepco-online'),
-            __('Groups', 'simplepco-online'),
+            __('Groups Settings', 'simplepco'),
+            __('Groups', 'simplepco'),
             'manage_options',
             'simplepco-groups',
             [$this, 'render_settings_page']
@@ -66,7 +66,7 @@ class SimplePCO_Groups_Admin {
      */
     public function render_settings_page() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('Permission denied', 'simplepco-online'));
+            wp_die(__('Permission denied', 'simplepco'));
         }
 
         $template_data = [

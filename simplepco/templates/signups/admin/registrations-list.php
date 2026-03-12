@@ -12,29 +12,29 @@ defined('ABSPATH') || exit;
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php _e('Event Registrations', 'simplepco-online'); ?></h1>
+    <h1 class="wp-heading-inline"><?php _e('Event Registrations', 'simplepco'); ?></h1>
     <hr class="wp-header-end">
 
     <?php if (empty($signups)): ?>
         <div class="notice notice-info">
             <p>
-                <?php _e('No registrations yet.', 'simplepco-online'); ?> 
+                <?php _e('No registrations yet.', 'simplepco'); ?> 
                 <a href="<?php echo esc_url(admin_url('admin.php?page=simplepco-signups')); ?>">
-                    <?php _e('Create a signup', 'simplepco-online'); ?>
+                    <?php _e('Create a signup', 'simplepco'); ?>
                 </a> 
-                <?php _e('to get started.', 'simplepco-online'); ?>
+                <?php _e('to get started.', 'simplepco'); ?>
             </p>
         </div>
     <?php else: ?>
         <table class="wp-list-table widefat fixed striped">
             <thead>
             <tr>
-                <th style="width: 60px;"><?php _e('ID', 'simplepco-online'); ?></th>
-                <th><?php _e('Event Name', 'simplepco-online'); ?></th>
-                <th style="width: 150px;"><?php _e('Date', 'simplepco-online'); ?></th>
-                <th style="width: 120px;"><?php _e('Registered', 'simplepco-online'); ?></th>
-                <th style="width: 100px;"><?php _e('Waitlist', 'simplepco-online'); ?></th>
-                <th style="width: 150px;"><?php _e('Actions', 'simplepco-online'); ?></th>
+                <th style="width: 60px;"><?php _e('ID', 'simplepco'); ?></th>
+                <th><?php _e('Event Name', 'simplepco'); ?></th>
+                <th style="width: 150px;"><?php _e('Date', 'simplepco'); ?></th>
+                <th style="width: 120px;"><?php _e('Registered', 'simplepco'); ?></th>
+                <th style="width: 100px;"><?php _e('Waitlist', 'simplepco'); ?></th>
+                <th style="width: 150px;"><?php _e('Actions', 'simplepco'); ?></th>
             </tr>
             </thead>
             <tbody>
@@ -57,7 +57,7 @@ defined('ABSPATH') || exit;
                     <td>
                         <a href="<?php echo esc_url(admin_url('admin.php?page=simplepco-registrations&view=registrants&signup_id=' . $signup->id)); ?>" 
                            class="button button-small">
-                            <?php _e('View Registrants', 'simplepco-online'); ?>
+                            <?php _e('View Registrants', 'simplepco'); ?>
                         </a>
                     </td>
                 </tr>

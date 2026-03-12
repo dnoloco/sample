@@ -122,15 +122,15 @@ class SimplePCO_Series_Module extends SimplePCO_Module_Base {
                 'singular_name'      => $ms,
                 'menu_name'          => $mp,
                 'name_admin_bar'     => $ms,
-                'add_new'            => sprintf(__('Add %s', 'simplepco-online'), $ms),
-                'add_new_item'       => sprintf(__('Add %s', 'simplepco-online'), $ms),
+                'add_new'            => sprintf(__('Add %s', 'simplepco'), $ms),
+                'add_new_item'       => sprintf(__('Add %s', 'simplepco'), $ms),
                 'new_item'           => $ms,
-                'edit_item'          => sprintf(__('Edit %s', 'simplepco-online'), $ms),
-                'view_item'          => sprintf(__('View %s', 'simplepco-online'), $ms),
-                'all_items'          => sprintf(__('All %s', 'simplepco-online'), $mp),
-                'search_items'       => sprintf(__('Search %s', 'simplepco-online'), $mp),
-                'not_found'          => sprintf(__('No %s found.', 'simplepco-online'), strtolower($mp)),
-                'not_found_in_trash' => sprintf(__('No %s found in Trash.', 'simplepco-online'), strtolower($mp)),
+                'edit_item'          => sprintf(__('Edit %s', 'simplepco'), $ms),
+                'view_item'          => sprintf(__('View %s', 'simplepco'), $ms),
+                'all_items'          => sprintf(__('All %s', 'simplepco'), $mp),
+                'search_items'       => sprintf(__('Search %s', 'simplepco'), $mp),
+                'not_found'          => sprintf(__('No %s found.', 'simplepco'), strtolower($mp)),
+                'not_found_in_trash' => sprintf(__('No %s found in Trash.', 'simplepco'), strtolower($mp)),
             ],
             'public'             => true,
             'publicly_queryable' => true,
@@ -157,15 +157,15 @@ class SimplePCO_Series_Module extends SimplePCO_Module_Base {
                 'singular_name'      => $ss,
                 'menu_name'          => $sp,
                 'name_admin_bar'     => $ss,
-                'add_new'            => sprintf(__('Add %s', 'simplepco-online'), $ss),
-                'add_new_item'       => sprintf(__('Add %s', 'simplepco-online'), $ss),
+                'add_new'            => sprintf(__('Add %s', 'simplepco'), $ss),
+                'add_new_item'       => sprintf(__('Add %s', 'simplepco'), $ss),
                 'new_item'           => $ss,
-                'edit_item'          => sprintf(__('Edit %s', 'simplepco-online'), $ss),
-                'view_item'          => sprintf(__('View %s', 'simplepco-online'), $ss),
+                'edit_item'          => sprintf(__('Edit %s', 'simplepco'), $ss),
+                'view_item'          => sprintf(__('View %s', 'simplepco'), $ss),
                 'all_items'          => $sp,
-                'search_items'       => sprintf(__('Search %s', 'simplepco-online'), $sp),
-                'not_found'          => sprintf(__('No %s found.', 'simplepco-online'), strtolower($sp)),
-                'not_found_in_trash' => sprintf(__('No %s found in Trash.', 'simplepco-online'), strtolower($sp)),
+                'search_items'       => sprintf(__('Search %s', 'simplepco'), $sp),
+                'not_found'          => sprintf(__('No %s found.', 'simplepco'), strtolower($sp)),
+                'not_found_in_trash' => sprintf(__('No %s found in Trash.', 'simplepco'), strtolower($sp)),
             ],
             'public'             => true,
             'publicly_queryable' => true,
@@ -198,14 +198,14 @@ class SimplePCO_Series_Module extends SimplePCO_Module_Base {
             'labels' => [
                 'name'          => $srp,
                 'singular_name' => $srs,
-                'search_items'  => sprintf(__('Search %s', 'simplepco-online'), $srp),
-                'all_items'     => sprintf(__('All %s', 'simplepco-online'), $srp),
-                'edit_item'     => sprintf(__('Edit %s', 'simplepco-online'), $srs),
-                'update_item'   => sprintf(__('Update %s', 'simplepco-online'), $srs),
-                'add_new_item'  => sprintf(__('Add %s', 'simplepco-online'), $srs),
-                'new_item_name' => sprintf(__('%s Name', 'simplepco-online'), $srs),
+                'search_items'  => sprintf(__('Search %s', 'simplepco'), $srp),
+                'all_items'     => sprintf(__('All %s', 'simplepco'), $srp),
+                'edit_item'     => sprintf(__('Edit %s', 'simplepco'), $srs),
+                'update_item'   => sprintf(__('Update %s', 'simplepco'), $srs),
+                'add_new_item'  => sprintf(__('Add %s', 'simplepco'), $srs),
+                'new_item_name' => sprintf(__('%s Name', 'simplepco'), $srs),
                 'menu_name'     => $srp,
-                'not_found'     => sprintf(__('No %s found.', 'simplepco-online'), strtolower($srp)),
+                'not_found'     => sprintf(__('No %s found.', 'simplepco'), strtolower($srp)),
             ],
             'hierarchical'      => true,
             'public'            => true,
@@ -223,14 +223,14 @@ class SimplePCO_Series_Module extends SimplePCO_Module_Base {
             'labels' => [
                 'name'          => $stp,
                 'singular_name' => $sts,
-                'search_items'  => sprintf(__('Search %s', 'simplepco-online'), $stp),
-                'all_items'     => sprintf(__('All %s', 'simplepco-online'), $stp),
-                'edit_item'     => sprintf(__('Edit %s', 'simplepco-online'), $sts),
-                'update_item'   => sprintf(__('Update %s', 'simplepco-online'), $sts),
-                'add_new_item'  => sprintf(__('Add %s', 'simplepco-online'), $sts),
-                'new_item_name' => sprintf(__('%s Name', 'simplepco-online'), $sts),
+                'search_items'  => sprintf(__('Search %s', 'simplepco'), $stp),
+                'all_items'     => sprintf(__('All %s', 'simplepco'), $stp),
+                'edit_item'     => sprintf(__('Edit %s', 'simplepco'), $sts),
+                'update_item'   => sprintf(__('Update %s', 'simplepco'), $sts),
+                'add_new_item'  => sprintf(__('Add %s', 'simplepco'), $sts),
+                'new_item_name' => sprintf(__('%s Name', 'simplepco'), $sts),
                 'menu_name'     => $stp,
-                'not_found'     => sprintf(__('No %s found.', 'simplepco-online'), strtolower($stp)),
+                'not_found'     => sprintf(__('No %s found.', 'simplepco'), strtolower($stp)),
             ],
             'hierarchical'      => true,
             'public'            => true,
@@ -266,12 +266,12 @@ class SimplePCO_Series_Module extends SimplePCO_Module_Base {
     public function custom_title_placeholder($placeholder, $post) {
         if ($post->post_type === 'simplepco_message') {
             $names = self::get_custom_labels();
-            return sprintf(__('Enter %s title here', 'simplepco-online'), $names['message_singular']);
+            return sprintf(__('Enter %s title here', 'simplepco'), $names['message_singular']);
         }
 
         if ($post->post_type === 'simplepco_speaker') {
             $names = self::get_custom_labels();
-            return sprintf(__('Enter %s name here', 'simplepco-online'), $names['speaker_singular']);
+            return sprintf(__('Enter %s name here', 'simplepco'), $names['speaker_singular']);
         }
 
         return $placeholder;

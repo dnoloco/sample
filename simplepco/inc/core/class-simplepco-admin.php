@@ -71,7 +71,7 @@ class SimplePCO_Admin {
         add_meta_box('simplepco_connection_status', 'API Connection Status', [$this, 'render_status_metabox'], $screen_id, 'side', 'default');
 
         // COLUMN 2 (Normal)
-        add_meta_box('simplepco_welcome', 'Welcome to SimplePCO Online', [$this, 'render_welcome_metabox'], $screen_id, 'normal', 'high');
+        add_meta_box('simplepco_welcome', 'Welcome to SimplePCO', [$this, 'render_welcome_metabox'], $screen_id, 'normal', 'high');
         add_meta_box('simplepco_support', 'Support & Documentation', [$this, 'render_support_box'], $screen_id, 'normal', 'default');
 
         // COLUMN 3 (Advanced)

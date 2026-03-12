@@ -25,38 +25,38 @@ defined('ABSPATH') || exit;
 
 <div class="simplepco-payment-form">
     <div class="simplepco-payment-header">
-        <h3><?php _e('Complete Your Registration', 'simplepco-online'); ?></h3>
+        <h3><?php _e('Complete Your Registration', 'simplepco'); ?></h3>
     </div>
 
     <div class="simplepco-payment-details">
         <div class="detail-row">
-            <span class="label"><?php _e('Event:', 'simplepco-online'); ?></span>
+            <span class="label"><?php _e('Event:', 'simplepco'); ?></span>
             <span class="value"><strong><?php echo esc_html($signup->event_name); ?></strong></span>
         </div>
         
         <div class="detail-row">
-            <span class="label"><?php _e('Date:', 'simplepco-online'); ?></span>
+            <span class="label"><?php _e('Date:', 'simplepco'); ?></span>
             <span class="value"><?php echo esc_html(mysql2date('l, F j, Y g:i A', $signup->event_date)); ?></span>
         </div>
         
         <div class="detail-row">
-            <span class="label"><?php _e('Registrant:', 'simplepco-online'); ?></span>
+            <span class="label"><?php _e('Registrant:', 'simplepco'); ?></span>
             <span class="value"><?php echo esc_html($registration->first_name . ' ' . $registration->last_name); ?></span>
         </div>
 
         <?php if ($signup->allow_partial_payment && $registration->amount_paid > 0): ?>
         <div class="detail-row">
-            <span class="label"><?php _e('Total Amount:', 'simplepco-online'); ?></span>
+            <span class="label"><?php _e('Total Amount:', 'simplepco'); ?></span>
             <span class="value">$<?php echo number_format($signup->payment_amount, 2); ?></span>
         </div>
         <div class="detail-row">
-            <span class="label"><?php _e('Already Paid:', 'simplepco-online'); ?></span>
+            <span class="label"><?php _e('Already Paid:', 'simplepco'); ?></span>
             <span class="value">$<?php echo number_format($registration->amount_paid, 2); ?></span>
         </div>
         <?php endif; ?>
         
         <div class="detail-row total">
-            <span class="label"><?php _e('Amount Due:', 'simplepco-online'); ?></span>
+            <span class="label"><?php _e('Amount Due:', 'simplepco'); ?></span>
             <span class="value"><strong>$<?php echo number_format($amount_due, 2); ?></strong></span>
         </div>
         
@@ -72,14 +72,14 @@ defined('ABSPATH') || exit;
         <input type="hidden" name="amount" value="<?php echo esc_attr($amount_due); ?>">
         
         <div class="form-row">
-            <label for="cardholder-name"><?php _e('Cardholder Name', 'simplepco-online'); ?></label>
+            <label for="cardholder-name"><?php _e('Cardholder Name', 'simplepco'); ?></label>
             <input type="text" id="cardholder-name" name="cardholder_name" 
                    value="<?php echo esc_attr($registration->first_name . ' ' . $registration->last_name); ?>" 
                    required>
         </div>
         
         <div class="form-row">
-            <label for="card-element"><?php _e('Card Information', 'simplepco-online'); ?></label>
+            <label for="card-element"><?php _e('Card Information', 'simplepco'); ?></label>
             <div id="card-element">
                 <!-- Stripe Card Element will be inserted here -->
             </div>
@@ -88,7 +88,7 @@ defined('ABSPATH') || exit;
         
         <div class="form-row">
             <button type="submit" id="submit-payment" class="simplepco-button">
-                <?php _e('Pay', 'simplepco-online'); ?> $<?php echo number_format($amount_due, 2); ?>
+                <?php _e('Pay', 'simplepco'); ?> $<?php echo number_format($amount_due, 2); ?>
             </button>
         </div>
         
@@ -146,7 +146,7 @@ defined('ABSPATH') || exit;
         
         // Disable submit button
         submitButton.disabled = true;
-        submitButton.textContent = '<?php esc_attr_e('Processing...', 'simplepco-online'); ?>';
+        submitButton.textContent = '<?php esc_attr_e('Processing...', 'simplepco'); ?>';
         
         // Create payment method
         const {paymentMethod, error} = await stripe.createPaymentMethod({
@@ -161,7 +161,7 @@ defined('ABSPATH') || exit;
             // Show error
             messagesDiv.innerHTML = '<div class="error">' + error.message + '</div>';
             submitButton.disabled = false;
-            submitButton.textContent = '<?php esc_attr_e('Pay', 'simplepco-online'); ?> $<?php echo number_format($amount_due, 2); ?>';
+            submitButton.textContent = '<?php esc_attr_e('Pay', 'simplepco'); ?> $<?php echo number_format($amount_due, 2); ?>';
         } else {
             // Send to server to create payment intent
             handlePayment(paymentMethod.id);
@@ -191,7 +191,7 @@ defined('ABSPATH') || exit;
                     if (confirmError) {
                         messagesDiv.innerHTML = '<div class="error">' + confirmError.message + '</div>';
                         submitButton.disabled = false;
-                        submitButton.textContent = '<?php esc_attr_e('Pay', 'simplepco-online'); ?> $<?php echo number_format($amount_due, 2); ?>';
+                        submitButton.textContent = '<?php esc_attr_e('Pay', 'simplepco'); ?> $<?php echo number_format($amount_due, 2); ?>';
                     } else {
                         // Payment succeeded
                         showSuccess();
@@ -203,18 +203,18 @@ defined('ABSPATH') || exit;
             } else {
                 messagesDiv.innerHTML = '<div class="error">' + (result.data.message || 'Payment failed') + '</div>';
                 submitButton.disabled = false;
-                submitButton.textContent = '<?php esc_attr_e('Pay', 'simplepco-online'); ?> $<?php echo number_format($amount_due, 2); ?>';
+                submitButton.textContent = '<?php esc_attr_e('Pay', 'simplepco'); ?> $<?php echo number_format($amount_due, 2); ?>';
             }
         } catch (err) {
             messagesDiv.innerHTML = '<div class="error">Network error. Please try again.</div>';
             submitButton.disabled = false;
-            submitButton.textContent = '<?php esc_attr_e('Pay', 'simplepco-online'); ?> $<?php echo number_format($amount_due, 2); ?>';
+            submitButton.textContent = '<?php esc_attr_e('Pay', 'simplepco'); ?> $<?php echo number_format($amount_due, 2); ?>';
         }
     }
     
     function showSuccess() {
         form.style.display = 'none';
-        messagesDiv.innerHTML = '<div class="success"><h4><?php esc_html_e('Payment Successful!', 'simplepco-online'); ?></h4><p><?php esc_html_e('Thank you for your payment. You will receive a confirmation email shortly.', 'simplepco-online'); ?></p></div>';
+        messagesDiv.innerHTML = '<div class="success"><h4><?php esc_html_e('Payment Successful!', 'simplepco'); ?></h4><p><?php esc_html_e('Thank you for your payment. You will receive a confirmation email shortly.', 'simplepco'); ?></p></div>';
     }
 })();
 </script>

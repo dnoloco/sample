@@ -37,7 +37,7 @@ function simplepco_get_services_sort_url($column, $current_orderby, $current_ord
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php _e('Service Plans', 'simplepco-online'); ?></h1>
+    <h1 class="wp-heading-inline"><?php _e('Service Plans', 'simplepco'); ?></h1>
     <hr class="wp-header-end">
 
     <?php if (isset($error)): ?>
@@ -59,21 +59,21 @@ function simplepco_get_services_sort_url($column, $current_orderby, $current_ord
                 $formatted_time = date('M j, Y \a\t g:i A', strtotime($scheduled_at));
                 ?>
                 <div class="notice notice-success is-dismissible">
-                    <p><strong><?php _e('Success!', 'simplepco-online'); ?></strong>
-                        <?php printf(__('Message scheduled for %s to %d recipients via Clearstream.', 'simplepco-online'),
+                    <p><strong><?php _e('Success!', 'simplepco'); ?></strong>
+                        <?php printf(__('Message scheduled for %s to %d recipients via Clearstream.', 'simplepco'),
                                 esc_html($formatted_time), intval($count)); ?></p>
                 </div>
             <?php else: ?>
                 <div class="notice notice-success is-dismissible">
-                    <p><strong><?php _e('Success!', 'simplepco-online'); ?></strong>
-                        <?php printf(__('Message sent to %d recipients via Clearstream.', 'simplepco-online'), intval($count)); ?></p>
+                    <p><strong><?php _e('Success!', 'simplepco'); ?></strong>
+                        <?php printf(__('Message sent to %d recipients via Clearstream.', 'simplepco'), intval($count)); ?></p>
                 </div>
             <?php endif; ?>
         <?php else: ?>
             <!-- Old format (single number) -->
             <div class="notice notice-success is-dismissible">
-                <p><strong><?php _e('Success!', 'simplepco-online'); ?></strong>
-                    <?php printf(__('Message sent to %d recipients via Clearstream.', 'simplepco-online'), intval($success_message)); ?></p>
+                <p><strong><?php _e('Success!', 'simplepco'); ?></strong>
+                    <?php printf(__('Message sent to %d recipients via Clearstream.', 'simplepco'), intval($success_message)); ?></p>
             </div>
         <?php endif; ?>
     <?php endif;
@@ -81,7 +81,7 @@ function simplepco_get_services_sort_url($column, $current_orderby, $current_ord
     // Display error messages
     if ($error_message): ?>
         <div class="notice notice-error is-dismissible">
-            <p><strong><?php printf(__('Clearstream API Error (Code %d):', 'simplepco-online'), intval($error_message['code'])); ?></strong>
+            <p><strong><?php printf(__('Clearstream API Error (Code %d):', 'simplepco'), intval($error_message['code'])); ?></strong>
                 <?php echo esc_html($error_message['message']); ?></p>
         </div>
     <?php endif; ?>
@@ -91,7 +91,7 @@ function simplepco_get_services_sort_url($column, $current_orderby, $current_ord
         <li class="all">
             <a href="<?php echo esc_url(admin_url('admin.php?page=simplepco-services')); ?>"
                     <?php echo $filter_type === 'all' ? 'class="current"' : ''; ?>>
-                <?php _e('All', 'simplepco-online'); ?>
+                <?php _e('All', 'simplepco'); ?>
                 <span class="count">(<?php echo intval($type_counts['all']); ?>)</span>
             </a>
             <?php if (!empty($service_types)): ?> | <?php endif; ?>
@@ -113,7 +113,7 @@ function simplepco_get_services_sort_url($column, $current_orderby, $current_ord
     </ul>
 
     <?php if (empty($all_plans)): ?>
-        <p><?php _e('No upcoming plans found.', 'simplepco-online'); ?></p>
+        <p><?php _e('No upcoming plans found.', 'simplepco'); ?></p>
     <?php else: ?>
 
         <!-- FILTERS -->
@@ -121,7 +121,7 @@ function simplepco_get_services_sort_url($column, $current_orderby, $current_ord
             <div class="alignleft actions">
                 <select name="filter_month" id="filter-month"
                         onchange="window.location.href='<?php echo esc_js(admin_url('admin.php?page=simplepco-services')); ?>' + (this.value !== 'all' ? '&filter_month=' + encodeURIComponent(this.value) : '') + '<?php echo $filter_type !== 'all' ? '&filter_type=' . esc_js($filter_type) : ''; ?>' + '<?php echo '&orderby=' . esc_js($orderby) . '&order=' . esc_js($order); ?>';">
-                    <option value="all"><?php _e('All Dates', 'simplepco-online'); ?></option>
+                    <option value="all"><?php _e('All Dates', 'simplepco'); ?></option>
                     <?php foreach ($available_months as $month): ?>
                         <option value="<?php echo esc_attr($month); ?>" <?php selected($filter_month, $month); ?>>
                             <?php echo esc_html($month); ?>
@@ -137,7 +137,7 @@ function simplepco_get_services_sort_url($column, $current_orderby, $current_ord
             <tr>
                 <th class="manage-column sortable <?php echo $orderby === 'date' ? 'sorted' : ''; ?> <?php echo $orderby === 'date' ? $order : 'asc'; ?>" style="width: 180px;">
                     <a href="<?php echo esc_url(simplepco_get_services_sort_url('date', $orderby, $order, $filter_type, $filter_month)); ?>">
-                        <span><?php _e('Date', 'simplepco-online'); ?></span>
+                        <span><?php _e('Date', 'simplepco'); ?></span>
                         <span class="sorting-indicators">
                             <span class="sorting-indicator asc" aria-hidden="true"></span>
                             <span class="sorting-indicator desc" aria-hidden="true"></span>
@@ -146,7 +146,7 @@ function simplepco_get_services_sort_url($column, $current_orderby, $current_ord
                 </th>
                 <th class="manage-column column-title column-primary sortable <?php echo $orderby === 'title' ? 'sorted' : ''; ?> <?php echo $orderby === 'title' ? $order : 'asc'; ?>">
                     <a href="<?php echo esc_url(simplepco_get_services_sort_url('title', $orderby, $order, $filter_type, $filter_month)); ?>">
-                        <span><?php _e('Title', 'simplepco-online'); ?></span>
+                        <span><?php _e('Title', 'simplepco'); ?></span>
                         <span class="sorting-indicators">
                             <span class="sorting-indicator asc" aria-hidden="true"></span>
                             <span class="sorting-indicator desc" aria-hidden="true"></span>
@@ -155,7 +155,7 @@ function simplepco_get_services_sort_url($column, $current_orderby, $current_ord
                 </th>
                 <th class="manage-column sortable <?php echo $orderby === 'type_name' ? 'sorted' : ''; ?> <?php echo $orderby === 'type_name' ? $order : 'asc'; ?>" style="width: 200px;">
                     <a href="<?php echo esc_url(simplepco_get_services_sort_url('type_name', $orderby, $order, $filter_type, $filter_month)); ?>">
-                        <span><?php _e('Service Type', 'simplepco-online'); ?></span>
+                        <span><?php _e('Service Type', 'simplepco'); ?></span>
                         <span class="sorting-indicators">
                             <span class="sorting-indicator asc" aria-hidden="true"></span>
                             <span class="sorting-indicator desc" aria-hidden="true"></span>
@@ -181,39 +181,39 @@ function simplepco_get_services_sort_url($column, $current_orderby, $current_ord
                 $details_url = admin_url('admin.php?page=simplepco-services&view=plan_details&plan_id=' . $plan['plan_id']);
                 ?>
                 <tr>
-                    <td data-colname="<?php esc_attr_e('Date', 'simplepco-online'); ?>">
+                    <td data-colname="<?php esc_attr_e('Date', 'simplepco'); ?>">
                         <?php echo esc_html($plan['date_str']); ?><br>
                         <small style="color: #666;"><?php echo esc_html($plan['time_str']); ?></small>
                     </td>
-                    <td class="title column-title column-primary" data-colname="<?php esc_attr_e('Title', 'simplepco-online'); ?>">
+                    <td class="title column-title column-primary" data-colname="<?php esc_attr_e('Title', 'simplepco'); ?>">
                         <strong>
                             <a href="<?php echo esc_url($details_url); ?>" class="row-title">
                                 <?php echo esc_html($plan['title']); ?>
                             </a>
                         </strong>
                         <?php if ($plan['series'] !== '—'): ?>
-                            <br><small style="color: #666;"><?php _e('Series:', 'simplepco-online'); ?> <?php echo esc_html($plan['series']); ?></small>
+                            <br><small style="color: #666;"><?php _e('Series:', 'simplepco'); ?> <?php echo esc_html($plan['series']); ?></small>
                         <?php endif; ?>
 
                         <!-- Row Actions -->
                         <div class="row-actions">
                             <span class="view">
                                 <a href="<?php echo esc_url($details_url); ?>">
-                                    <?php _e('View Details', 'simplepco-online'); ?>
+                                    <?php _e('View Details', 'simplepco'); ?>
                                 </a> |
                             </span>
                             <span class="edit">
                                 <a href="<?php echo esc_url($plan['pco_edit_link']); ?>" target="_blank" rel="noopener">
-                                    <?php _e('Edit in PCO', 'simplepco-online'); ?> ↗
+                                    <?php _e('Edit in PCO', 'simplepco'); ?> ↗
                                 </a>
                             </span>
                         </div>
 
                         <button type="button" class="toggle-row">
-                            <span class="screen-reader-text"><?php _e('Show more details', 'simplepco-online'); ?></span>
+                            <span class="screen-reader-text"><?php _e('Show more details', 'simplepco'); ?></span>
                         </button>
                     </td>
-                    <td data-colname="<?php esc_attr_e('Service Type', 'simplepco-online'); ?>">
+                    <td data-colname="<?php esc_attr_e('Service Type', 'simplepco'); ?>">
                         <span class="post-state"><?php echo esc_html($plan['type_name']); ?></span>
                     </td>
                 </tr>
@@ -222,7 +222,7 @@ function simplepco_get_services_sort_url($column, $current_orderby, $current_ord
         </table>
 
         <?php if ($row_count === 0): ?>
-            <p><?php _e('No plans match the selected filters.', 'simplepco-online'); ?></p>
+            <p><?php _e('No plans match the selected filters.', 'simplepco'); ?></p>
         <?php endif; ?>
 
     <?php endif; ?>

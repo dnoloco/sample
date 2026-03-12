@@ -27,7 +27,7 @@ $month_active = ' active';
     <div class="pco-header">
         <div class="pco-category-dropdown">
             <select id="pco-category-filter">
-                <option value=""><?php _e('All Categories', 'simplepco-online'); ?></option>
+                <option value=""><?php _e('All Categories', 'simplepco'); ?></option>
                 <?php if (!empty($tags)): ?>
                     <?php
                     $current_group = '';

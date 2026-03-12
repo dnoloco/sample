@@ -6,8 +6,8 @@
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    SimplePCO_Online
- * @subpackage SimplePCO_Online/includes
+ * @package    SimplePCO
+ * @subpackage SimplePCO/includes
  */
 
 /**
@@ -17,8 +17,8 @@
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    SimplePCO_Online
- * @subpackage SimplePCO_Online/includes
+ * @package    SimplePCO
+ * @subpackage SimplePCO/includes
  */
 class SimplePCO_i18n {
 
@@ -37,7 +37,7 @@ class SimplePCO_i18n {
      * @since    1.0.0
      * @param    string    $domain    The text domain of this plugin.
      */
-    public function __construct($domain = 'simplepco-online') {
+    public function __construct($domain = 'simplepco') {
         $this->domain = $domain;
     }
 

@@ -17,7 +17,7 @@ defined('ABSPATH') || exit;
     <!-- Breadcrumb Navigation -->
     <div class="pco-detail-breadcrumb">
         <a href="#" id="pco-detail-back" class="pco-breadcrumb-link">
-            <?php _e('All events', 'simplepco-online'); ?>
+            <?php _e('All events', 'simplepco'); ?>
         </a>
         <span class="pco-breadcrumb-separator">&rsaquo;</span>
         <span id="pco-breadcrumb-event-name" class="pco-breadcrumb-current">
@@ -44,7 +44,7 @@ defined('ABSPATH') || exit;
             <!-- Event Description Section -->
             <div class="pco-detail-section">
                 <h2 class="pco-detail-section-title">
-                    <?php _e('Details', 'simplepco-online'); ?>
+                    <?php _e('Details', 'simplepco'); ?>
                 </h2>
                 <div id="pco-detail-description" class="pco-detail-description">
                     <!-- Description populated by JavaScript -->
@@ -67,7 +67,7 @@ defined('ABSPATH') || exit;
             <!-- Categories Section -->
             <div id="pco-detail-categories-container" class="pco-detail-info-box" style="display: none;">
                 <h3 class="pco-detail-info-heading">
-                    <?php _e('CATEGORIES', 'simplepco-online'); ?>
+                    <?php _e('CATEGORIES', 'simplepco'); ?>
                 </h3>
                 <div id="pco-detail-categories" class="pco-detail-categories">
                     <!-- Categories populated by JavaScript -->
@@ -77,7 +77,7 @@ defined('ABSPATH') || exit;
             <!-- Location Information -->
             <div id="pco-detail-location-container" class="pco-detail-info-box" style="display: none;">
                 <h3 class="pco-detail-info-heading">
-                    <?php _e('LOCATION', 'simplepco-online'); ?>
+                    <?php _e('LOCATION', 'simplepco'); ?>
                 </h3>
 
                 <!-- Location Name -->
@@ -98,7 +98,7 @@ defined('ABSPATH') || exit;
                        target="_blank"
                        rel="noopener"
                        style="display: none;">
-                        <?php _e('Get directions', 'simplepco-online'); ?>
+                        <?php _e('Get directions', 'simplepco'); ?>
                     </a>
                 </div>
 
@@ -122,7 +122,7 @@ defined('ABSPATH') || exit;
                    class="pco-detail-btn-primary"
                    target="_blank"
                    rel="noopener">
-                    <?php _e('Register', 'simplepco-online'); ?>
+                    <?php _e('Register', 'simplepco'); ?>
                 </a>
             </div>
 

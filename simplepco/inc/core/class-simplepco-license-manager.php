@@ -52,7 +52,7 @@ class SimplePCO_License_Manager {
      * Private constructor for singleton.
      */
     private function __construct() {
-        // Set API URL from constant (defined in simplepco-online.php)
+        // Set API URL from constant (defined in simplepco.php)
         $this->api_url = defined('SIMPLEPCO_LICENSE_API_URL') ? SIMPLEPCO_LICENSE_API_URL : 'https://your-site.com/simplepco-license/api.php';
 
         // Allow filtering the API URL (for testing or custom deployments)

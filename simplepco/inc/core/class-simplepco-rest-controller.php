@@ -124,7 +124,7 @@ class SimplePCO_REST_Controller {
     public function get_events( $request ) {
         $repo = $this->loader->get_repository( 'events' );
         if ( ! $repo ) {
-            return new WP_Error( 'no_repository', __( 'Event repository not available. Check API credentials.', 'simplepco-online' ), [ 'status' => 503 ] );
+            return new WP_Error( 'no_repository', __( 'Event repository not available. Check API credentials.', 'simplepco' ), [ 'status' => 503 ] );
         }
 
         $events = $repo->find_all( [
@@ -226,7 +226,7 @@ class SimplePCO_REST_Controller {
         $license_key = isset( $params['license_key'] ) ? sanitize_text_field( $params['license_key'] ) : '';
 
         if ( empty( $license_key ) ) {
-            return new WP_Error( 'missing_key', __( 'Please enter a license key.', 'simplepco-online' ), [ 'status' => 400 ] );
+            return new WP_Error( 'missing_key', __( 'Please enter a license key.', 'simplepco' ), [ 'status' => 400 ] );
         }
 
         $result = $this->license_manager->activate_license( $license_key );

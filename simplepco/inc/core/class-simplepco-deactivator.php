@@ -24,7 +24,7 @@ class SimplePCO_Deactivator {
         flush_rewrite_rules();
 
         // Log deactivation
-        error_log('SimplePCO Online: Plugin deactivated');
+        error_log('SimplePCO: Plugin deactivated');
     }
 
     /**
@@ -43,7 +43,7 @@ class SimplePCO_Deactivator {
         );
 
         if ($deleted) {
-            error_log("SimplePCO Online: Cleared {$deleted} cached items");
+            error_log("SimplePCO: Cleared {$deleted} cached items");
         }
 
         // Clear any object cache if available
@@ -68,7 +68,7 @@ class SimplePCO_Deactivator {
             wp_unschedule_event($timestamp, 'simplepco_hourly_sync');
         }
 
-        error_log('SimplePCO Online: Cleared scheduled tasks');
+        error_log('SimplePCO: Cleared scheduled tasks');
     }
 
     /**

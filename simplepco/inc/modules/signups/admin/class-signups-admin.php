@@ -45,8 +45,8 @@ class SimplePCO_Signups_Admin {
         // Signups management page
         add_submenu_page(
             'simplepco-settings',
-            __('Event Signups', 'simplepco-online'),
-            __('Signups', 'simplepco-online'),
+            __('Event Signups', 'simplepco'),
+            __('Signups', 'simplepco'),
             'edit_posts',
             'simplepco-signups',
             [$this, 'render_signups_page']
@@ -55,8 +55,8 @@ class SimplePCO_Signups_Admin {
         // Registrations page
         add_submenu_page(
             'simplepco-settings',
-            __('Event Registrations', 'simplepco-online'),
-            __('Registrations', 'simplepco-online'),
+            __('Event Registrations', 'simplepco'),
+            __('Registrations', 'simplepco'),
             'edit_posts',
             'simplepco-registrations',
             [$this, 'render_registrations_page']
@@ -93,7 +93,7 @@ class SimplePCO_Signups_Admin {
      */
     public function render_signups_page() {
         if (!current_user_can('edit_posts')) {
-            wp_die(__('Permission denied', 'simplepco-online'));
+            wp_die(__('Permission denied', 'simplepco'));
         }
 
         $view = $_REQUEST['view'] ?? 'list';
@@ -110,7 +110,7 @@ class SimplePCO_Signups_Admin {
      */
     public function render_registrations_page() {
         if (!current_user_can('edit_posts')) {
-            wp_die(__('Permission denied', 'simplepco-online'));
+            wp_die(__('Permission denied', 'simplepco'));
         }
 
         $view = $_REQUEST['view'] ?? 'list';

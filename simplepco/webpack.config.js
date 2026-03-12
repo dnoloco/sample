@@ -1,5 +1,5 @@
 /**
- * SimplePCO Online — Blended Architecture Webpack Config
+ * SimplePCO — Blended Architecture Webpack Config
  *
  * Uses @wordpress/scripts as the base, with custom entry points for:
  * 1. Settings Page React app (the "Skin" for admin settings)

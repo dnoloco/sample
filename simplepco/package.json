@@ -1,7 +1,7 @@
 {
-  "name": "simplepco-online",
+  "name": "simplepco",
   "version": "3.0.0",
-  "description": "SimplePCO Online — Blended Architecture with React-powered UI",
+  "description": "SimplePCO — Blended Architecture with React-powered UI",
   "private": true,
   "scripts": {
     "build": "wp-scripts build",

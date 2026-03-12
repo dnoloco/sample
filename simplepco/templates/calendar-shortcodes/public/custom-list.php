@@ -72,7 +72,7 @@ if (empty($events)) {
                                    class="simplepco-location-list-link"
                                    target="_blank"
                                    rel="noopener noreferrer"
-                                   title="<?php esc_attr_e('Get directions in Google Maps', 'simplepco-online'); ?>">
+                                   title="<?php esc_attr_e('Get directions in Google Maps', 'simplepco'); ?>">
                                     <?php echo esc_html($event['location_name'] ?: $event['location_full']); ?>
                                     <?php if ($show_address && !empty($event['location_address'])): ?>
                                         <span class="simplepco-location-list-address"> &mdash; <?php echo esc_html($event['location_address']); ?></span>
@@ -95,7 +95,7 @@ if (empty($events)) {
                                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                 <circle cx="12" cy="10" r="3"></circle>
                             </svg>
-                            <span class="simplepco-location-list-name"><?php _e('Location TBA', 'simplepco-online'); ?></span>
+                            <span class="simplepco-location-list-name"><?php _e('Location TBA', 'simplepco'); ?></span>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -103,7 +103,7 @@ if (empty($events)) {
                 <?php if ($is_first): ?>
                     <!-- "This Sunday" Badge for first item -->
                     <div class="simplepco-location-list-badge">
-                        <?php _e('This Week', 'simplepco-online'); ?>
+                        <?php _e('This Week', 'simplepco'); ?>
                     </div>
                 <?php endif; ?>
             </li>

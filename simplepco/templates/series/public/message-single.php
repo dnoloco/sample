@@ -85,7 +85,7 @@ $back_url = remove_query_arg('simplepco_message');
 <div class="simplepco-message-single">
 
     <!-- Back link -->
-    <a href="<?php echo esc_url($back_url); ?>" class="simplepco-message-back">&larr; <?php _e('All Messages', 'simplepco-online'); ?></a>
+    <a href="<?php echo esc_url($back_url); ?>" class="simplepco-message-back">&larr; <?php _e('All Messages', 'simplepco'); ?></a>
 
     <!-- Message title -->
     <h2 class="simplepco-message-single-title"><?php echo esc_html($message->title); ?></h2>
@@ -107,7 +107,7 @@ $back_url = remove_query_arg('simplepco_message');
                     <?php else: ?>
                         <div class="simplepco-message-video-placeholder"></div>
                     <?php endif; ?>
-                    <button class="simplepco-message-play-btn" aria-label="<?php esc_attr_e('Play video', 'simplepco-online'); ?>">
+                    <button class="simplepco-message-play-btn" aria-label="<?php esc_attr_e('Play video', 'simplepco'); ?>">
                         <svg viewBox="0 0 68 48" width="68" height="48">
                             <path class="simplepco-play-bg" d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#212121" fill-opacity="0.8"/>
                             <path d="M45 24L27 14v20" fill="#fff"/>
@@ -123,7 +123,7 @@ $back_url = remove_query_arg('simplepco_message');
         <div class="simplepco-message-single-audio">
             <a href="<?php echo esc_url($message->audio_url); ?>" class="simplepco-message-link simplepco-message-audio" target="_blank" rel="noopener noreferrer">
                 <span class="simplepco-icon-audio"></span>
-                <?php _e('Listen to Audio', 'simplepco-online'); ?>
+                <?php _e('Listen to Audio', 'simplepco'); ?>
             </a>
         </div>
     <?php endif; ?>
@@ -140,35 +140,35 @@ $back_url = remove_query_arg('simplepco_message');
         <div class="simplepco-message-single-meta">
             <?php if (!empty($message->speaker_name)): ?>
                 <div class="simplepco-message-single-meta-row">
-                    <span class="simplepco-message-single-label"><?php _e('Speaker', 'simplepco-online'); ?></span>
+                    <span class="simplepco-message-single-label"><?php _e('Speaker', 'simplepco'); ?></span>
                     <span class="simplepco-message-single-value"><?php echo esc_html($message->speaker_name); ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if (!empty($message_date)): ?>
                 <div class="simplepco-message-single-meta-row">
-                    <span class="simplepco-message-single-label"><?php _e('Date', 'simplepco-online'); ?></span>
+                    <span class="simplepco-message-single-label"><?php _e('Date', 'simplepco'); ?></span>
                     <span class="simplepco-message-single-value"><?php echo esc_html($message_date); ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if (!empty($message->series_title)): ?>
                 <div class="simplepco-message-single-meta-row">
-                    <span class="simplepco-message-single-label"><?php _e('Series', 'simplepco-online'); ?></span>
+                    <span class="simplepco-message-single-label"><?php _e('Series', 'simplepco'); ?></span>
                     <span class="simplepco-message-single-value"><?php echo esc_html($message->series_title); ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if (!empty($message->scripture)): ?>
                 <div class="simplepco-message-single-meta-row">
-                    <span class="simplepco-message-single-label"><?php _e('Scripture', 'simplepco-online'); ?></span>
+                    <span class="simplepco-message-single-label"><?php _e('Scripture', 'simplepco'); ?></span>
                     <span class="simplepco-message-single-value"><?php echo esc_html($message->scripture); ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if (!empty($message->topic_name)): ?>
                 <div class="simplepco-message-single-meta-row">
-                    <span class="simplepco-message-single-label"><?php _e('Topic', 'simplepco-online'); ?></span>
+                    <span class="simplepco-message-single-label"><?php _e('Topic', 'simplepco'); ?></span>
                     <span class="simplepco-message-single-value"><?php echo esc_html($message->topic_name); ?></span>
                 </div>
             <?php endif; ?>

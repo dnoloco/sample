@@ -49,31 +49,31 @@ class SimplePCO_Series_Import {
         $last_import = get_option(self::IMPORT_LOG_OPTION, []);
         ?>
         <div class="simplepco-import-wrap">
-            <h2><?php printf(esc_html__('Import %s from Planning Center', 'simplepco-online'), esc_html($names['message_plural'])); ?></h2>
+            <h2><?php printf(esc_html__('Import %s from Planning Center', 'simplepco'), esc_html($names['message_plural'])); ?></h2>
 
             <p class="description">
                 <?php printf(
-                    esc_html__('Fetch episodes from your Planning Center Publishing account and import them as %s in WordPress. Series, media, and descriptions are mapped automatically.', 'simplepco-online'),
+                    esc_html__('Fetch episodes from your Planning Center Publishing account and import them as %s in WordPress. Series, media, and descriptions are mapped automatically.', 'simplepco'),
                     esc_html(strtolower($names['message_plural']))
                 ); ?>
             </p>
 
             <?php if (!$this->api_model) : ?>
                 <div class="notice notice-error inline" style="margin:15px 0;">
-                    <p><?php esc_html_e('Planning Center API credentials are not configured. Please set them up on the Settings page first.', 'simplepco-online'); ?></p>
+                    <p><?php esc_html_e('Planning Center API credentials are not configured. Please set them up on the Settings page first.', 'simplepco'); ?></p>
                 </div>
                 <?php return; ?>
             <?php endif; ?>
 
             <?php if (!empty($last_import)) : ?>
                 <div class="simplepco-import-last-run" style="margin:15px 0;padding:10px 15px;background:#f0f6fc;border-left:4px solid #2271b1;">
-                    <strong><?php esc_html_e('Last Import:', 'simplepco-online'); ?></strong>
+                    <strong><?php esc_html_e('Last Import:', 'simplepco'); ?></strong>
                     <?php
                     $date = isset($last_import['date']) ? $last_import['date'] : '';
                     $count = isset($last_import['count']) ? (int) $last_import['count'] : 0;
                     $skipped = isset($last_import['skipped']) ? (int) $last_import['skipped'] : 0;
                     printf(
-                        esc_html__('%1$s — %2$d imported, %3$d skipped (already existed)', 'simplepco-online'),
+                        esc_html__('%1$s — %2$d imported, %3$d skipped (already existed)', 'simplepco'),
                         esc_html($date),
                         $count,
                         $skipped
@@ -84,11 +84,11 @@ class SimplePCO_Series_Import {
 
             <!-- Step 1: Fetch -->
             <div id="simplepco-import-step-fetch" class="simplepco-import-step">
-                <h3><?php esc_html_e('Step 1: Fetch Episodes', 'simplepco-online'); ?></h3>
-                <p class="description"><?php esc_html_e('Connect to Planning Center Publishing and retrieve available episodes.', 'simplepco-online'); ?></p>
+                <h3><?php esc_html_e('Step 1: Fetch Episodes', 'simplepco'); ?></h3>
+                <p class="description"><?php esc_html_e('Connect to Planning Center Publishing and retrieve available episodes.', 'simplepco'); ?></p>
                 <p>
                     <button type="button" id="simplepco-import-fetch-btn" class="button button-primary">
-                        <?php esc_html_e('Fetch from Planning Center', 'simplepco-online'); ?>
+                        <?php esc_html_e('Fetch from Planning Center', 'simplepco'); ?>
                     </button>
                     <span id="simplepco-import-fetch-status" class="simplepco-import-status"></span>
                 </p>
@@ -96,10 +96,10 @@ class SimplePCO_Series_Import {
 
             <!-- Step 2: Preview & Import -->
             <div id="simplepco-import-step-preview" class="simplepco-import-step" style="display:none;">
-                <h3><?php esc_html_e('Step 2: Review & Import', 'simplepco-online'); ?></h3>
+                <h3><?php esc_html_e('Step 2: Review & Import', 'simplepco'); ?></h3>
                 <p class="description">
                     <?php printf(
-                        esc_html__('Select which episodes to import as %s. Episodes already imported will be skipped automatically.', 'simplepco-online'),
+                        esc_html__('Select which episodes to import as %s. Episodes already imported will be skipped automatically.', 'simplepco'),
                         esc_html(strtolower($names['message_plural']))
                     ); ?>
                 </p>
@@ -112,12 +112,12 @@ class SimplePCO_Series_Import {
                             <td class="manage-column column-cb check-column">
                                 <input type="checkbox" id="simplepco-import-select-all" checked />
                             </td>
-                            <th class="manage-column"><?php esc_html_e('Title', 'simplepco-online'); ?></th>
+                            <th class="manage-column"><?php esc_html_e('Title', 'simplepco'); ?></th>
                             <th class="manage-column"><?php echo esc_html($names['speaker_singular']); ?></th>
                             <th class="manage-column"><?php echo esc_html($names['series_singular']); ?></th>
-                            <th class="manage-column"><?php esc_html_e('Date', 'simplepco-online'); ?></th>
-                            <th class="manage-column"><?php esc_html_e('Media', 'simplepco-online'); ?></th>
-                            <th class="manage-column"><?php esc_html_e('Status', 'simplepco-online'); ?></th>
+                            <th class="manage-column"><?php esc_html_e('Date', 'simplepco'); ?></th>
+                            <th class="manage-column"><?php esc_html_e('Media', 'simplepco'); ?></th>
+                            <th class="manage-column"><?php esc_html_e('Status', 'simplepco'); ?></th>
                         </tr>
                     </thead>
                     <tbody id="simplepco-import-tbody"></tbody>
@@ -125,7 +125,7 @@ class SimplePCO_Series_Import {
 
                 <p style="margin-top:15px;">
                     <button type="button" id="simplepco-import-run-btn" class="button button-primary">
-                        <?php printf(esc_html__('Import Selected %s', 'simplepco-online'), esc_html($names['message_plural'])); ?>
+                        <?php printf(esc_html__('Import Selected %s', 'simplepco'), esc_html($names['message_plural'])); ?>
                     </button>
                     <span id="simplepco-import-run-status" class="simplepco-import-status"></span>
                 </p>
@@ -133,33 +133,33 @@ class SimplePCO_Series_Import {
 
             <!-- Step 3: Results -->
             <div id="simplepco-import-step-results" class="simplepco-import-step" style="display:none;">
-                <h3><?php esc_html_e('Import Complete', 'simplepco-online'); ?></h3>
+                <h3><?php esc_html_e('Import Complete', 'simplepco'); ?></h3>
                 <div id="simplepco-import-results"></div>
             </div>
 
             <!-- Field Mapping Reference -->
             <div class="simplepco-import-mapping" style="margin-top:30px;">
-                <h3><?php esc_html_e('Field Mapping', 'simplepco-online'); ?></h3>
+                <h3><?php esc_html_e('Field Mapping', 'simplepco'); ?></h3>
                 <table class="widefat fixed" style="max-width:600px;">
                     <thead>
                         <tr>
-                            <th><?php esc_html_e('Planning Center Field', 'simplepco-online'); ?></th>
-                            <th><?php esc_html_e('WordPress Field', 'simplepco-online'); ?></th>
+                            <th><?php esc_html_e('Planning Center Field', 'simplepco'); ?></th>
+                            <th><?php esc_html_e('WordPress Field', 'simplepco'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td><?php esc_html_e('Episode Title', 'simplepco-online'); ?></td><td><?php echo esc_html($names['message_singular']); ?> Title</td></tr>
-                        <tr><td><?php esc_html_e('Episode Description', 'simplepco-online'); ?></td><td><?php echo esc_html($names['message_singular']); ?> Description + Content</td></tr>
+                        <tr><td><?php esc_html_e('Episode Title', 'simplepco'); ?></td><td><?php echo esc_html($names['message_singular']); ?> Title</td></tr>
+                        <tr><td><?php esc_html_e('Episode Description', 'simplepco'); ?></td><td><?php echo esc_html($names['message_singular']); ?> Description + Content</td></tr>
                         <tr><td><code>published_to_library_at</code></td><td><?php echo esc_html($names['message_singular']); ?> Date</td></tr>
                         <tr><td><code>speaker</code></td><td><?php echo esc_html($names['speaker_singular']); ?></td></tr>
-                        <tr><td><?php esc_html_e('Series', 'simplepco-online'); ?></td><td><?php echo esc_html($names['series_singular']); ?> Taxonomy</td></tr>
-                        <tr><td><?php esc_html_e('Series Artwork', 'simplepco-online'); ?></td><td><?php echo esc_html($names['series_singular']); ?> Image</td></tr>
+                        <tr><td><?php esc_html_e('Series', 'simplepco'); ?></td><td><?php echo esc_html($names['series_singular']); ?> Taxonomy</td></tr>
+                        <tr><td><?php esc_html_e('Series Artwork', 'simplepco'); ?></td><td><?php echo esc_html($names['series_singular']); ?> Image</td></tr>
                         <tr><td><code>art</code> / <code>library_video_thumbnail_url</code></td><td><?php echo esc_html($names['message_singular']); ?> Image</td></tr>
                         <tr><td><code>library_video_url</code></td><td><?php echo esc_html($names['message_singular']); ?> Video URL</td></tr>
                         <tr><td><code>library_video_embed_code</code></td><td><?php echo esc_html($names['message_singular']); ?> Video Embed</td></tr>
                         <tr><td><code>library_audio_url</code> / <code>sermon_audio</code></td><td><?php echo esc_html($names['message_singular']); ?> Audio URL</td></tr>
                         <tr><td><code>library_video_thumbnail_url</code></td><td><?php echo esc_html($names['message_singular']); ?> Video Thumbnail</td></tr>
-                        <tr><td><?php esc_html_e('Episode Resources (URL)', 'simplepco-online'); ?></td><td><?php echo esc_html($names['message_singular']); ?> Files</td></tr>
+                        <tr><td><?php esc_html_e('Episode Resources (URL)', 'simplepco'); ?></td><td><?php echo esc_html($names['message_singular']); ?> Files</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -178,11 +178,11 @@ class SimplePCO_Series_Import {
         check_ajax_referer('simplepco_import_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Permission denied.', 'simplepco-online')]);
+            wp_send_json_error(['message' => __('Permission denied.', 'simplepco')]);
         }
 
         if (!$this->api_model) {
-            wp_send_json_error(['message' => __('API credentials not configured.', 'simplepco-online')]);
+            wp_send_json_error(['message' => __('API credentials not configured.', 'simplepco')]);
         }
 
         // Fetch all episodes with series included
@@ -193,7 +193,7 @@ class SimplePCO_Series_Import {
         }
 
         if (empty($response['data'])) {
-            wp_send_json_error(['message' => __('No episodes found in Planning Center Publishing.', 'simplepco-online')]);
+            wp_send_json_error(['message' => __('No episodes found in Planning Center Publishing.', 'simplepco')]);
         }
 
         // Fetch all speakers to build a speaker ID → name map
@@ -351,19 +351,19 @@ class SimplePCO_Series_Import {
         check_ajax_referer('simplepco_import_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Permission denied.', 'simplepco-online')]);
+            wp_send_json_error(['message' => __('Permission denied.', 'simplepco')]);
         }
 
         $episode_ids = isset($_POST['episode_ids']) ? array_map('sanitize_text_field', (array) $_POST['episode_ids']) : [];
 
         if (empty($episode_ids)) {
-            wp_send_json_error(['message' => __('No episodes selected for import.', 'simplepco-online')]);
+            wp_send_json_error(['message' => __('No episodes selected for import.', 'simplepco')]);
         }
 
         // Load the cached episode data from the fetch step
         $cache = get_transient(self::IMPORT_CACHE_KEY);
         if (empty($cache) || empty($cache['episodes'])) {
-            wp_send_json_error(['message' => __('Episode data has expired. Please click "Fetch from Planning Center" again.', 'simplepco-online')]);
+            wp_send_json_error(['message' => __('Episode data has expired. Please click "Fetch from Planning Center" again.', 'simplepco')]);
         }
 
         $cached_episodes     = $cache['episodes'];
@@ -383,18 +383,18 @@ class SimplePCO_Series_Import {
                 $results[] = [
                     'id'     => $episode_id,
                     'status' => 'skipped',
-                    'message' => __('Already imported', 'simplepco-online'),
+                    'message' => __('Already imported', 'simplepco'),
                 ];
                 continue;
             }
 
             // Look up episode from the cached fetch data
             if (!isset($cached_episodes[$episode_id])) {
-                $errors[] = sprintf(__('Episode %s not found in cached data.', 'simplepco-online'), $episode_id);
+                $errors[] = sprintf(__('Episode %s not found in cached data.', 'simplepco'), $episode_id);
                 $results[] = [
                     'id'      => $episode_id,
                     'status'  => 'error',
-                    'message' => __('Episode not found in cached data. Try fetching again.', 'simplepco-online'),
+                    'message' => __('Episode not found in cached data. Try fetching again.', 'simplepco'),
                 ];
                 continue;
             }
@@ -451,7 +451,7 @@ class SimplePCO_Series_Import {
                     'id'      => $episode_id,
                     'status'  => 'imported',
                     'post_id' => $result,
-                    'message' => __('Imported successfully', 'simplepco-online'),
+                    'message' => __('Imported successfully', 'simplepco'),
                 ];
             }
         }

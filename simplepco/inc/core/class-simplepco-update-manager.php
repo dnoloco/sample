@@ -20,7 +20,7 @@ class SimplePCO_Update_Manager {
     /**
      * Plugin slug.
      */
-    private $plugin_slug = 'simplepco-online';
+    private $plugin_slug = 'simplepco';
 
     /**
      * Plugin basename.
@@ -56,9 +56,9 @@ class SimplePCO_Update_Manager {
      * Private constructor for singleton.
      */
     private function __construct() {
-        $this->plugin_basename = 'simplepco-online/simplepco-online.php';
+        $this->plugin_basename = 'simplepco/simplepco.php';
 
-        // Set API URL from constant (defined in simplepco-online.php)
+        // Set API URL from constant (defined in simplepco.php)
         $this->api_url = defined('SIMPLEPCO_LICENSE_API_URL') ? SIMPLEPCO_LICENSE_API_URL : 'https://your-site.com/simplepco-license/api.php';
 
         // Allow filtering the API URL
@@ -158,11 +158,11 @@ class SimplePCO_Update_Manager {
         }
 
         $info = new stdClass();
-        $info->name = 'SimplePCO Online';
+        $info->name = 'SimplePCO';
         $info->slug = $this->plugin_slug;
         $info->version = $update_data['latest_version'];
         $info->author = '<a href="https://example.com">David Dean</a>';
-        $info->homepage = 'https://example.com/simplepco-online';
+        $info->homepage = 'https://example.com/simplepco';
         $info->requires = '5.8';
         $info->tested = get_bloginfo('version');
         $info->requires_php = '7.4';
@@ -170,7 +170,7 @@ class SimplePCO_Update_Manager {
         $info->last_updated = date('Y-m-d');
         $info->sections = [
             'description' => 'Comprehensive Planning Center Online integration with modular architecture for churches.',
-            'installation' => 'Upload the plugin files to /wp-content/plugins/simplepco-online/, activate through WordPress.',
+            'installation' => 'Upload the plugin files to /wp-content/plugins/simplepco/, activate through WordPress.',
             'changelog' => $this->get_changelog_html($update_data)
         ];
         $info->banners = [

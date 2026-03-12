@@ -31,10 +31,10 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
 <div class="wrap">
     
     <?php if (isset($error)): ?>
-        <h1><?php _e('Error', 'simplepco-online'); ?></h1>
+        <h1><?php _e('Error', 'simplepco'); ?></h1>
         <p><?php echo esc_html($error); ?></p>
         <p><a href="<?php echo esc_url(admin_url('admin.php?page=simplepco-services')); ?>" class="button">
-            <?php _e('← Back to Plans', 'simplepco-online'); ?>
+            <?php _e('← Back to Plans', 'simplepco'); ?>
         </a></p>
         <?php return; ?>
     <?php endif; ?>
@@ -42,7 +42,7 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
     <!-- Breadcrumb Navigation -->
     <div style="margin-bottom: 15px;">
         <a href="<?php echo esc_url(admin_url('admin.php?page=simplepco-services')); ?>" class="button">
-            ← <?php _e('Back to All Plans', 'simplepco-online'); ?>
+            ← <?php _e('Back to All Plans', 'simplepco'); ?>
         </a>
     </div>
 
@@ -53,7 +53,7 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
 
     <?php if ($series): ?>
         <p style="font-size: 1.1em; color: #666; margin-top: 5px;">
-            <?php _e('Series:', 'simplepco-online'); ?> <?php echo esc_html($series); ?>
+            <?php _e('Series:', 'simplepco'); ?> <?php echo esc_html($series); ?>
         </p>
     <?php endif; ?>
 
@@ -61,21 +61,21 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
 
     <!-- Plan Meta Information -->
     <div class="card" style="margin-bottom: 20px;">
-        <h2><?php _e('Plan Information', 'simplepco-online'); ?></h2>
+        <h2><?php _e('Plan Information', 'simplepco'); ?></h2>
         <table class="form-table">
             <tr>
-                <th scope="row"><?php _e('Date', 'simplepco-online'); ?></th>
+                <th scope="row"><?php _e('Date', 'simplepco'); ?></th>
                 <td><strong><?php echo esc_html($day_str . ', ' . $date_str); ?></strong></td>
             </tr>
             <tr>
-                <th scope="row"><?php _e('Time', 'simplepco-online'); ?></th>
+                <th scope="row"><?php _e('Time', 'simplepco'); ?></th>
                 <td><?php echo esc_html($time_str); ?></td>
             </tr>
             <tr>
-                <th scope="row"><?php _e('Actions', 'simplepco-online'); ?></th>
+                <th scope="row"><?php _e('Actions', 'simplepco'); ?></th>
                 <td>
                     <a href="<?php echo esc_url($pco_edit_link); ?>" class="button" target="_blank" rel="noopener">
-                        <?php _e('Edit Plan in Planning Center ↗', 'simplepco-online'); ?>
+                        <?php _e('Edit Plan in Planning Center ↗', 'simplepco'); ?>
                     </a>
                 </td>
             </tr>
@@ -83,35 +83,35 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
     </div>
 
     <!-- Team Members Section -->
-    <h2><?php _e('Team Members', 'simplepco-online'); ?></h2>
+    <h2><?php _e('Team Members', 'simplepco'); ?></h2>
 
     <!-- Status Filter Tabs -->
     <ul class="subsubsub">
         <li class="all">
             <a href="<?php echo esc_url(add_query_arg('filter_status', 'all', remove_query_arg('filter_team'))); ?>" 
                <?php echo $filter_status === 'all' ? 'class="current"' : ''; ?>>
-                <?php _e('All', 'simplepco-online'); ?> 
+                <?php _e('All', 'simplepco'); ?> 
                 <span class="count">(<?php echo intval($status_counts['all']); ?>)</span>
             </a> | 
         </li>
         <li class="confirmed">
             <a href="<?php echo esc_url(add_query_arg('filter_status', 'C', remove_query_arg('filter_team'))); ?>" 
                <?php echo $filter_status === 'C' ? 'class="current"' : ''; ?>>
-                <?php _e('Confirmed', 'simplepco-online'); ?> 
+                <?php _e('Confirmed', 'simplepco'); ?> 
                 <span class="count">(<?php echo intval($status_counts['C']); ?>)</span>
             </a> | 
         </li>
         <li class="unconfirmed">
             <a href="<?php echo esc_url(add_query_arg('filter_status', 'U', remove_query_arg('filter_team'))); ?>" 
                <?php echo $filter_status === 'U' ? 'class="current"' : ''; ?>>
-                <?php _e('Unconfirmed', 'simplepco-online'); ?> 
+                <?php _e('Unconfirmed', 'simplepco'); ?> 
                 <span class="count">(<?php echo intval($status_counts['U']); ?>)</span>
             </a> | 
         </li>
         <li class="declined">
             <a href="<?php echo esc_url(add_query_arg('filter_status', 'D', remove_query_arg('filter_team'))); ?>" 
                <?php echo $filter_status === 'D' ? 'class="current"' : ''; ?>>
-                <?php _e('Declined', 'simplepco-online'); ?> 
+                <?php _e('Declined', 'simplepco'); ?> 
                 <span class="count">(<?php echo intval($status_counts['D']); ?>)</span>
             </a>
         </li>
@@ -124,10 +124,10 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
             <select name="view_mode" id="view-mode" 
                     onchange="window.location.href='<?php echo esc_js(remove_query_arg('filter_team')); ?>' + '&view_mode=' + this.value;">
                 <option value="team" <?php selected($view_mode, 'team'); ?>>
-                    <?php _e('Group by Team', 'simplepco-online'); ?>
+                    <?php _e('Group by Team', 'simplepco'); ?>
                 </option>
                 <option value="alpha" <?php selected($view_mode, 'alpha'); ?>>
-                    <?php _e('Alphabetical', 'simplepco-online'); ?>
+                    <?php _e('Alphabetical', 'simplepco'); ?>
                 </option>
             </select>
 
@@ -135,7 +135,7 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
             <?php if ($view_mode === 'alpha'): ?>
                 <select name="filter_team" id="filter-team" 
                         onchange="window.location.href='<?php echo esc_js(remove_query_arg('filter_team')); ?>' + (this.value !== 'all' ? '&filter_team=' + encodeURIComponent(this.value) : '');">
-                    <option value="all"><?php _e('All Teams', 'simplepco-online'); ?></option>
+                    <option value="all"><?php _e('All Teams', 'simplepco'); ?></option>
                     <?php foreach ($team_name_map as $team_id => $team_name): ?>
                         <option value="<?php echo esc_attr($team_id); ?>" <?php selected($filter_team, $team_id); ?>>
                             <?php echo esc_html($team_name); ?>
@@ -148,13 +148,13 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
         <div class="alignright actions">
             <a href="<?php echo esc_url(admin_url('admin.php?page=simplepco-services&view=clearstream_compose&plan_id=' . $plan_id . '&from=plan')); ?>" 
                class="button button-primary">
-                <?php _e('📱 Message Team', 'simplepco-online'); ?>
+                <?php _e('📱 Message Team', 'simplepco'); ?>
             </a>
         </div>
     </div>
 
     <?php if (empty($team_members)): ?>
-        <p><?php _e('No team members found for this plan.', 'simplepco-online'); ?></p>
+        <p><?php _e('No team members found for this plan.', 'simplepco'); ?></p>
     <?php else: ?>
 
         <?php if ($view_mode === 'team'): ?>
@@ -188,9 +188,9 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
                     <table class="wp-list-table widefat fixed striped">
                         <thead>
                         <tr>
-                            <th><?php _e('Name', 'simplepco-online'); ?></th>
-                            <th><?php _e('Position', 'simplepco-online'); ?></th>
-                            <th style="width: 120px;"><?php _e('Status', 'simplepco-online'); ?></th>
+                            <th><?php _e('Name', 'simplepco'); ?></th>
+                            <th><?php _e('Position', 'simplepco'); ?></th>
+                            <th style="width: 120px;"><?php _e('Status', 'simplepco'); ?></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -205,9 +205,9 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
                                 <td>
                                     <?php
                                     $status_labels = [
-                                        'C' => '<span style="color: green;">✓ ' . __('Confirmed', 'simplepco-online') . '</span>',
-                                        'U' => '<span style="color: orange;">? ' . __('Unconfirmed', 'simplepco-online') . '</span>',
-                                        'D' => '<span style="color: red;">✗ ' . __('Declined', 'simplepco-online') . '</span>'
+                                        'C' => '<span style="color: green;">✓ ' . __('Confirmed', 'simplepco') . '</span>',
+                                        'U' => '<span style="color: orange;">? ' . __('Unconfirmed', 'simplepco') . '</span>',
+                                        'D' => '<span style="color: red;">✗ ' . __('Declined', 'simplepco') . '</span>'
                                     ];
                                     echo $status_labels[$member['status']] ?? $member['status'];
                                     ?>
@@ -224,10 +224,10 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                 <tr>
-                    <th><?php _e('Name', 'simplepco-online'); ?></th>
-                    <th><?php _e('Team', 'simplepco-online'); ?></th>
-                    <th><?php _e('Position', 'simplepco-online'); ?></th>
-                    <th style="width: 120px;"><?php _e('Status', 'simplepco-online'); ?></th>
+                    <th><?php _e('Name', 'simplepco'); ?></th>
+                    <th><?php _e('Team', 'simplepco'); ?></th>
+                    <th><?php _e('Position', 'simplepco'); ?></th>
+                    <th style="width: 120px;"><?php _e('Status', 'simplepco'); ?></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -257,9 +257,9 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
                         <td>
                             <?php
                             $status_labels = [
-                                'C' => '<span style="color: green;">✓ ' . __('Confirmed', 'simplepco-online') . '</span>',
-                                'U' => '<span style="color: orange;">? ' . __('Unconfirmed', 'simplepco-online') . '</span>',
-                                'D' => '<span style="color: red;">✗ ' . __('Declined', 'simplepco-online') . '</span>'
+                                'C' => '<span style="color: green;">✓ ' . __('Confirmed', 'simplepco') . '</span>',
+                                'U' => '<span style="color: orange;">? ' . __('Unconfirmed', 'simplepco') . '</span>',
+                                'D' => '<span style="color: red;">✗ ' . __('Declined', 'simplepco') . '</span>'
                             ];
                             echo $status_labels[$member['status']] ?? $member['status'];
                             ?>
@@ -270,7 +270,7 @@ $view_mode = isset($_GET['view_mode']) ? sanitize_text_field($_GET['view_mode'])
             </table>
 
             <?php if ($row_count === 0): ?>
-                <p><?php _e('No team members match the selected filters.', 'simplepco-online'); ?></p>
+                <p><?php _e('No team members match the selected filters.', 'simplepco'); ?></p>
             <?php endif; ?>
 
         <?php endif; ?>

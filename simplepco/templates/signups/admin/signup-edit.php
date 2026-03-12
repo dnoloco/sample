@@ -13,33 +13,33 @@ defined('ABSPATH') || exit;
 ?>
 
 <div class="wrap">
-    <h1 class="wp-heading-inline"><?php _e('Event Signups', 'simplepco-online'); ?></h1>
+    <h1 class="wp-heading-inline"><?php _e('Event Signups', 'simplepco'); ?></h1>
     <a href="<?php echo esc_url(admin_url('admin.php?page=simplepco-signups&view=new')); ?>" class="page-title-action">
-        <?php _e('Add New', 'simplepco-online'); ?>
+        <?php _e('Add New', 'simplepco'); ?>
     </a>
     <hr class="wp-header-end">
 
     <?php if ($deleted): ?>
         <div class="notice notice-success is-dismissible">
-            <p><?php _e('Signup deleted successfully.', 'simplepco-online'); ?></p>
+            <p><?php _e('Signup deleted successfully.', 'simplepco'); ?></p>
         </div>
     <?php endif; ?>
 
     <?php if (empty($signups)): ?>
         <div class="notice notice-info">
-            <p><?php _e('No signups created yet. Click "Add New" to create your first signup.', 'simplepco-online'); ?></p>
+            <p><?php _e('No signups created yet. Click "Add New" to create your first signup.', 'simplepco'); ?></p>
         </div>
     <?php else: ?>
         <table class="wp-list-table widefat fixed striped">
             <thead>
             <tr>
-                <th style="width: 60px;"><?php _e('ID', 'simplepco-online'); ?></th>
-                <th><?php _e('Event Name', 'simplepco-online'); ?></th>
-                <th style="width: 150px;"><?php _e('Date', 'simplepco-online'); ?></th>
-                <th style="width: 100px;"><?php _e('Capacity', 'simplepco-online'); ?></th>
-                <th style="width: 100px;"><?php _e('Payment', 'simplepco-online'); ?></th>
-                <th style="width: 80px;"><?php _e('Status', 'simplepco-online'); ?></th>
-                <th style="width: 200px;"><?php _e('Actions', 'simplepco-online'); ?></th>
+                <th style="width: 60px;"><?php _e('ID', 'simplepco'); ?></th>
+                <th><?php _e('Event Name', 'simplepco'); ?></th>
+                <th style="width: 150px;"><?php _e('Date', 'simplepco'); ?></th>
+                <th style="width: 100px;"><?php _e('Capacity', 'simplepco'); ?></th>
+                <th style="width: 100px;"><?php _e('Payment', 'simplepco'); ?></th>
+                <th style="width: 80px;"><?php _e('Status', 'simplepco'); ?></th>
+                <th style="width: 200px;"><?php _e('Actions', 'simplepco'); ?></th>
             </tr>
             </thead>
             <tbody>
@@ -51,7 +51,7 @@ defined('ABSPATH') || exit;
                     ? '$' . number_format($signup->payment_amount, 2) 
                     : '—';
                 $status_class = $signup->is_active ? 'success' : 'error';
-                $status_text = $signup->is_active ? __('Active', 'simplepco-online') : __('Inactive', 'simplepco-online');
+                $status_text = $signup->is_active ? __('Active', 'simplepco') : __('Inactive', 'simplepco');
                 ?>
                 <tr>
                     <td><?php echo intval($signup->id); ?></td>
@@ -73,21 +73,21 @@ defined('ABSPATH') || exit;
                     <td>
                         <a href="<?php echo esc_url(admin_url('admin.php?page=simplepco-signups&view=edit&id=' . $signup->id)); ?>" 
                            class="button button-small">
-                            <?php _e('Edit', 'simplepco-online'); ?>
+                            <?php _e('Edit', 'simplepco'); ?>
                         </a>
                         
                         <?php if ($signup->google_form_url): ?>
                             <a href="<?php echo esc_url($signup->google_form_url); ?>" 
                                class="button button-small" 
                                target="_blank">
-                                <?php _e('View Form', 'simplepco-online'); ?>
+                                <?php _e('View Form', 'simplepco'); ?>
                             </a>
                         <?php endif; ?>
                         
                         <a href="<?php echo esc_url(wp_nonce_url(admin_url('admin.php?page=simplepco-signups&action=delete&id=' . $signup->id), 'delete_signup_' . $signup->id)); ?>" 
                            class="button button-small" 
-                           onclick="return confirm('<?php esc_attr_e('Delete this signup and all its registrations?', 'simplepco-online'); ?>');">
-                            <?php _e('Delete', 'simplepco-online'); ?>
+                           onclick="return confirm('<?php esc_attr_e('Delete this signup and all its registrations?', 'simplepco'); ?>');">
+                            <?php _e('Delete', 'simplepco'); ?>
                         </a>
                     </td>
                 </tr>

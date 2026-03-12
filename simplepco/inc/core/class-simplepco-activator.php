@@ -34,7 +34,7 @@ class SimplePCO_Activator {
         set_transient('simplepco_flush_rewrite_rules', true);
 
         // Log activation
-        error_log('SimplePCO Online: Plugin activated successfully');
+        error_log('SimplePCO: Plugin activated successfully');
     }
 
     /**
@@ -209,7 +209,7 @@ class SimplePCO_Activator {
 
         // Log errors
         if (!empty($errors)) {
-            error_log('SimplePCO Online Activation Warnings:');
+            error_log('SimplePCO Activation Warnings:');
             foreach ($errors as $error) {
                 error_log('  - ' . $error);
             }
@@ -250,6 +250,6 @@ class SimplePCO_Activator {
     private static function migrate_from_v1() {
         // Placeholder for any data migrations needed
         // Example: rename old options, update database schema, etc.
-        error_log('SimplePCO Online: Migrating from version 1.x to 2.0');
+        error_log('SimplePCO: Migrating from version 1.x to 2.0');
     }
 }

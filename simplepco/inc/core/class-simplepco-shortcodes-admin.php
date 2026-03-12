@@ -447,8 +447,8 @@ class SimplePCO_Shortcodes_Admin {
     public function add_menu_page() {
         add_submenu_page(
             'simplepco-dashboard',
-            __('Shortcodes', 'simplepco-online'),
-            __('Shortcodes', 'simplepco-online'),
+            __('Shortcodes', 'simplepco'),
+            __('Shortcodes', 'simplepco'),
             'manage_options',
             'simplepco-shortcodes',
             [$this, 'render_page']

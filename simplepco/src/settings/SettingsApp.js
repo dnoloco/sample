@@ -59,9 +59,9 @@ function CredentialsTab() {
                     clearstream_api_key: clearstreamKey,
                 },
             } );
-            setNotice( { status: 'success', message: __( 'Credentials saved.', 'simplepco-online' ) } );
+            setNotice( { status: 'success', message: __( 'Credentials saved.', 'simplepco' ) } );
         } catch ( err ) {
-            setNotice( { status: 'error', message: err.message || __( 'Save failed.', 'simplepco-online' ) } );
+            setNotice( { status: 'error', message: err.message || __( 'Save failed.', 'simplepco' ) } );
         }
 
         setSaving( false );
@@ -79,8 +79,8 @@ function CredentialsTab() {
             setNotice( {
                 status: result.connected ? 'success' : 'error',
                 message: result.connected
-                    ? __( 'Connected to Planning Center!', 'simplepco-online' )
-                    : __( 'Connection failed. Check your credentials.', 'simplepco-online' ),
+                    ? __( 'Connected to Planning Center!', 'simplepco' )
+                    : __( 'Connection failed. Check your credentials.', 'simplepco' ),
             } );
         } catch ( err ) {
             setNotice( { status: 'error', message: err.message } );
@@ -99,34 +99,34 @@ function CredentialsTab() {
 
             <Card>
                 <CardHeader>
-                    <h3>{ __( 'Planning Center Online', 'simplepco-online' ) }</h3>
+                    <h3>{ __( 'Planning Center Online', 'simplepco' ) }</h3>
                 </CardHeader>
                 <CardBody>
                     <TextControl
-                        label={ __( 'Application ID', 'simplepco-online' ) }
+                        label={ __( 'Application ID', 'simplepco' ) }
                         value={ clientId }
                         onChange={ setClientId }
-                        help={ __( 'Found at api.planningcenteronline.com/oauth/applications', 'simplepco-online' ) }
+                        help={ __( 'Found at api.planningcenteronline.com/oauth/applications', 'simplepco' ) }
                     />
                     <TextControl
-                        label={ __( 'Secret Key', 'simplepco-online' ) }
+                        label={ __( 'Secret Key', 'simplepco' ) }
                         type="password"
                         value={ secretKey }
                         onChange={ setSecretKey }
                     />
                     <Button variant="secondary" onClick={ handleTestConnection } disabled={ saving }>
-                        { saving ? <Spinner /> : __( 'Test Connection', 'simplepco-online' ) }
+                        { saving ? <Spinner /> : __( 'Test Connection', 'simplepco' ) }
                     </Button>
                 </CardBody>
             </Card>
 
             <Card style={ { marginTop: '16px' } }>
                 <CardHeader>
-                    <h3>{ __( 'Clearstream SMS', 'simplepco-online' ) }</h3>
+                    <h3>{ __( 'Clearstream SMS', 'simplepco' ) }</h3>
                 </CardHeader>
                 <CardBody>
                     <TextControl
-                        label={ __( 'API Key', 'simplepco-online' ) }
+                        label={ __( 'API Key', 'simplepco' ) }
                         type="password"
                         value={ clearstreamKey }
                         onChange={ setClearstreamKey }
@@ -136,7 +136,7 @@ function CredentialsTab() {
 
             <div style={ { marginTop: '16px' } }>
                 <Button variant="primary" onClick={ handleSave } disabled={ saving }>
-                    { saving ? <Spinner /> : __( 'Save Credentials', 'simplepco-online' ) }
+                    { saving ? <Spinner /> : __( 'Save Credentials', 'simplepco' ) }
                 </Button>
             </div>
         </div>
@@ -183,7 +183,7 @@ function ModulesTab() {
     return (
         <Card>
             <CardHeader>
-                <h3>{ __( 'Manage Modules', 'simplepco-online' ) }</h3>
+                <h3>{ __( 'Manage Modules', 'simplepco' ) }</h3>
             </CardHeader>
             <CardBody>
                 { modules.map( ( mod ) => (
@@ -215,7 +215,7 @@ function CacheTab() {
                 path: '/simplepco/v1/cache/clear',
                 method: 'POST',
             } );
-            setNotice( { status: 'success', message: __( 'All caches cleared.', 'simplepco-online' ) } );
+            setNotice( { status: 'success', message: __( 'All caches cleared.', 'simplepco' ) } );
         } catch ( err ) {
             setNotice( { status: 'error', message: err.message } );
         }
@@ -231,12 +231,12 @@ function CacheTab() {
             ) }
             <Card>
                 <CardHeader>
-                    <h3>{ __( 'Cache Management', 'simplepco-online' ) }</h3>
+                    <h3>{ __( 'Cache Management', 'simplepco' ) }</h3>
                 </CardHeader>
                 <CardBody>
-                    <p>{ __( 'Clear cached API data to fetch fresh information from Planning Center.', 'simplepco-online' ) }</p>
+                    <p>{ __( 'Clear cached API data to fetch fresh information from Planning Center.', 'simplepco' ) }</p>
                     <Button variant="secondary" isDestructive onClick={ handleClearAll } disabled={ clearing }>
-                        { clearing ? <Spinner /> : __( 'Clear All Caches', 'simplepco-online' ) }
+                        { clearing ? <Spinner /> : __( 'Clear All Caches', 'simplepco' ) }
                     </Button>
                 </CardBody>
             </Card>
@@ -289,10 +289,10 @@ function LicenseTab() {
                 setLicense( updated );
                 setKey( '' );
             } else {
-                setNotice( { status: 'error', message: result.message || __( 'Activation failed.', 'simplepco-online' ) } );
+                setNotice( { status: 'error', message: result.message || __( 'Activation failed.', 'simplepco' ) } );
             }
         } catch ( err ) {
-            setNotice( { status: 'error', message: err.message || __( 'Could not connect to license server.', 'simplepco-online' ) } );
+            setNotice( { status: 'error', message: err.message || __( 'Could not connect to license server.', 'simplepco' ) } );
         }
 
         setBusy( false );
@@ -331,42 +331,42 @@ function LicenseTab() {
             { isActive ? (
                 <Card>
                     <CardHeader>
-                        <h3>{ __( 'License Active', 'simplepco-online' ) }</h3>
+                        <h3>{ __( 'License Active', 'simplepco' ) }</h3>
                     </CardHeader>
                     <CardBody>
-                        <p><strong>{ __( 'Tier:', 'simplepco-online' ) }</strong> { license.tier_label }</p>
+                        <p><strong>{ __( 'Tier:', 'simplepco' ) }</strong> { license.tier_label }</p>
                         { license.expires_at && (
-                            <p><strong>{ __( 'Expires:', 'simplepco-online' ) }</strong> { license.expires_at }</p>
+                            <p><strong>{ __( 'Expires:', 'simplepco' ) }</strong> { license.expires_at }</p>
                         ) }
                         { license.modules && license.modules.length > 0 && (
                             <p>
-                                <strong>{ __( 'Modules:', 'simplepco-online' ) }</strong>{ ' ' }
+                                <strong>{ __( 'Modules:', 'simplepco' ) }</strong>{ ' ' }
                                 { license.modules.map( ( m ) => m.charAt( 0 ).toUpperCase() + m.slice( 1 ) ).join( ', ' ) }
                             </p>
                         ) }
                         { typeof license.sites_remaining !== 'undefined' && (
-                            <p><strong>{ __( 'Sites remaining:', 'simplepco-online' ) }</strong> { license.sites_remaining }</p>
+                            <p><strong>{ __( 'Sites remaining:', 'simplepco' ) }</strong> { license.sites_remaining }</p>
                         ) }
                         <Button variant="secondary" isDestructive onClick={ handleDeactivate } disabled={ busy }>
-                            { busy ? <Spinner /> : __( 'Deactivate License', 'simplepco-online' ) }
+                            { busy ? <Spinner /> : __( 'Deactivate License', 'simplepco' ) }
                         </Button>
                     </CardBody>
                 </Card>
             ) : (
                 <Card>
                     <CardHeader>
-                        <h3>{ __( 'Activate License', 'simplepco-online' ) }</h3>
+                        <h3>{ __( 'Activate License', 'simplepco' ) }</h3>
                     </CardHeader>
                     <CardBody>
                         <TextControl
-                            label={ __( 'License Key', 'simplepco-online' ) }
+                            label={ __( 'License Key', 'simplepco' ) }
                             value={ key }
                             onChange={ setKey }
                             placeholder="SIMPLEPCO-XXXX-XXXX-XXXX-XXXX"
-                            help={ __( 'Enter your license key to unlock premium modules.', 'simplepco-online' ) }
+                            help={ __( 'Enter your license key to unlock premium modules.', 'simplepco' ) }
                         />
                         <Button variant="primary" onClick={ handleActivate } isBusy={ busy } disabled={ busy || ! key }>
-                            { busy ? __( 'Verifying...', 'simplepco-online' ) : __( 'Activate Pro', 'simplepco-online' ) }
+                            { busy ? __( 'Verifying...', 'simplepco' ) : __( 'Activate Pro', 'simplepco' ) }
                         </Button>
                     </CardBody>
                 </Card>
@@ -382,29 +382,29 @@ export function SettingsApp() {
     const tabs = [
         {
             name: 'credentials',
-            title: __( 'API Credentials', 'simplepco-online' ),
+            title: __( 'API Credentials', 'simplepco' ),
             className: 'simplepco-tab-credentials',
         },
         {
             name: 'modules',
-            title: __( 'Modules', 'simplepco-online' ),
+            title: __( 'Modules', 'simplepco' ),
             className: 'simplepco-tab-modules',
         },
         {
             name: 'license',
-            title: __( 'License', 'simplepco-online' ),
+            title: __( 'License', 'simplepco' ),
             className: 'simplepco-tab-license',
         },
         {
             name: 'cache',
-            title: __( 'Cache', 'simplepco-online' ),
+            title: __( 'Cache', 'simplepco' ),
             className: 'simplepco-tab-cache',
         },
     ];
 
     return (
         <div className="wrap">
-            <h1>{ __( 'SimplePCO Settings', 'simplepco-online' ) }</h1>
+            <h1>{ __( 'SimplePCO Settings', 'simplepco' ) }</h1>
             <TabPanel tabs={ tabs }>
                 { ( tab ) => {
                     switch ( tab.name ) {

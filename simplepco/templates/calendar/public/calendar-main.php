@@ -38,7 +38,7 @@ $grid_class = $hide_sidebar ? ' pco-grid-full-width' : '';
     <div class="pco-header">
         <div class="pco-category-dropdown">
             <select id="pco-category-filter">
-                <option value=""><?php _e('All Categories', 'simplepco-online'); ?></option>
+                <option value=""><?php _e('All Categories', 'simplepco'); ?></option>
                 <?php if (!empty($tags)): ?>
                     <?php
                     $current_group = '';
@@ -66,13 +66,13 @@ $grid_class = $hide_sidebar ? ' pco-grid-full-width' : '';
         </div>
         <div class="pco-view-switcher">
             <button class="pco-view-btn<?php echo esc_attr($list_active); ?>" data-target="pco-view-list">
-                <?php _e('List', 'simplepco-online'); ?>
+                <?php _e('List', 'simplepco'); ?>
             </button>
             <button class="pco-view-btn<?php echo esc_attr($month_active); ?>" data-target="pco-view-month">
-                <?php _e('Month', 'simplepco-online'); ?>
+                <?php _e('Month', 'simplepco'); ?>
             </button>
             <button class="pco-view-btn<?php echo esc_attr($gallery_active); ?>" data-target="pco-view-gallery">
-                <?php _e('Gallery', 'simplepco-online'); ?>
+                <?php _e('Gallery', 'simplepco'); ?>
             </button>
         </div>
     </div>
@@ -82,9 +82,9 @@ $grid_class = $hide_sidebar ? ' pco-grid-full-width' : '';
         <div class="pco-sidebar<?php echo esc_attr($sidebar_class); ?>">
             <div class="pco-mini-cal">
                 <div class="pco-mini-cal-header">
-                    <span class="pco-mini-cal-nav" data-nav="prev" title="<?php esc_attr_e('Previous month', 'simplepco-online'); ?>">&lt;</span>
+                    <span class="pco-mini-cal-nav" data-nav="prev" title="<?php esc_attr_e('Previous month', 'simplepco'); ?>">&lt;</span>
                     <span class="pco-mini-cal-month-display"><?php echo esc_html($current_month); ?></span>
-                    <span class="pco-mini-cal-nav" data-nav="next" title="<?php esc_attr_e('Next month', 'simplepco-online'); ?>">&gt;</span>
+                    <span class="pco-mini-cal-nav" data-nav="next" title="<?php esc_attr_e('Next month', 'simplepco'); ?>">&gt;</span>
                 </div>
                 <div class="pco-mini-cal-grid">
                     <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>

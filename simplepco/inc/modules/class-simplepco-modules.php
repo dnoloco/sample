@@ -53,14 +53,14 @@ class SimplePCO_Modules {
 
         ?>
         <div class="wrap">
-            <h1><?php _e('SimplePCO Modules', 'simplepco-online'); ?></h1>
-            <p class="description"><?php _e('Enable or disable features to customize your integration experience.', 'simplepco-online'); ?></p>
+            <h1><?php _e('SimplePCO Modules', 'simplepco'); ?></h1>
+            <p class="description"><?php _e('Enable or disable features to customize your integration experience.', 'simplepco'); ?></p>
 
             <?php $this->render_license_status_banner($license_status); ?>
 
             <!-- Free & Freemium Modules -->
-            <h2 style="margin-top: 30px;"><?php _e('Included Modules', 'simplepco-online'); ?></h2>
-            <p class="description"><?php _e('These modules are included with SimplePCO Online. Freemium modules have additional premium features available with a license.', 'simplepco-online'); ?></p>
+            <h2 style="margin-top: 30px;"><?php _e('Included Modules', 'simplepco'); ?></h2>
+            <p class="description"><?php _e('These modules are included with SimplePCO. Freemium modules have additional premium features available with a license.', 'simplepco'); ?></p>
 
             <div class="simplepco-modules-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; margin-top: 20px;">
                 <?php
@@ -73,11 +73,11 @@ class SimplePCO_Modules {
             </div>
 
             <!-- Premium Modules -->
-            <h2 style="margin-top: 40px;"><?php _e('Premium Modules', 'simplepco-online'); ?></h2>
+            <h2 style="margin-top: 40px;"><?php _e('Premium Modules', 'simplepco'); ?></h2>
             <p class="description">
-                <?php _e('These modules require a Professional or Agency license.', 'simplepco-online'); ?>
+                <?php _e('These modules require a Professional or Agency license.', 'simplepco'); ?>
                 <?php if (!$is_licensed): ?>
-                    <a href="<?php echo admin_url('admin.php?page=simplepco-license'); ?>"><?php _e('Activate your license', 'simplepco-online'); ?></a>
+                    <a href="<?php echo admin_url('admin.php?page=simplepco-license'); ?>"><?php _e('Activate your license', 'simplepco'); ?></a>
                 <?php endif; ?>
             </p>
 
@@ -104,10 +104,10 @@ class SimplePCO_Modules {
             ?>
             <div class="notice notice-info" style="margin: 20px 0;">
                 <p>
-                    <strong><?php _e('Unlock Premium Modules', 'simplepco-online'); ?></strong><br>
-                    <?php _e('Get access to Groups, Signups, Messages, and premium features in Services and Calendar.', 'simplepco-online'); ?>
+                    <strong><?php _e('Unlock Premium Modules', 'simplepco'); ?></strong><br>
+                    <?php _e('Get access to Groups, Signups, Messages, and premium features in Services and Calendar.', 'simplepco'); ?>
                     <a href="<?php echo admin_url('admin.php?page=simplepco-license'); ?>" class="button button-primary" style="margin-left: 15px;">
-                        <?php _e('Activate License', 'simplepco-online'); ?>
+                        <?php _e('Activate License', 'simplepco'); ?>
                     </a>
                 </p>
             </div>
@@ -117,11 +117,11 @@ class SimplePCO_Modules {
             <div class="notice notice-success" style="margin: 20px 0;">
                 <p>
                     <span class="dashicons dashicons-yes-alt" style="color: #46b450;"></span>
-                    <strong><?php echo esc_html($license_status['tier_label']); ?> <?php _e('License Active', 'simplepco-online'); ?></strong>
+                    <strong><?php echo esc_html($license_status['tier_label']); ?> <?php _e('License Active', 'simplepco'); ?></strong>
                     <?php if ($license_status['expires_at']): ?>
-                        &mdash; <?php printf(__('Expires: %s', 'simplepco-online'), date('F j, Y', strtotime($license_status['expires_at']))); ?>
+                        &mdash; <?php printf(__('Expires: %s', 'simplepco'), date('F j, Y', strtotime($license_status['expires_at']))); ?>
                     <?php endif; ?>
-                    <a href="<?php echo admin_url('admin.php?page=simplepco-license'); ?>" style="margin-left: 15px;"><?php _e('Manage License', 'simplepco-online'); ?></a>
+                    <a href="<?php echo admin_url('admin.php?page=simplepco-license'); ?>" style="margin-left: 15px;"><?php _e('Manage License', 'simplepco'); ?></a>
                 </p>
             </div>
             <?php
@@ -171,17 +171,17 @@ class SimplePCO_Modules {
 
                 <?php if ($module['tier'] === 'freemium' && !empty($module['features']['premium'])): ?>
                     <div class="module-features" style="margin: 10px 0; padding: 10px; background: #f9f9f9; border-radius: 4px; font-size: 12px;">
-                        <strong style="color: #666;"><?php _e('Premium Features:', 'simplepco-online'); ?></strong>
+                        <strong style="color: #666;"><?php _e('Premium Features:', 'simplepco'); ?></strong>
                         <span style="color: #888;">
                             <?php echo esc_html(implode(', ', array_map(function($f) {
                                 return ucwords(str_replace('_', ' ', $f));
                             }, array_slice($module['features']['premium'], 0, 3)))); ?>
                             <?php if (count($module['features']['premium']) > 3): ?>
-                                <?php printf(__('+ %d more', 'simplepco-online'), count($module['features']['premium']) - 3); ?>
+                                <?php printf(__('+ %d more', 'simplepco'), count($module['features']['premium']) - 3); ?>
                             <?php endif; ?>
                         </span>
                         <?php if (!$is_licensed): ?>
-                            <span style="color: #dba617; margin-left: 5px;"><?php _e('(requires license)', 'simplepco-online'); ?></span>
+                            <span style="color: #dba617; margin-left: 5px;"><?php _e('(requires license)', 'simplepco'); ?></span>
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>
@@ -190,15 +190,15 @@ class SimplePCO_Modules {
                     <div class="module-status">
                         <?php if ($enabled): ?>
                             <span style="color: #46b450; font-weight: bold;">
-                                <span class="dashicons dashicons-yes"></span> <?php _e('Enabled', 'simplepco-online'); ?>
+                                <span class="dashicons dashicons-yes"></span> <?php _e('Enabled', 'simplepco'); ?>
                             </span>
                         <?php elseif ($access_status === 'locked'): ?>
                             <span style="color: #dba617;">
-                                <span class="dashicons dashicons-lock"></span> <?php _e('License Required', 'simplepco-online'); ?>
+                                <span class="dashicons dashicons-lock"></span> <?php _e('License Required', 'simplepco'); ?>
                             </span>
                         <?php else: ?>
                             <span style="color: #999;">
-                                <span class="dashicons dashicons-no"></span> <?php _e('Disabled', 'simplepco-online'); ?>
+                                <span class="dashicons dashicons-no"></span> <?php _e('Disabled', 'simplepco'); ?>
                             </span>
                         <?php endif; ?>
                     </div>
@@ -206,18 +206,18 @@ class SimplePCO_Modules {
                     <div class="module-action">
                         <?php if ($access_status === 'locked'): ?>
                             <a href="<?php echo admin_url('admin.php?page=simplepco-license'); ?>" class="button button-secondary">
-                                <?php _e('Get License', 'simplepco-online'); ?>
+                                <?php _e('Get License', 'simplepco'); ?>
                             </a>
                         <?php elseif ($access_status === 'upgrade_required'): ?>
                             <a href="<?php echo admin_url('admin.php?page=simplepco-license'); ?>" class="button button-secondary">
-                                <?php _e('Upgrade License', 'simplepco-online'); ?>
+                                <?php _e('Upgrade License', 'simplepco'); ?>
                             </a>
                         <?php else: ?>
                             <button type="button"
                                     class="button toggle-module-btn <?php echo $enabled ? 'button-secondary' : 'button-primary'; ?>"
                                     data-module="<?php echo esc_attr($key); ?>"
                                     data-action="<?php echo $enabled ? 'disable' : 'enable'; ?>">
-                                <?php echo $enabled ? __('Disable', 'simplepco-online') : __('Enable', 'simplepco-online'); ?>
+                                <?php echo $enabled ? __('Disable', 'simplepco') : __('Enable', 'simplepco'); ?>
                             </button>
                         <?php endif; ?>
                     </div>
@@ -241,7 +241,7 @@ class SimplePCO_Modules {
                     var moduleKey = $btn.attr('data-module');
                     var moduleAction = $btn.attr('data-action');
 
-                    $btn.prop('disabled', true).text('<?php _e('Updating...', 'simplepco-online'); ?>');
+                    $btn.prop('disabled', true).text('<?php _e('Updating...', 'simplepco'); ?>');
 
                     $.post(ajaxurl, {
                         action: 'simplepco_toggle_module',
@@ -252,12 +252,12 @@ class SimplePCO_Modules {
                         if (res.success) {
                             window.location.reload();
                         } else {
-                            alert(res.data || '<?php _e('Failed to update module.', 'simplepco-online'); ?>');
-                            $btn.prop('disabled', false).text(moduleAction === 'enable' ? '<?php _e('Enable', 'simplepco-online'); ?>' : '<?php _e('Disable', 'simplepco-online'); ?>');
+                            alert(res.data || '<?php _e('Failed to update module.', 'simplepco'); ?>');
+                            $btn.prop('disabled', false).text(moduleAction === 'enable' ? '<?php _e('Enable', 'simplepco'); ?>' : '<?php _e('Disable', 'simplepco'); ?>');
                         }
                     }).fail(function(xhr) {
                         console.error('AJAX Error:', xhr.responseText);
-                        $btn.prop('disabled', false).text('<?php _e('Error - Try Again', 'simplepco-online'); ?>');
+                        $btn.prop('disabled', false).text('<?php _e('Error - Try Again', 'simplepco'); ?>');
                     });
                 });
             });
@@ -286,7 +286,7 @@ class SimplePCO_Modules {
         check_ajax_referer('simplepco_module_toggle', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(__('Insufficient permissions.', 'simplepco-online'));
+            wp_send_json_error(__('Insufficient permissions.', 'simplepco'));
         }
 
         $module_key = sanitize_text_field($_POST['module']);
@@ -294,7 +294,7 @@ class SimplePCO_Modules {
 
         // Verify module can be enabled (license check)
         if ($action === 'enable' && !$this->module_manager->can_enable_module($module_key)) {
-            wp_send_json_error(__('This module requires a valid license.', 'simplepco-online'));
+            wp_send_json_error(__('This module requires a valid license.', 'simplepco'));
         }
 
         if ($action === 'enable') {
@@ -306,7 +306,7 @@ class SimplePCO_Modules {
         if ($result) {
             wp_send_json_success();
         } else {
-            wp_send_json_error(__('Failed to update module.', 'simplepco-online'));
+            wp_send_json_error(__('Failed to update module.', 'simplepco'));
         }
     }
 }

@@ -44,8 +44,8 @@ class SimplePCO_Services_Admin
         // Change 'simplepco-settings' to 'simplepco-dashboard'
         add_submenu_page(
             'simplepco-dashboard',
-            __('Service Plans', 'simplepco-online'),
-            __('Service Plans', 'simplepco-online'),
+            __('Service Plans', 'simplepco'),
+            __('Service Plans', 'simplepco'),
             'edit_posts',
             'simplepco-services',
             [$this, 'render_services_page']
@@ -55,8 +55,8 @@ class SimplePCO_Services_Admin
         // Use 'options.php' as parent to create a hidden page (avoids null deprecation in PHP 8)
         add_submenu_page(
             'options.php',
-            __('Team Reports', 'simplepco-online'),
-            __('Team Reports', 'simplepco-online'),
+            __('Team Reports', 'simplepco'),
+            __('Team Reports', 'simplepco'),
             'edit_posts',
             'simplepco-services-reports',
             [$this, 'render_reports_page']
@@ -95,7 +95,7 @@ class SimplePCO_Services_Admin
     public function render_services_page()
     {
         if (!current_user_can('edit_posts')) {
-            wp_die(__('Permission denied', 'simplepco-online'));
+            wp_die(__('Permission denied', 'simplepco'));
         }
 
         $view = $_REQUEST['view'] ?? 'list';
@@ -609,7 +609,7 @@ class SimplePCO_Services_Admin
     public function render_reports_page()
     {
         if (!current_user_can('edit_posts')) {
-            wp_die(__('Permission denied', 'simplepco-online'));
+            wp_die(__('Permission denied', 'simplepco'));
         }
 
         // For now, just load the placeholder template
@@ -626,7 +626,7 @@ class SimplePCO_Services_Admin
     private function render_compose_message_page()
     {
         if (!current_user_can('edit_posts')) {
-            wp_die(__('Permission denied', 'simplepco-online'));
+            wp_die(__('Permission denied', 'simplepco'));
         }
 
         // Get plan ID if composing from plan details

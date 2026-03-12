@@ -89,7 +89,7 @@ $time_display = $event['date_obj']->format($time_format);
             <?php else: ?>
                 <!-- No Location Set -->
                 <div class="simplepco-location-no-location">
-                    <p><?php _e('Location to be announced', 'simplepco-online'); ?></p>
+                    <p><?php _e('Location to be announced', 'simplepco'); ?></p>
                 </div>
             <?php endif; ?>
         </div>
@@ -101,7 +101,7 @@ $time_display = $event['date_obj']->format($time_format);
                    target="_blank"
                    rel="noopener noreferrer"
                    class="button simplepco-location-signup-btn">
-                    <?php _e('Sign Up', 'simplepco-online'); ?>
+                    <?php _e('Sign Up', 'simplepco'); ?>
                 </a>
             </div>
         <?php endif; ?>
@@ -113,7 +113,7 @@ $time_display = $event['date_obj']->format($time_format);
                    target="_blank"
                    rel="noopener noreferrer"
                    class="simplepco-location-map-link"
-                   aria-label="<?php esc_attr_e('Open in Google Maps', 'simplepco-online'); ?>">
+                   aria-label="<?php esc_attr_e('Open in Google Maps', 'simplepco'); ?>">
                     <iframe
                         class="simplepco-location-map"
                         src="<?php echo esc_url(call_user_func($create_maps_embed_url, $event['location_full'])); ?>"
@@ -131,7 +131,7 @@ $time_display = $event['date_obj']->format($time_format);
                                 <polyline points="15 3 21 3 21 9"></polyline>
                                 <line x1="10" y1="14" x2="21" y2="3"></line>
                             </svg>
-                            <?php _e('Open in Google Maps', 'simplepco-online'); ?>
+                            <?php _e('Open in Google Maps', 'simplepco'); ?>
                         </span>
                     </div>
                 </a>

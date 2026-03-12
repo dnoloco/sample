@@ -98,7 +98,7 @@ class SimplePCO_Calendar_Block_Registrar implements SimplePCO_Block_Registrar_In
         $events = $this->event_repository->find_featured( $count );
 
         if ( empty( $events ) ) {
-            return '<div class="simplepco-events-block"><p>' . esc_html__( 'No upcoming events.', 'simplepco-online' ) . '</p></div>';
+            return '<div class="simplepco-events-block"><p>' . esc_html__( 'No upcoming events.', 'simplepco' ) . '</p></div>';
         }
 
         $classes = 'simplepco-events-block simplepco-events-' . esc_attr( $view );

@@ -65,7 +65,7 @@ if (!function_exists('simplepco_get_location_name')) {
     <?php if (!empty($featured_events)): ?>
         <div class="pco-featured-section">
             <h2 class="pco-section-title pco-featured-title">
-                <?php _e('Featured', 'simplepco-online'); ?>
+                <?php _e('Featured', 'simplepco'); ?>
             </h2>
 
             <?php foreach ($featured_events as $event):
@@ -88,7 +88,7 @@ if (!function_exists('simplepco_get_location_name')) {
 
                     // Format time display with proper timezone
                     if ($is_all_day) {
-                        $featured_time = __('All Day', 'simplepco-online');
+                        $featured_time = __('All Day', 'simplepco');
                     } else {
                         $featured_time = $start_dt->format('g:ia');
 
@@ -145,18 +145,18 @@ if (!function_exists('simplepco_get_location_name')) {
                         <div class="pco-featured-meta">
                             <span class="pco-featured-date"><?php echo esc_html($featured_date); ?></span>
                             <?php if ($is_recurring): ?>
-                                <span class="pco-featured-recurring">| <?php _e('Recurring', 'simplepco-online'); ?></span>
+                                <span class="pco-featured-recurring">| <?php _e('Recurring', 'simplepco'); ?></span>
                             <?php endif; ?>
                         </div>
 
                         <div class="pco-featured-badges">
                             <span class="pco-badge is-featured">
-                                ★ <?php _e('Featured', 'simplepco-online'); ?>
+                                ★ <?php _e('Featured', 'simplepco'); ?>
                             </span>
 
                             <?php if ($event['registration_url']): ?>
                                 <span class="pco-badge pco-badge-signup">
-                                    <?php _e('Signups available', 'simplepco-online'); ?>
+                                    <?php _e('Signups available', 'simplepco'); ?>
                                 </span>
                             <?php endif; ?>
                         </div>
@@ -170,7 +170,7 @@ if (!function_exists('simplepco_get_location_name')) {
     <!-- Regular Events Section -->
     <div class="pco-events-section">
         <h2 class="pco-section-title pco-upcoming-title">
-            <?php _e('Upcoming', 'simplepco-online'); ?>
+            <?php _e('Upcoming', 'simplepco'); ?>
         </h2>
 
         <?php
@@ -227,7 +227,7 @@ if (!function_exists('simplepco_get_location_name')) {
             <div class="pco-month-group">
                 <h3 class="pco-month-header"><?php echo esc_html($current_month_display); ?></h3>
                 <div class="pco-no-events-box">
-                    <?php _e('No events scheduled', 'simplepco-online'); ?>
+                    <?php _e('No events scheduled', 'simplepco'); ?>
                 </div>
             </div>
         <?php endif; ?>
@@ -252,7 +252,7 @@ if (!function_exists('simplepco_get_location_name')) {
                                     $start_dt->setTimezone($tz);
 
                                     if ($is_all_day) {
-                                        $time_display = __('All Day', 'simplepco-online');
+                                        $time_display = __('All Day', 'simplepco');
                                     } else {
                                         $time_display = $start_dt->format('g:ia');
 
@@ -302,7 +302,7 @@ if (!function_exists('simplepco_get_location_name')) {
                                     <?php if ($event['registration_url']): ?>
                                         <div class="pco-event-badges">
                                             <span class="pco-badge pco-badge-signup">
-                                                <?php _e('Signups available', 'simplepco-online'); ?>
+                                                <?php _e('Signups available', 'simplepco'); ?>
                                             </span>
                                         </div>
                                     <?php endif; ?>

@@ -1,14 +1,14 @@
 <?php
 /**
- * Plugin Name: SimplePCO Online
- * Plugin URI: https://example.com/simplepco-online
+ * Plugin Name: SimplePCO
+ * Plugin URI: https://example.com/simplepco
  * Description: Comprehensive Planning Center Online integration with blended architecture for churches
  * Version: 3.1.0
  * Author: David Dean
  * Author URI: https://example.com
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain: simplepco-online
+ * Text Domain: simplepco
  * Domain Path: /languages
  */
 
@@ -101,7 +101,7 @@ $update_manager->init( $loader );
  * 10. ADMIN HOOKS
  *------------------------------------------------------------------------*/
 
-$plugin_name = 'simplepco-online';
+$plugin_name = 'simplepco';
 
 // Dashboard
 $admin = new SimplePCO_Admin( $plugin_name, SIMPLEPCO_VERSION, $loader, $api_model );

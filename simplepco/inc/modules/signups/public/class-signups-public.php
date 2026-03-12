@@ -193,7 +193,7 @@ class SimplePCO_Signups_Public {
         $amount_due = $signup->payment_amount - $registration->amount_paid;
 
         if ($amount_due <= 0) {
-            return '<div class="simplepco-payment-complete"><p>' . __('Payment has been completed. Thank you!', 'simplepco-online') . '</p></div>';
+            return '<div class="simplepco-payment-complete"><p>' . __('Payment has been completed. Thank you!', 'simplepco') . '</p></div>';
         }
 
         // Get Stripe public key

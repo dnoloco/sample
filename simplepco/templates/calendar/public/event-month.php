@@ -20,17 +20,17 @@ defined('ABSPATH') || exit;
     
     <!-- Month Navigation Header -->
     <div class="pco-month-header">
-        <button id="pco-month-prev" class="pco-month-nav" title="<?php esc_attr_e('Previous Month', 'simplepco-online'); ?>">
+        <button id="pco-month-prev" class="pco-month-nav" title="<?php esc_attr_e('Previous Month', 'simplepco'); ?>">
             <span class="dashicons dashicons-arrow-left-alt2"></span>
-            <?php _e('Previous', 'simplepco-online'); ?>
+            <?php _e('Previous', 'simplepco'); ?>
         </button>
         
         <h2 id="pco-month-title" class="pco-month-title">
             <?php echo esc_html($current_month); ?>
         </h2>
         
-        <button id="pco-month-next" class="pco-month-nav" title="<?php esc_attr_e('Next Month', 'simplepco-online'); ?>">
-            <?php _e('Next', 'simplepco-online'); ?>
+        <button id="pco-month-next" class="pco-month-nav" title="<?php esc_attr_e('Next Month', 'simplepco'); ?>">
+            <?php _e('Next', 'simplepco'); ?>
             <span class="dashicons dashicons-arrow-right-alt2"></span>
         </button>
     </div>
@@ -40,20 +40,20 @@ defined('ABSPATH') || exit;
         
         <!-- Day Headers -->
         <div class="pco-month-days-header">
-            <div class="pco-day-header"><?php _e('Sunday', 'simplepco-online'); ?></div>
-            <div class="pco-day-header"><?php _e('Monday', 'simplepco-online'); ?></div>
-            <div class="pco-day-header"><?php _e('Tuesday', 'simplepco-online'); ?></div>
-            <div class="pco-day-header"><?php _e('Wednesday', 'simplepco-online'); ?></div>
-            <div class="pco-day-header"><?php _e('Thursday', 'simplepco-online'); ?></div>
-            <div class="pco-day-header"><?php _e('Friday', 'simplepco-online'); ?></div>
-            <div class="pco-day-header"><?php _e('Saturday', 'simplepco-online'); ?></div>
+            <div class="pco-day-header"><?php _e('Sunday', 'simplepco'); ?></div>
+            <div class="pco-day-header"><?php _e('Monday', 'simplepco'); ?></div>
+            <div class="pco-day-header"><?php _e('Tuesday', 'simplepco'); ?></div>
+            <div class="pco-day-header"><?php _e('Wednesday', 'simplepco'); ?></div>
+            <div class="pco-day-header"><?php _e('Thursday', 'simplepco'); ?></div>
+            <div class="pco-day-header"><?php _e('Friday', 'simplepco'); ?></div>
+            <div class="pco-day-header"><?php _e('Saturday', 'simplepco'); ?></div>
         </div>
         
         <!-- Calendar Grid - Populated by JavaScript -->
         <div id="pco-month-grid" class="pco-month-grid">
             <!-- Days will be inserted here by JavaScript -->
             <div class="pco-month-loading">
-                <p><?php _e('Loading calendar...', 'simplepco-online'); ?></p>
+                <p><?php _e('Loading calendar...', 'simplepco'); ?></p>
             </div>
         </div>
         
@@ -62,7 +62,7 @@ defined('ABSPATH') || exit;
     <!-- Events List Below Calendar -->
     <div id="pco-month-events-list" class="pco-month-events-list">
         <h3 class="pco-month-events-title">
-            <?php _e('Events This Month', 'simplepco-online'); ?>
+            <?php _e('Events This Month', 'simplepco'); ?>
         </h3>
         
         <div id="pco-month-events-container" class="pco-month-events-container">
@@ -88,7 +88,7 @@ defined('ABSPATH') || exit;
                             $start = new DateTime($event['starts_at'], new DateTimeZone('UTC'));
                             $start->setTimezone($tz);
                             $date_key = $start->format('Y-m-d');
-                            $time_display = $is_all_day ? __('All Day', 'simplepco-online') : $start->format('g:i a');
+                            $time_display = $is_all_day ? __('All Day', 'simplepco') : $start->format('g:i a');
                         } catch (Exception $e) {
                             $date_key = '';
                             $time_display = '';
@@ -123,7 +123,7 @@ defined('ABSPATH') || exit;
                                 
                                 <?php if ($event['is_featured'] ?? false): ?>
                                     <span class="pco-badge is-featured">
-                                        ★ <?php _e('Featured', 'simplepco-online'); ?>
+                                        ★ <?php _e('Featured', 'simplepco'); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
@@ -133,7 +133,7 @@ defined('ABSPATH') || exit;
                 </div>
             <?php else: ?>
                 <p class="pco-no-events">
-                    <?php _e('No events found for this month.', 'simplepco-online'); ?>
+                    <?php _e('No events found for this month.', 'simplepco'); ?>
                 </p>
             <?php endif; ?>
         </div>

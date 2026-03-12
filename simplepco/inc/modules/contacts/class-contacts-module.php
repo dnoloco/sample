@@ -52,8 +52,8 @@ class SimplePCO_Contacts_Module extends SimplePCO_Module_Base {
     public function add_info_page() {
         add_submenu_page(
                 'simplepco-settings',
-                __('Contacts', 'simplepco-online'),
-                __('Contacts', 'simplepco-online'),
+                __('Contacts', 'simplepco'),
+                __('Contacts', 'simplepco'),
                 'manage_options',
                 'simplepco-contacts',
                 [$this, 'render_info_page']
@@ -65,7 +65,7 @@ class SimplePCO_Contacts_Module extends SimplePCO_Module_Base {
      */
     public function render_info_page() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('Permission denied', 'simplepco-online'));
+            wp_die(__('Permission denied', 'simplepco'));
         }
 
         // Check if Clearstream is configured
@@ -75,71 +75,71 @@ class SimplePCO_Contacts_Module extends SimplePCO_Module_Base {
 
         ?>
         <div class="wrap">
-            <h1><?php _e('Contacts Module', 'simplepco-online'); ?></h1>
+            <h1><?php _e('Contacts Module', 'simplepco'); ?></h1>
 
             <?php if (!$is_configured): ?>
                 <div class="notice notice-warning">
-                    <p><strong><?php _e('Clearstream Not Configured', 'simplepco-online'); ?></strong></p>
+                    <p><strong><?php _e('Clearstream Not Configured', 'simplepco'); ?></strong></p>
                     <p>
-                        <?php _e('To use SMS messaging features, you need to configure your Clearstream API credentials.', 'simplepco-online'); ?>
+                        <?php _e('To use SMS messaging features, you need to configure your Clearstream API credentials.', 'simplepco'); ?>
                         <a href="<?php echo esc_url($credentials_url); ?>" class="button button-primary" style="margin-left: 10px;">
-                            <?php _e('Configure Credentials', 'simplepco-online'); ?> →
+                            <?php _e('Configure Credentials', 'simplepco'); ?> →
                         </a>
                     </p>
                 </div>
             <?php else: ?>
                 <div class="notice notice-success">
                     <p>
-                        <strong><?php _e('✓ Clearstream Configured', 'simplepco-online'); ?></strong> -
-                        <?php _e('You can now send SMS messages to team members.', 'simplepco-online'); ?>
+                        <strong><?php _e('✓ Clearstream Configured', 'simplepco'); ?></strong> -
+                        <?php _e('You can now send SMS messages to team members.', 'simplepco'); ?>
                         <a href="<?php echo esc_url($credentials_url); ?>">
-                            <?php _e('Manage credentials', 'simplepco-online'); ?> →
+                            <?php _e('Manage credentials', 'simplepco'); ?> →
                         </a>
                     </p>
                 </div>
             <?php endif; ?>
 
             <div class="card">
-                <h2><?php _e('About the Contacts Module', 'simplepco-online'); ?></h2>
-                <p><?php _e('The Contacts module integrates with Clearstream to send SMS messages to team members scheduled in Planning Center Services.', 'simplepco-online'); ?></p>
+                <h2><?php _e('About the Contacts Module', 'simplepco'); ?></h2>
+                <p><?php _e('The Contacts module integrates with Clearstream to send SMS messages to team members scheduled in Planning Center Services.', 'simplepco'); ?></p>
 
-                <h3><?php _e('Features', 'simplepco-online'); ?></h3>
+                <h3><?php _e('Features', 'simplepco'); ?></h3>
                 <ul>
-                    <li><?php _e('Send bulk SMS to selected team members', 'simplepco-online'); ?></li>
-                    <li><?php _e('Automatic phone number lookup from PCO People', 'simplepco-online'); ?></li>
-                    <li><?php _e('Character counter with credit calculation', 'simplepco-online'); ?></li>
-                    <li><?php _e('Message logging and history', 'simplepco-online'); ?></li>
-                    <li><?php _e('Permission management', 'simplepco-online'); ?></li>
+                    <li><?php _e('Send bulk SMS to selected team members', 'simplepco'); ?></li>
+                    <li><?php _e('Automatic phone number lookup from PCO People', 'simplepco'); ?></li>
+                    <li><?php _e('Character counter with credit calculation', 'simplepco'); ?></li>
+                    <li><?php _e('Message logging and history', 'simplepco'); ?></li>
+                    <li><?php _e('Permission management', 'simplepco'); ?></li>
                 </ul>
 
-                <h3><?php _e('Setup Instructions', 'simplepco-online'); ?></h3>
+                <h3><?php _e('Setup Instructions', 'simplepco'); ?></h3>
                 <ol>
                     <li>
-                        <?php _e('Get your Clearstream API token from your', 'simplepco-online'); ?>
+                        <?php _e('Get your Clearstream API token from your', 'simplepco'); ?>
                         <a href="https://www.getclearstream.com/" target="_blank">
-                            <?php _e('Clearstream account', 'simplepco-online'); ?> ↗
+                            <?php _e('Clearstream account', 'simplepco'); ?> ↗
                         </a>
                     </li>
                     <li>
                         <a href="<?php echo esc_url($credentials_url); ?>">
-                            <?php _e('Go to API Credentials', 'simplepco-online'); ?> →
+                            <?php _e('Go to API Credentials', 'simplepco'); ?> →
                         </a>
-                        <?php _e('and enter your Clearstream credentials', 'simplepco-online'); ?>
+                        <?php _e('and enter your Clearstream credentials', 'simplepco'); ?>
                     </li>
-                    <li><?php _e('Navigate to a service plan in the Services module', 'simplepco-online'); ?></li>
-                    <li><?php _e('Select team members and click "Send Message"', 'simplepco-online'); ?></li>
+                    <li><?php _e('Navigate to a service plan in the Services module', 'simplepco'); ?></li>
+                    <li><?php _e('Select team members and click "Send Message"', 'simplepco'); ?></li>
                 </ol>
 
-                <h3><?php _e('Requirements', 'simplepco-online'); ?></h3>
+                <h3><?php _e('Requirements', 'simplepco'); ?></h3>
                 <ul>
                     <li>
-                        <strong><?php _e('Active Clearstream Account', 'simplepco-online'); ?></strong> -
+                        <strong><?php _e('Active Clearstream Account', 'simplepco'); ?></strong> -
                         <a href="https://www.getclearstream.com/" target="_blank">
-                            <?php _e('Sign up here', 'simplepco-online'); ?> ↗
+                            <?php _e('Sign up here', 'simplepco'); ?> ↗
                         </a>
                     </li>
-                    <li><strong><?php _e('Services Module', 'simplepco-online'); ?></strong> - <?php _e('Must be enabled', 'simplepco-online'); ?></li>
-                    <li><strong><?php _e('Valid License', 'simplepco-online'); ?></strong> - <?php _e('Premium feature', 'simplepco-online'); ?></li>
+                    <li><strong><?php _e('Services Module', 'simplepco'); ?></strong> - <?php _e('Must be enabled', 'simplepco'); ?></li>
+                    <li><strong><?php _e('Valid License', 'simplepco'); ?></strong> - <?php _e('Premium feature', 'simplepco'); ?></li>
                 </ul>
             </div>
         </div>

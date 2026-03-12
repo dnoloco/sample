@@ -48,7 +48,7 @@ define('LICENSE_TIERS', serialize([
 
 // Plugin update information
 define('PLUGIN_CURRENT_VERSION', '2.0.0');
-define('PLUGIN_DOWNLOAD_URL', 'https://your-site.com/downloads/simplepco-online.zip');
+define('PLUGIN_DOWNLOAD_URL', 'https://your-site.com/downloads/simplepco.zip');
 define('PLUGIN_CHANGELOG_URL', 'https://your-site.com/changelog/');
 
 // CORS - Add your customer domains or use '*' for development

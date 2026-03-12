@@ -15,11 +15,11 @@ defined('ABSPATH') || exit;
 ?>
 
 <div class="simplepco-groups-container">
-    <h2 class="simplepco-groups-title"><?php _e('Find a Group', 'simplepco-online'); ?></h2>
+    <h2 class="simplepco-groups-title"><?php _e('Find a Group', 'simplepco'); ?></h2>
 
     <?php if (empty($groups)): ?>
         <p class="simplepco-groups-empty">
-            <?php _e('No groups found or API connection failed. Check your PCO Groups permissions.', 'simplepco-online'); ?>
+            <?php _e('No groups found or API connection failed. Check your PCO Groups permissions.', 'simplepco'); ?>
         </p>
     <?php else: ?>
         <div class="simplepco-groups-grid">
@@ -30,9 +30,9 @@ defined('ABSPATH') || exit;
                 // Fetch related data
                 $campus_id = $rels['campus']['data']['id'] ?? null;
                 $group_type_id = $rels['group_type']['data']['id'] ?? null;
-                $campus_name = $campus_map[$campus_id]['name'] ?? __('N/A', 'simplepco-online');
-                $type_name = $group_type_map[$group_type_id]['name'] ?? __('General Group', 'simplepco-online');
-                $schedule = $attr['schedule'] ?? __('Check leader for schedule', 'simplepco-online');
+                $campus_name = $campus_map[$campus_id]['name'] ?? __('N/A', 'simplepco');
+                $type_name = $group_type_map[$group_type_id]['name'] ?? __('General Group', 'simplepco');
+                $schedule = $attr['schedule'] ?? __('Check leader for schedule', 'simplepco');
                 ?>
                 <div class="simplepco-group-card">
                     <h3 class="simplepco-group-name"><?php echo esc_html($attr['name']); ?></h3>
@@ -58,7 +58,7 @@ defined('ABSPATH') || exit;
                            target="_blank" 
                            rel="noopener noreferrer" 
                            class="simplepco-group-link">
-                            <?php _e('View Details', 'simplepco-online'); ?> &rarr;
+                            <?php _e('View Details', 'simplepco'); ?> &rarr;
                         </a>
                     <?php endif; ?>
                 </div>

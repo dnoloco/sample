@@ -16,18 +16,18 @@ defined('ABSPATH') || exit;
 ?>
 
 <div class="wrap">
-    <h1><?php _e('Compose Message', 'simplepco-online'); ?></h1>
+    <h1><?php _e('Compose Message', 'simplepco'); ?></h1>
     
     <?php if (isset($from) && $from === 'plan'): ?>
         <p>
             <a href="<?php echo esc_url(admin_url('admin.php?page=simplepco-services&view=plan_details&plan_id=' . $plan_id)); ?>" class="button">
-                ← <?php _e('Back to Plan', 'simplepco-online'); ?>
+                ← <?php _e('Back to Plan', 'simplepco'); ?>
             </a>
         </p>
     <?php else: ?>
         <p>
             <a href="<?php echo esc_url(admin_url('admin.php?page=simplepco-services')); ?>" class="button">
-                ← <?php _e('Back to Plans', 'simplepco-online'); ?>
+                ← <?php _e('Back to Plans', 'simplepco'); ?>
             </a>
         </p>
     <?php endif; ?>
@@ -35,32 +35,32 @@ defined('ABSPATH') || exit;
     <hr class="wp-header-end">
 
     <div class="card">
-        <h2><?php _e('Message Composition', 'simplepco-online'); ?></h2>
-        <p><?php _e('This feature will be moved to the Messages module.', 'simplepco-online'); ?></p>
+        <h2><?php _e('Message Composition', 'simplepco'); ?></h2>
+        <p><?php _e('This feature will be moved to the Messages module.', 'simplepco'); ?></p>
         
-        <p><?php _e('For now, please use:', 'simplepco-online'); ?></p>
+        <p><?php _e('For now, please use:', 'simplepco'); ?></p>
         <ul>
             <li>
                 <a href="<?php echo esc_url(admin_url('admin.php?page=simplepco-messages')); ?>">
-                    <?php _e('SimplePCO → Messages', 'simplepco-online'); ?>
+                    <?php _e('SimplePCO → Messages', 'simplepco'); ?>
                 </a>
             </li>
         </ul>
 
         <?php if (isset($plan_id) && isset($title)): ?>
             <hr>
-            <h3><?php _e('Plan Information', 'simplepco-online'); ?></h3>
-            <p><strong><?php _e('Plan:', 'simplepco-online'); ?></strong> <?php echo esc_html($title); ?></p>
+            <h3><?php _e('Plan Information', 'simplepco'); ?></h3>
+            <p><strong><?php _e('Plan:', 'simplepco'); ?></strong> <?php echo esc_html($title); ?></p>
             
             <?php if (isset($team_members) && !empty($team_members)): ?>
-                <p><strong><?php _e('Team Members:', 'simplepco-online'); ?></strong> <?php echo count($team_members); ?></p>
+                <p><strong><?php _e('Team Members:', 'simplepco'); ?></strong> <?php echo count($team_members); ?></p>
             <?php endif; ?>
         <?php endif; ?>
     </div>
 
     <!-- Placeholder Form (to be implemented in Messages module) -->
     <div class="card" style="margin-top: 20px; opacity: 0.5; pointer-events: none;">
-        <h3><?php _e('Preview of Future Interface', 'simplepco-online'); ?></h3>
+        <h3><?php _e('Preview of Future Interface', 'simplepco'); ?></h3>
         
         <form method="post" action="">
             <?php wp_nonce_field('send_clearstream_message'); ?>
@@ -68,20 +68,20 @@ defined('ABSPATH') || exit;
             <table class="form-table">
                 <tr>
                     <th scope="row">
-                        <label for="message_body"><?php _e('Message', 'simplepco-online'); ?></label>
+                        <label for="message_body"><?php _e('Message', 'simplepco'); ?></label>
                     </th>
                     <td>
                         <textarea name="message_body" id="message_body" rows="5" cols="50" class="large-text" disabled></textarea>
-                        <p class="description"><?php _e('Enter your message text', 'simplepco-online'); ?></p>
+                        <p class="description"><?php _e('Enter your message text', 'simplepco'); ?></p>
                     </td>
                 </tr>
                 
                 <tr>
                     <th scope="row">
-                        <?php _e('Recipients', 'simplepco-online'); ?>
+                        <?php _e('Recipients', 'simplepco'); ?>
                     </th>
                     <td>
-                        <p class="description"><?php _e('Select team members to receive this message', 'simplepco-online'); ?></p>
+                        <p class="description"><?php _e('Select team members to receive this message', 'simplepco'); ?></p>
                         <!-- Recipient selection will go here -->
                     </td>
                 </tr>
@@ -89,10 +89,10 @@ defined('ABSPATH') || exit;
 
             <p class="submit">
                 <button type="submit" name="send_clearstream_message" class="button button-primary" disabled>
-                    <?php _e('Send Message', 'simplepco-online'); ?>
+                    <?php _e('Send Message', 'simplepco'); ?>
                 </button>
                 <button type="submit" name="schedule_clearstream_message" class="button" disabled>
-                    <?php _e('Schedule Message', 'simplepco-online'); ?>
+                    <?php _e('Schedule Message', 'simplepco'); ?>
                 </button>
             </p>
         </form>

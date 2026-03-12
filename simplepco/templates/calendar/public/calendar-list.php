@@ -92,9 +92,9 @@ $initial_month_display = isset($events_by_month[$initial_month])
     <!-- Month navigation + category filter -->
     <div class="pco-accordion-header">
         <div class="pco-accordion-nav-row">
-            <button class="pco-accordion-nav-btn" data-dir="prev" aria-label="<?php esc_attr_e('Previous month', 'simplepco-online'); ?>">&#8249;</button>
+            <button class="pco-accordion-nav-btn" data-dir="prev" aria-label="<?php esc_attr_e('Previous month', 'simplepco'); ?>">&#8249;</button>
             <h2 class="pco-accordion-month-title"><?php echo esc_html($initial_month_display); ?></h2>
-            <button class="pco-accordion-nav-btn" data-dir="next" aria-label="<?php esc_attr_e('Next month', 'simplepco-online'); ?>">&#8250;</button>
+            <button class="pco-accordion-nav-btn" data-dir="next" aria-label="<?php esc_attr_e('Next month', 'simplepco'); ?>">&#8250;</button>
         </div>
 
     </div>
@@ -102,7 +102,7 @@ $initial_month_display = isset($events_by_month[$initial_month])
     <!-- Event months -->
     <?php if (empty($events_by_month)): ?>
         <div class="pco-accordion-empty">
-            <p><?php _e('No upcoming events scheduled.', 'simplepco-online'); ?></p>
+            <p><?php _e('No upcoming events scheduled.', 'simplepco'); ?></p>
         </div>
     <?php else: ?>
         <?php $nearest_found = false; ?>
@@ -123,7 +123,7 @@ $initial_month_display = isset($events_by_month[$initial_month])
                     $start_dt->setTimezone($tz);
 
                     if ($is_all_day) {
-                        $time_display = __('ALL DAY', 'simplepco-online');
+                        $time_display = __('ALL DAY', 'simplepco');
                     } else {
                         $time_display = strtoupper($start_dt->format('gA'));
                     }
@@ -202,7 +202,7 @@ $initial_month_display = isset($events_by_month[$initial_month])
                                 <?php endif; ?>
                             </span>
                         </span>
-                        <button class="pco-accordion-close" type="button" aria-label="<?php esc_attr_e('Close', 'simplepco-online'); ?>">&times;</button>
+                        <button class="pco-accordion-close" type="button" aria-label="<?php esc_attr_e('Close', 'simplepco'); ?>">&times;</button>
                     </div>
 
                     <div class="pco-accordion-detail-body">
@@ -229,7 +229,7 @@ $initial_month_display = isset($events_by_month[$initial_month])
                            class="pco-accordion-register-btn"
                            target="_blank"
                            rel="noopener">
-                            <?php _e('Register', 'simplepco-online'); ?>
+                            <?php _e('Register', 'simplepco'); ?>
                         </a>
                         <?php endif; ?>
                     </div>
@@ -241,7 +241,7 @@ $initial_month_display = isset($events_by_month[$initial_month])
 
         <!-- No events for filtered month -->
         <div class="pco-accordion-no-events" style="display: none;">
-            <p><?php _e('No events scheduled this month.', 'simplepco-online'); ?></p>
+            <p><?php _e('No events scheduled this month.', 'simplepco'); ?></p>
         </div>
     <?php endif; ?>
 </div>

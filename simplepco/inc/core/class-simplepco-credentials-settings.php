@@ -29,8 +29,8 @@ class SimplePCO_Credentials_Settings {
     public function add_credentials_page() {
         add_submenu_page(
                 'simplepco-settings',
-                __('API Credentials', 'simplepco-online'),
-                __('API Credentials', 'simplepco-online'),
+                __('API Credentials', 'simplepco'),
+                __('API Credentials', 'simplepco'),
                 'manage_options',
                 'simplepco-credentials',
                 [$this, 'render_credentials_page']
@@ -48,7 +48,7 @@ class SimplePCO_Credentials_Settings {
         check_admin_referer('simplepco_credentials_save');
 
         if (!current_user_can('manage_options')) {
-            wp_die(__('Permission denied', 'simplepco-online'));
+            wp_die(__('Permission denied', 'simplepco'));
         }
 
         // Get submitted values
@@ -183,7 +183,7 @@ class SimplePCO_Credentials_Settings {
      */
     public function render_credentials_page() {
         if (!current_user_can('manage_options')) {
-            wp_die(__('Permission denied', 'simplepco-online'));
+            wp_die(__('Permission denied', 'simplepco'));
         }
 
         // Get current credentials (decrypted for display)
@@ -202,35 +202,35 @@ class SimplePCO_Credentials_Settings {
 
         ?>
         <div class="wrap">
-            <h1><?php _e('API Credentials', 'simplepco-online'); ?></h1>
+            <h1><?php _e('API Credentials', 'simplepco'); ?></h1>
 
             <?php if (isset($_GET['updated'])): ?>
                 <div class="notice notice-success is-dismissible">
-                    <p><strong><?php _e('Credentials saved successfully!', 'simplepco-online'); ?></strong></p>
+                    <p><strong><?php _e('Credentials saved successfully!', 'simplepco'); ?></strong></p>
                 </div>
             <?php endif; ?>
 
             <?php if ($can_migrate): ?>
                 <div class="notice notice-info">
-                    <p><strong><?php _e('Migration Available:', 'simplepco-online'); ?></strong>
-                        <?php _e('We detected credentials in your config.php file. Enter your credentials below and save to securely encrypt them. After migration, you can safely delete config.php.', 'simplepco-online'); ?></p>
+                    <p><strong><?php _e('Migration Available:', 'simplepco'); ?></strong>
+                        <?php _e('We detected credentials in your config.php file. Enter your credentials below and save to securely encrypt them. After migration, you can safely delete config.php.', 'simplepco'); ?></p>
                 </div>
             <?php endif; ?>
 
-            <p><?php _e('Enter your API credentials below. All credentials are encrypted and stored securely.', 'simplepco-online'); ?></p>
+            <p><?php _e('Enter your API credentials below. All credentials are encrypted and stored securely.', 'simplepco'); ?></p>
 
             <form method="post" action="">
                 <?php wp_nonce_field('simplepco_credentials_save'); ?>
 
                 <!-- Planning Center Online Credentials -->
                 <div class="card" style="max-width: 800px; margin-bottom: 20px;">
-                    <h2><?php _e('Planning Center Online', 'simplepco-online'); ?></h2>
-                    <p><?php _e('Required for Calendar, Groups, Services, and other PCO integrations.', 'simplepco-online'); ?></p>
+                    <h2><?php _e('Planning Center Online', 'simplepco'); ?></h2>
+                    <p><?php _e('Required for Calendar, Groups, Services, and other PCO integrations.', 'simplepco'); ?></p>
 
                     <table class="form-table">
                         <tr>
                             <th scope="row">
-                                <label for="pco_client_id"><?php _e('Application ID (Client ID)', 'simplepco-online'); ?></label>
+                                <label for="pco_client_id"><?php _e('Application ID (Client ID)', 'simplepco'); ?></label>
                             </th>
                             <td>
                                 <input type="text"
@@ -240,16 +240,16 @@ class SimplePCO_Credentials_Settings {
                                        class="regular-text"
                                        autocomplete="off">
                                 <p class="description">
-                                    <?php _e('Your PCO Application ID. Get this from', 'simplepco-online'); ?>
+                                    <?php _e('Your PCO Application ID. Get this from', 'simplepco'); ?>
                                     <a href="https://api.planningcenteronline.com/oauth/applications" target="_blank">
-                                        <?php _e('PCO Developer Console', 'simplepco-online'); ?> ↗
+                                        <?php _e('PCO Developer Console', 'simplepco'); ?> ↗
                                     </a>
                                 </p>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="pco_secret_key"><?php _e('Secret', 'simplepco-online'); ?></label>
+                                <label for="pco_secret_key"><?php _e('Secret', 'simplepco'); ?></label>
                             </th>
                             <td>
                                 <input type="password"
@@ -259,7 +259,7 @@ class SimplePCO_Credentials_Settings {
                                        class="regular-text"
                                        autocomplete="off">
                                 <p class="description">
-                                    <?php _e('Your PCO Application Secret.', 'simplepco-online'); ?>
+                                    <?php _e('Your PCO Application Secret.', 'simplepco'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -267,7 +267,7 @@ class SimplePCO_Credentials_Settings {
 
                     <div style="padding: 0 10px 10px;">
                         <button type="button" id="test-pco-btn" class="button button-secondary">
-                            <?php _e('Test PCO Connection', 'simplepco-online'); ?>
+                            <?php _e('Test PCO Connection', 'simplepco'); ?>
                         </button>
                         <span id="pco-test-result" style="margin-left: 10px; font-weight: bold;"></span>
                     </div>
@@ -275,13 +275,13 @@ class SimplePCO_Credentials_Settings {
 
                 <!-- Clearstream Credentials (Premium) -->
                 <div class="card" style="max-width: 800px; margin-bottom: 20px;">
-                    <h2><?php _e('Clearstream (Premium)', 'simplepco-online'); ?></h2>
-                    <p><?php _e('Required for SMS messaging features. Requires Messages module license.', 'simplepco-online'); ?></p>
+                    <h2><?php _e('Clearstream (Premium)', 'simplepco'); ?></h2>
+                    <p><?php _e('Required for SMS messaging features. Requires Messages module license.', 'simplepco'); ?></p>
 
                     <table class="form-table">
                         <tr>
                             <th scope="row">
-                                <label for="clearstream_api_token"><?php _e('API Token', 'simplepco-online'); ?></label>
+                                <label for="clearstream_api_token"><?php _e('API Token', 'simplepco'); ?></label>
                             </th>
                             <td>
                                 <input type="password"
@@ -291,16 +291,16 @@ class SimplePCO_Credentials_Settings {
                                        class="regular-text"
                                        autocomplete="off">
                                 <p class="description">
-                                    <?php _e('Your Clearstream API token. Get this from your', 'simplepco-online'); ?>
+                                    <?php _e('Your Clearstream API token. Get this from your', 'simplepco'); ?>
                                     <a href="https://www.getclearstream.com/" target="_blank">
-                                        <?php _e('Clearstream account', 'simplepco-online'); ?> ↗
+                                        <?php _e('Clearstream account', 'simplepco'); ?> ↗
                                     </a>
                                 </p>
                             </td>
                         </tr>
                         <tr>
                             <th scope="row">
-                                <label for="clearstream_message_header"><?php _e('Message Header (Optional)', 'simplepco-online'); ?></label>
+                                <label for="clearstream_message_header"><?php _e('Message Header (Optional)', 'simplepco'); ?></label>
                             </th>
                             <td>
                                 <input type="text"
@@ -310,7 +310,7 @@ class SimplePCO_Credentials_Settings {
                                        class="regular-text"
                                        placeholder="e.g., Church Name:">
                                 <p class="description">
-                                    <?php _e('Optional prefix added to all outgoing messages.', 'simplepco-online'); ?>
+                                    <?php _e('Optional prefix added to all outgoing messages.', 'simplepco'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -318,30 +318,30 @@ class SimplePCO_Credentials_Settings {
 
                     <div style="padding: 0 10px 10px;">
                         <button type="button" id="test-clearstream-btn" class="button button-secondary">
-                            <?php _e('Test Clearstream Connection', 'simplepco-online'); ?>
+                            <?php _e('Test Clearstream Connection', 'simplepco'); ?>
                         </button>
                         <span id="clearstream-test-result" style="margin-left: 10px; font-weight: bold;"></span>
                     </div>
                 </div>
 
-                <?php submit_button(__('Save Credentials', 'simplepco-online')); ?>
+                <?php submit_button(__('Save Credentials', 'simplepco')); ?>
                 <input type="hidden" name="simplepco_save_credentials" value="1">
             </form>
 
             <!-- Security Information -->
             <div class="card" style="max-width: 800px; margin-top: 20px;">
-                <h3><?php _e('Security Information', 'simplepco-online'); ?></h3>
+                <h3><?php _e('Security Information', 'simplepco'); ?></h3>
                 <ul>
-                    <li><?php _e('All credentials are encrypted using AES-256-CBC encryption', 'simplepco-online'); ?></li>
-                    <li><?php _e('Encryption keys are derived from your WordPress AUTH_KEY and SECURE_AUTH_SALT', 'simplepco-online'); ?></li>
-                    <li><?php _e('Credentials are never transmitted in plain text', 'simplepco-online'); ?></li>
-                    <li><?php _e('Only administrators can access this page', 'simplepco-online'); ?></li>
+                    <li><?php _e('All credentials are encrypted using AES-256-CBC encryption', 'simplepco'); ?></li>
+                    <li><?php _e('Encryption keys are derived from your WordPress AUTH_KEY and SECURE_AUTH_SALT', 'simplepco'); ?></li>
+                    <li><?php _e('Credentials are never transmitted in plain text', 'simplepco'); ?></li>
+                    <li><?php _e('Only administrators can access this page', 'simplepco'); ?></li>
                 </ul>
 
                 <?php if ($config_exists): ?>
                     <hr>
-                    <p><strong><?php _e('Important:', 'simplepco-online'); ?></strong>
-                        <?php _e('After successfully saving your credentials, you should delete the config.php file for security.', 'simplepco-online'); ?></p>
+                    <p><strong><?php _e('Important:', 'simplepco'); ?></strong>
+                        <?php _e('After successfully saving your credentials, you should delete the config.php file for security.', 'simplepco'); ?></p>
                 <?php endif; ?>
             </div>
         </div>
@@ -356,14 +356,14 @@ class SimplePCO_Credentials_Settings {
                     var $btn = $(this);
                     var $result = $('#pco-test-result');
 
-                    $btn.prop('disabled', true).text('<?php esc_js(_e('Testing...', 'simplepco-online')); ?>');
+                    $btn.prop('disabled', true).text('<?php esc_js(_e('Testing...', 'simplepco')); ?>');
                     $result.text('').css('color', 'black');
 
                     $.post(ajaxurl, {
                         action: 'simplepco_test_pco_connection',
                         nonce: testNonce
                     }, function(response) {
-                        $btn.prop('disabled', false).text('<?php esc_js(_e('Test PCO Connection', 'simplepco-online')); ?>');
+                        $btn.prop('disabled', false).text('<?php esc_js(_e('Test PCO Connection', 'simplepco')); ?>');
                         if (response.success) {
                             $result.html(response.data).css('color', 'green');
                         } else {
@@ -378,14 +378,14 @@ class SimplePCO_Credentials_Settings {
                     var $btn = $(this);
                     var $result = $('#clearstream-test-result');
 
-                    $btn.prop('disabled', true).text('<?php esc_js(_e('Testing...', 'simplepco-online')); ?>');
+                    $btn.prop('disabled', true).text('<?php esc_js(_e('Testing...', 'simplepco')); ?>');
                     $result.text('').css('color', 'black');
 
                     $.post(ajaxurl, {
                         action: 'simplepco_test_clearstream_connection',
                         nonce: testNonce
                     }, function(response) {
-                        $btn.prop('disabled', false).text('<?php esc_js(_e('Test Clearstream Connection', 'simplepco-online')); ?>');
+                        $btn.prop('disabled', false).text('<?php esc_js(_e('Test Clearstream Connection', 'simplepco')); ?>');
                         if (response.success) {
                             $result.html(response.data).css('color', 'green');
                         } else {

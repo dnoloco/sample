@@ -7,7 +7,7 @@
  *
  * @link       https://example.com
  * @since      2.0.0
- * @package    SimplePCO_Online
+ * @package    SimplePCO
  */
 
 // If uninstall not called from WordPress, exit
@@ -128,7 +128,7 @@ function simplepco_clear_cron_tasks() {
  * Log uninstall for debugging (optional).
  */
 function simplepco_log_uninstall() {
-    error_log('SimplePCO Online: Plugin completely uninstalled');
+    error_log('SimplePCO: Plugin completely uninstalled');
 }
 
 // Execute uninstall procedures

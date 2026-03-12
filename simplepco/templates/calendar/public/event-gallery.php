@@ -88,13 +88,13 @@ uasort($events_by_name, function($a, $b) {
 <div id="pco-view-gallery" class="pco-view-section<?php echo esc_attr($gallery_active); ?>">
     
     <h2 class="pco-section-title pco-gallery-title">
-        <?php _e('Event Gallery', 'simplepco-online'); ?>
+        <?php _e('Event Gallery', 'simplepco'); ?>
     </h2>
     
     <?php if (empty($events_by_name)): ?>
 
         <p class="pco-no-events">
-            <?php _e('No upcoming events found to display.', 'simplepco-online'); ?>
+            <?php _e('No upcoming events found to display.', 'simplepco'); ?>
         </p>
 
     <?php else: ?>
@@ -140,7 +140,7 @@ uasort($events_by_name, function($a, $b) {
 
                 // Format time display with end time if available
                 if ($closest_instance['is_all_day'] ?? false) {
-                    $time_display = __('All Day', 'simplepco-online');
+                    $time_display = __('All Day', 'simplepco');
                 } else {
                     $time_display = $closest_date->format('g:ia');
                     if (!empty($closest_instance['ends_at'])) {
@@ -201,7 +201,7 @@ uasort($events_by_name, function($a, $b) {
 
                         <!-- Event Meta: Date and Recurring indicator -->
                         <div class="pco-gallery-meta">
-                            <?php echo esc_html($gallery_date); ?><?php if ($is_recurring): ?> | <?php _e('Recurring', 'simplepco-online'); ?><?php endif; ?>
+                            <?php echo esc_html($gallery_date); ?><?php if ($is_recurring): ?> | <?php _e('Recurring', 'simplepco'); ?><?php endif; ?>
                         </div>
 
                         <!-- Badges -->
@@ -209,12 +209,12 @@ uasort($events_by_name, function($a, $b) {
                             <?php if ($event['is_featured'] ?? false): ?>
                                 <span class="pco-badge pco-badge-featured">
                                     <span class="dashicons dashicons-star-filled"></span>
-                                    <?php _e('Featured', 'simplepco-online'); ?>
+                                    <?php _e('Featured', 'simplepco'); ?>
                                 </span>
                             <?php endif; ?>
                             <?php if ($event['registration_url']): ?>
                                 <span class="pco-badge pco-badge-signup">
-                                    <?php _e('Signups available', 'simplepco-online'); ?>
+                                    <?php _e('Signups available', 'simplepco'); ?>
                                 </span>
                             <?php endif; ?>
                         </div>

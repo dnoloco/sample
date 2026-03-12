@@ -31,8 +31,8 @@ class SimplePCO_Shortcodes_Admin {
     public function add_admin_page() {
         add_submenu_page(
             'simplepco-settings',
-            __('Shortcodes', 'simplepco-online'),
-            __('Shortcodes', 'simplepco-online'),
+            __('Shortcodes', 'simplepco'),
+            __('Shortcodes', 'simplepco'),
             'edit_posts',
             'simplepco-shortcodes',
             [$this, 'render_shortcodes_page']
@@ -69,7 +69,7 @@ class SimplePCO_Shortcodes_Admin {
      */
     public function render_shortcodes_page() {
         if (!current_user_can('edit_posts')) {
-            wp_die(__('Permission denied', 'simplepco-online'));
+            wp_die(__('Permission denied', 'simplepco'));
         }
 
         // Get all available shortcodes

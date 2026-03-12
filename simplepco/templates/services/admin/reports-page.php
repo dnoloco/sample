@@ -14,24 +14,24 @@ defined('ABSPATH') || exit;
 ?>
 
 <div class="wrap">
-    <h1><?php _e('Team Reports', 'simplepco-online'); ?></h1>
+    <h1><?php _e('Team Reports', 'simplepco'); ?></h1>
     <hr class="wp-header-end">
 
     <div class="card">
-        <h2><?php _e('Coming Soon', 'simplepco-online'); ?></h2>
-        <p><?php _e('Team reports functionality will be available in a future update.', 'simplepco-online'); ?></p>
+        <h2><?php _e('Coming Soon', 'simplepco'); ?></h2>
+        <p><?php _e('Team reports functionality will be available in a future update.', 'simplepco'); ?></p>
         
-        <p><?php _e('Planned features:', 'simplepco-online'); ?></p>
+        <p><?php _e('Planned features:', 'simplepco'); ?></p>
         <ul>
-            <li><?php _e('Team member participation over time', 'simplepco-online'); ?></li>
-            <li><?php _e('Confirmation rates by team', 'simplepco-online'); ?></li>
-            <li><?php _e('Declined requests by person', 'simplepco-online'); ?></li>
-            <li><?php _e('Custom date range filtering', 'simplepco-online'); ?></li>
-            <li><?php _e('Export to CSV', 'simplepco-online'); ?></li>
+            <li><?php _e('Team member participation over time', 'simplepco'); ?></li>
+            <li><?php _e('Confirmation rates by team', 'simplepco'); ?></li>
+            <li><?php _e('Declined requests by person', 'simplepco'); ?></li>
+            <li><?php _e('Custom date range filtering', 'simplepco'); ?></li>
+            <li><?php _e('Export to CSV', 'simplepco'); ?></li>
         </ul>
 
         <p><a href="<?php echo esc_url(admin_url('admin.php?page=simplepco-services')); ?>" class="button">
-            <?php _e('← Back to Service Plans', 'simplepco-online'); ?>
+            <?php _e('← Back to Service Plans', 'simplepco'); ?>
         </a></p>
     </div>
 </div>

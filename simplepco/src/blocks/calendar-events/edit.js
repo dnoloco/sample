@@ -38,7 +38,7 @@ export default function Edit( { attributes, setAttributes } ) {
                 setLoading( false );
             } )
             .catch( ( err ) => {
-                setError( err.message || __( 'Failed to load events.', 'simplepco-online' ) );
+                setError( err.message || __( 'Failed to load events.', 'simplepco' ) );
                 setLoading( false );
             } );
     }, [ count, view ] );
@@ -46,31 +46,31 @@ export default function Edit( { attributes, setAttributes } ) {
     return (
         <div { ...blockProps }>
             <InspectorControls>
-                <PanelBody title={ __( 'Event Settings', 'simplepco-online' ) }>
+                <PanelBody title={ __( 'Event Settings', 'simplepco' ) }>
                     <RangeControl
-                        label={ __( 'Number of Events', 'simplepco-online' ) }
+                        label={ __( 'Number of Events', 'simplepco' ) }
                         value={ count }
                         onChange={ ( val ) => setAttributes( { count: val } ) }
                         min={ 1 }
                         max={ 25 }
                     />
                     <SelectControl
-                        label={ __( 'View Style', 'simplepco-online' ) }
+                        label={ __( 'View Style', 'simplepco' ) }
                         value={ view }
                         options={ [
-                            { label: __( 'List', 'simplepco-online' ), value: 'list' },
-                            { label: __( 'Grid', 'simplepco-online' ), value: 'grid' },
-                            { label: __( 'Calendar', 'simplepco-online' ), value: 'calendar' },
+                            { label: __( 'List', 'simplepco' ), value: 'list' },
+                            { label: __( 'Grid', 'simplepco' ), value: 'grid' },
+                            { label: __( 'Calendar', 'simplepco' ), value: 'calendar' },
                         ] }
                         onChange={ ( val ) => setAttributes( { view: val } ) }
                     />
                     <ToggleControl
-                        label={ __( 'Show Images', 'simplepco-online' ) }
+                        label={ __( 'Show Images', 'simplepco' ) }
                         checked={ showImages }
                         onChange={ ( val ) => setAttributes( { showImages: val } ) }
                     />
                     <ToggleControl
-                        label={ __( 'Show Description', 'simplepco-online' ) }
+                        label={ __( 'Show Description', 'simplepco' ) }
                         checked={ showDescription }
                         onChange={ ( val ) => setAttributes( { showDescription: val } ) }
                     />
@@ -78,20 +78,20 @@ export default function Edit( { attributes, setAttributes } ) {
             </InspectorControls>
 
             { loading && (
-                <Placeholder icon="calendar-alt" label={ __( 'PCO Calendar Events', 'simplepco-online' ) }>
+                <Placeholder icon="calendar-alt" label={ __( 'PCO Calendar Events', 'simplepco' ) }>
                     <Spinner />
                 </Placeholder>
             ) }
 
             { error && (
-                <Placeholder icon="warning" label={ __( 'PCO Calendar Events', 'simplepco-online' ) }>
+                <Placeholder icon="warning" label={ __( 'PCO Calendar Events', 'simplepco' ) }>
                     <p>{ error }</p>
                 </Placeholder>
             ) }
 
             { ! loading && ! error && events.length === 0 && (
-                <Placeholder icon="calendar-alt" label={ __( 'PCO Calendar Events', 'simplepco-online' ) }>
-                    <p>{ __( 'No upcoming events found.', 'simplepco-online' ) }</p>
+                <Placeholder icon="calendar-alt" label={ __( 'PCO Calendar Events', 'simplepco' ) }>
+                    <p>{ __( 'No upcoming events found.', 'simplepco' ) }</p>
                 </Placeholder>
             ) }
 

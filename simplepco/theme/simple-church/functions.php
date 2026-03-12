@@ -18,12 +18,12 @@ define( 'SIMPLE_CHURCH_URI', get_template_directory_uri() );
 require SIMPLE_CHURCH_DIR . '/inc/seasonal-styles.php';
 
 /**
- * Check whether the SimplePCO Online plugin is active.
+ * Check whether the SimplePCO plugin is active.
  *
  * @return bool
  */
 function simple_church_is_simplepco_active() {
-	return function_exists( 'run_simplepco_online' );
+	return function_exists( 'run_simplepco' );
 }
 
 /**
@@ -675,7 +675,7 @@ function simple_church_hero_variation_defaults() {
 /**
  * Shortcode: [simple_church_features]
  *
- * Outputs the features / module grid. When the SimplePCO Online plugin is active
+ * Outputs the features / module grid. When the SimplePCO plugin is active
  * the cards display live Planning Center data via shortcodes; otherwise they
  * show generic church feature descriptions.
  *

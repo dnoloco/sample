@@ -29,8 +29,8 @@ $is_edit_view = isset($action) && $action === 'edit';
           // ================================================================ ?>
 
     <h1>
-        <?php _e('Add New Shortcode', 'simplepco-online'); ?>
-        <a href="<?php echo esc_url($page_url); ?>" class="page-title-action"><?php _e('Back to Shortcodes', 'simplepco-online'); ?></a>
+        <?php _e('Add New Shortcode', 'simplepco'); ?>
+        <a href="<?php echo esc_url($page_url); ?>" class="page-title-action"><?php _e('Back to Shortcodes', 'simplepco'); ?></a>
     </h1>
     <hr class="wp-header-end">
 
@@ -45,18 +45,18 @@ $is_edit_view = isset($action) && $action === 'edit';
     <div class="simplepco-builder">
         <!-- Left Panel -->
         <div class="simplepco-builder-left">
-            <h3><?php _e('Select a Module', 'simplepco-online'); ?></h3>
+            <h3><?php _e('Select a Module', 'simplepco'); ?></h3>
             <select id="simplepco-module-select">
-                <option value=""><?php _e('Choose...', 'simplepco-online'); ?></option>
+                <option value=""><?php _e('Choose...', 'simplepco'); ?></option>
                 <?php foreach ($modules as $mod_key => $mod_name): ?>
                     <option value="<?php echo esc_attr($mod_key); ?>"><?php echo esc_html($mod_name); ?></option>
                 <?php endforeach; ?>
             </select>
 
-            <h3><?php _e('Shortcode List', 'simplepco-online'); ?></h3>
+            <h3><?php _e('Shortcode List', 'simplepco'); ?></h3>
 
             <div id="simplepco-type-lists">
-                <p class="simplepco-builder-hint" id="simplepco-type-hint"><?php _e('Select a module above.', 'simplepco-online'); ?></p>
+                <p class="simplepco-builder-hint" id="simplepco-type-hint"><?php _e('Select a module above.', 'simplepco'); ?></p>
 
                 <?php foreach ($grouped as $mod_key => $mod_types):
                     // Separate regular types from addon types
@@ -73,7 +73,7 @@ $is_edit_view = isset($action) && $action === 'edit';
                         <?php endforeach; ?>
                         <?php if (!empty($addon_types)): ?>
                             <li class="simplepco-type-list-addon-separator" aria-hidden="true">&nbsp;</li>
-                            <li class="simplepco-type-list-addon-header"><?php _e('Addon', 'simplepco-online'); ?></li>
+                            <li class="simplepco-type-list-addon-header"><?php _e('Addon', 'simplepco'); ?></li>
                             <?php foreach ($addon_types as $slug => $type): ?>
                                 <li>
                                     <a href="#" class="simplepco-type-link" data-type="<?php echo esc_attr($slug); ?>">
@@ -90,7 +90,7 @@ $is_edit_view = isset($action) && $action === 'edit';
         <!-- Right Panel -->
         <div class="simplepco-builder-right">
             <div id="simplepco-builder-placeholder">
-                <p><?php _e('Select a shortcode type to configure.', 'simplepco-online'); ?></p>
+                <p><?php _e('Select a shortcode type to configure.', 'simplepco'); ?></p>
             </div>
 
             <form method="post" action="" id="simplepco-builder-form" style="display:none;">
@@ -99,11 +99,11 @@ $is_edit_view = isset($action) && $action === 'edit';
                 <input type="hidden" name="shortcode_id" value="0">
                 <input type="hidden" name="shortcode_type" id="simplepco-builder-type" value="">
 
-                <h3><?php _e('Shortcode Settings', 'simplepco-online'); ?></h3>
+                <h3><?php _e('Shortcode Settings', 'simplepco'); ?></h3>
 
                 <!-- Description (always visible) -->
                 <div class="simplepco-field">
-                    <label for="shortcode_description"><?php _e('Description', 'simplepco-online'); ?></label>
+                    <label for="shortcode_description"><?php _e('Description', 'simplepco'); ?></label>
                     <input type="text" id="shortcode_description" name="shortcode_description" class="large-text"
                            >
                 </div>
@@ -171,36 +171,36 @@ $is_edit_view = isset($action) && $action === 'edit';
                 <?php endforeach; ?>
 
                 <!-- Styling (always visible once a type is chosen) -->
-                <h4><?php _e('Styling', 'simplepco-online'); ?></h4>
+                <h4><?php _e('Styling', 'simplepco'); ?></h4>
 
                 <div class="simplepco-field">
-                    <label for="custom_class"><?php _e('Custom CSS Class', 'simplepco-online'); ?></label>
+                    <label for="custom_class"><?php _e('Custom CSS Class', 'simplepco'); ?></label>
                     <input type="text" id="custom_class" name="custom_class" class="regular-text"
-                           placeholder="<?php esc_attr_e('my-custom-class', 'simplepco-online'); ?>">
+                           placeholder="<?php esc_attr_e('my-custom-class', 'simplepco'); ?>">
                 </div>
 
                 <div class="simplepco-field-row">
                     <div class="simplepco-field simplepco-field-color">
-                        <label for="primary_color"><?php _e('Primary', 'simplepco-online'); ?></label>
+                        <label for="primary_color"><?php _e('Primary', 'simplepco'); ?></label>
                         <input type="color" id="primary_color" name="primary_color" value="#333333">
                     </div>
                     <div class="simplepco-field simplepco-field-color">
-                        <label for="text_color"><?php _e('Text', 'simplepco-online'); ?></label>
+                        <label for="text_color"><?php _e('Text', 'simplepco'); ?></label>
                         <input type="color" id="text_color" name="text_color" value="#333333">
                     </div>
                     <div class="simplepco-field simplepco-field-color">
-                        <label for="background_color"><?php _e('Background', 'simplepco-online'); ?></label>
+                        <label for="background_color"><?php _e('Background', 'simplepco'); ?></label>
                         <input type="color" id="background_color" name="background_color" value="#ffffff">
                     </div>
                     <div class="simplepco-field simplepco-field-color">
-                        <label for="border_radius"><?php _e('Radius', 'simplepco-online'); ?></label>
+                        <label for="border_radius"><?php _e('Radius', 'simplepco'); ?></label>
                         <input type="number" id="border_radius" name="border_radius" value="8" min="0" max="30" class="small-text"> px
                     </div>
                 </div>
 
                 <p class="submit">
-                    <button type="submit" class="button button-primary"><?php _e('Create Shortcode', 'simplepco-online'); ?></button>
-                    <a href="<?php echo esc_url($page_url); ?>" class="button"><?php _e('Cancel', 'simplepco-online'); ?></a>
+                    <button type="submit" class="button button-primary"><?php _e('Create Shortcode', 'simplepco'); ?></button>
+                    <a href="<?php echo esc_url($page_url); ?>" class="button"><?php _e('Cancel', 'simplepco'); ?></a>
                 </p>
             </form>
         </div>
@@ -287,18 +287,18 @@ $is_edit_view = isset($action) && $action === 'edit';
           // ================================================================ ?>
 
     <h1>
-        <?php printf(__('Edit Shortcode #%d', 'simplepco-online'), $id); ?>
-        <a href="<?php echo esc_url($page_url); ?>" class="page-title-action"><?php _e('Back to Shortcodes', 'simplepco-online'); ?></a>
+        <?php printf(__('Edit Shortcode #%d', 'simplepco'), $id); ?>
+        <a href="<?php echo esc_url($page_url); ?>" class="page-title-action"><?php _e('Back to Shortcodes', 'simplepco'); ?></a>
     </h1>
     <hr class="wp-header-end">
 
     <?php if ($id > 0): ?>
         <div class="simplepco-shortcode-preview-bar">
-            <strong><?php _e('Shortcode:', 'simplepco-online'); ?></strong>
+            <strong><?php _e('Shortcode:', 'simplepco'); ?></strong>
             <?php $preview_code = '[' . $type_def['tag'] . ' id="' . $id . '"]'; ?>
             <code id="shortcode-preview"><?php echo esc_html($preview_code); ?></code>
             <button type="button" class="button button-small simplepco-copy-btn" data-copy="<?php echo esc_attr($preview_code); ?>">
-                <?php _e('Copy', 'simplepco-online'); ?>
+                <?php _e('Copy', 'simplepco'); ?>
             </button>
         </div>
     <?php endif; ?>
@@ -310,10 +310,10 @@ $is_edit_view = isset($action) && $action === 'edit';
         <input type="hidden" name="shortcode_type" value="<?php echo esc_attr($type_slug); ?>">
 
         <div class="card">
-            <h2><?php _e('General Settings', 'simplepco-online'); ?></h2>
+            <h2><?php _e('General Settings', 'simplepco'); ?></h2>
             <table class="form-table">
                 <tr>
-                    <th scope="row"><label for="shortcode_description"><?php _e('Description', 'simplepco-online'); ?></label></th>
+                    <th scope="row"><label for="shortcode_description"><?php _e('Description', 'simplepco'); ?></label></th>
                     <td>
                         <input type="text" id="shortcode_description" name="shortcode_description"
                                value="<?php echo esc_attr($shortcode['description'] ?? ''); ?>"
@@ -321,11 +321,11 @@ $is_edit_view = isset($action) && $action === 'edit';
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Module', 'simplepco-online'); ?></th>
+                    <th scope="row"><?php _e('Module', 'simplepco'); ?></th>
                     <td><strong><?php echo esc_html($type_def['module_name']); ?></strong></td>
                 </tr>
                 <tr>
-                    <th scope="row"><?php _e('Shortcode Type', 'simplepco-online'); ?></th>
+                    <th scope="row"><?php _e('Shortcode Type', 'simplepco'); ?></th>
                     <td><code><?php echo esc_html($type_def['tag']); ?></code></td>
                 </tr>
             </table>
@@ -333,7 +333,7 @@ $is_edit_view = isset($action) && $action === 'edit';
 
         <?php if (!empty($type_def['fields'])): ?>
             <div class="card">
-                <h2><?php printf(__('%s Settings', 'simplepco-online'), esc_html($type_def['name'])); ?></h2>
+                <h2><?php printf(__('%s Settings', 'simplepco'), esc_html($type_def['name'])); ?></h2>
                 <table class="form-table">
                     <?php foreach ($type_def['fields'] as $field):
                         $value = $shortcode[$field['key']] ?? ($type_def['defaults'][$field['key']] ?? '');
@@ -385,34 +385,34 @@ $is_edit_view = isset($action) && $action === 'edit';
         <?php endif; ?>
 
         <div class="card">
-            <h2><?php _e('Styling', 'simplepco-online'); ?></h2>
+            <h2><?php _e('Styling', 'simplepco'); ?></h2>
             <table class="form-table">
                 <tr>
-                    <th scope="row"><label for="custom_class"><?php _e('Custom CSS Class', 'simplepco-online'); ?></label></th>
+                    <th scope="row"><label for="custom_class"><?php _e('Custom CSS Class', 'simplepco'); ?></label></th>
                     <td><input type="text" id="custom_class" name="custom_class" value="<?php echo esc_attr($shortcode['custom_class'] ?? ''); ?>" class="regular-text"></td>
                 </tr>
                 <tr>
-                    <th scope="row"><label for="primary_color"><?php _e('Primary Color', 'simplepco-online'); ?></label></th>
+                    <th scope="row"><label for="primary_color"><?php _e('Primary Color', 'simplepco'); ?></label></th>
                     <td><input type="color" id="primary_color" name="primary_color" value="<?php echo esc_attr($shortcode['primary_color'] ?? '#333333'); ?>"> <span class="simplepco-color-preview"><?php echo esc_html($shortcode['primary_color'] ?? '#333333'); ?></span></td>
                 </tr>
                 <tr>
-                    <th scope="row"><label for="text_color"><?php _e('Text Color', 'simplepco-online'); ?></label></th>
+                    <th scope="row"><label for="text_color"><?php _e('Text Color', 'simplepco'); ?></label></th>
                     <td><input type="color" id="text_color" name="text_color" value="<?php echo esc_attr($shortcode['text_color'] ?? '#333333'); ?>"> <span class="simplepco-color-preview"><?php echo esc_html($shortcode['text_color'] ?? '#333333'); ?></span></td>
                 </tr>
                 <tr>
-                    <th scope="row"><label for="background_color"><?php _e('Background Color', 'simplepco-online'); ?></label></th>
+                    <th scope="row"><label for="background_color"><?php _e('Background Color', 'simplepco'); ?></label></th>
                     <td><input type="color" id="background_color" name="background_color" value="<?php echo esc_attr($shortcode['background_color'] ?? '#ffffff'); ?>"> <span class="simplepco-color-preview"><?php echo esc_html($shortcode['background_color'] ?? '#ffffff'); ?></span></td>
                 </tr>
                 <tr>
-                    <th scope="row"><label for="border_radius"><?php _e('Border Radius', 'simplepco-online'); ?></label></th>
+                    <th scope="row"><label for="border_radius"><?php _e('Border Radius', 'simplepco'); ?></label></th>
                     <td><input type="number" id="border_radius" name="border_radius" value="<?php echo esc_attr($shortcode['border_radius'] ?? 8); ?>" min="0" max="30" class="small-text"> px</td>
                 </tr>
             </table>
         </div>
 
         <p class="submit">
-            <button type="submit" class="button button-primary"><?php _e('Save Settings', 'simplepco-online'); ?></button>
-            <a href="<?php echo esc_url($page_url); ?>" class="button"><?php _e('Cancel', 'simplepco-online'); ?></a>
+            <button type="submit" class="button button-primary"><?php _e('Save Settings', 'simplepco'); ?></button>
+            <a href="<?php echo esc_url($page_url); ?>" class="button"><?php _e('Cancel', 'simplepco'); ?></a>
         </p>
     </form>
 
@@ -423,8 +423,8 @@ $is_edit_view = isset($action) && $action === 'edit';
             var text = $(this).data('copy'), $btn = $(this);
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(text).then(function() {
-                    $btn.text('<?php echo esc_js(__('Copied!', 'simplepco-online')); ?>');
-                    setTimeout(function() { $btn.text('<?php echo esc_js(__('Copy', 'simplepco-online')); ?>'); }, 2000);
+                    $btn.text('<?php echo esc_js(__('Copied!', 'simplepco')); ?>');
+                    setTimeout(function() { $btn.text('<?php echo esc_js(__('Copy', 'simplepco')); ?>'); }, 2000);
                 });
             }
         });
@@ -452,25 +452,25 @@ $is_edit_view = isset($action) && $action === 'edit';
           //   $settings_saved, $deleted, $bulk_deleted, $page_url
           // ================================================================ ?>
 
-    <h1 class="wp-heading-inline"><?php _e('Shortcodes', 'simplepco-online'); ?></h1>
-    <a href="<?php echo esc_url($page_url . '&action=new'); ?>" class="page-title-action"><?php _e('Add New', 'simplepco-online'); ?></a>
+    <h1 class="wp-heading-inline"><?php _e('Shortcodes', 'simplepco'); ?></h1>
+    <a href="<?php echo esc_url($page_url . '&action=new'); ?>" class="page-title-action"><?php _e('Add New', 'simplepco'); ?></a>
     <hr class="wp-header-end">
 
     <?php if ($settings_saved): ?>
-        <div class="notice notice-success is-dismissible"><p><?php _e('Shortcode settings saved successfully!', 'simplepco-online'); ?></p></div>
+        <div class="notice notice-success is-dismissible"><p><?php _e('Shortcode settings saved successfully!', 'simplepco'); ?></p></div>
     <?php endif; ?>
     <?php if ($deleted): ?>
-        <div class="notice notice-success is-dismissible"><p><?php _e('Shortcode deleted.', 'simplepco-online'); ?></p></div>
+        <div class="notice notice-success is-dismissible"><p><?php _e('Shortcode deleted.', 'simplepco'); ?></p></div>
     <?php endif; ?>
     <?php if (!empty($bulk_deleted)): ?>
-        <div class="notice notice-success is-dismissible"><p><?php printf(_n('%d shortcode deleted.', '%d shortcodes deleted.', $bulk_deleted, 'simplepco-online'), $bulk_deleted); ?></p></div>
+        <div class="notice notice-success is-dismissible"><p><?php printf(_n('%d shortcode deleted.', '%d shortcodes deleted.', $bulk_deleted, 'simplepco'), $bulk_deleted); ?></p></div>
     <?php endif; ?>
 
     <!-- Module Filter Links -->
     <ul class="subsubsub">
         <li class="all">
             <a href="<?php echo esc_url($page_url); ?>" <?php echo empty($current_filter) ? 'class="current" aria-current="page"' : ''; ?>>
-                <?php _e('All', 'simplepco-online'); ?> <span class="count">(<?php echo esc_html($count_all); ?>)</span>
+                <?php _e('All', 'simplepco'); ?> <span class="count">(<?php echo esc_html($count_all); ?>)</span>
             </a>
         </li>
         <?php foreach ($modules as $mod_key => $mod_name): ?>
@@ -492,13 +492,13 @@ $is_edit_view = isset($action) && $action === 'edit';
         <div class="tablenav top">
             <div class="alignleft actions bulkactions">
                 <select name="bulk_action" id="bulk-action-selector-top">
-                    <option value="-1"><?php _e('Bulk actions', 'simplepco-online'); ?></option>
-                    <option value="trash"><?php _e('Move to Trash', 'simplepco-online'); ?></option>
+                    <option value="-1"><?php _e('Bulk actions', 'simplepco'); ?></option>
+                    <option value="trash"><?php _e('Move to Trash', 'simplepco'); ?></option>
                 </select>
-                <input type="submit" class="button action" value="<?php esc_attr_e('Apply', 'simplepco-online'); ?>">
+                <input type="submit" class="button action" value="<?php esc_attr_e('Apply', 'simplepco'); ?>">
             </div>
             <div class="tablenav-pages one-page">
-                <span class="displaying-num"><?php printf(_n('%s item', '%s items', count($shortcodes), 'simplepco-online'), count($shortcodes)); ?></span>
+                <span class="displaying-num"><?php printf(_n('%s item', '%s items', count($shortcodes), 'simplepco'), count($shortcodes)); ?></span>
             </div>
             <br class="clear">
         </div>
@@ -507,15 +507,15 @@ $is_edit_view = isset($action) && $action === 'edit';
             <thead>
             <tr>
                 <td id="cb" class="manage-column column-cb check-column"><input id="cb-select-all-1" type="checkbox"></td>
-                <th scope="col" class="manage-column column-shortcode column-primary"><?php _e('Shortcode', 'simplepco-online'); ?></th>
-                <th scope="col" class="manage-column column-description"><?php _e('Description', 'simplepco-online'); ?></th>
-                <th scope="col" class="manage-column column-module"><?php _e('Module', 'simplepco-online'); ?></th>
-                <th scope="col" class="manage-column column-type"><?php _e('Type', 'simplepco-online'); ?></th>
+                <th scope="col" class="manage-column column-shortcode column-primary"><?php _e('Shortcode', 'simplepco'); ?></th>
+                <th scope="col" class="manage-column column-description"><?php _e('Description', 'simplepco'); ?></th>
+                <th scope="col" class="manage-column column-module"><?php _e('Module', 'simplepco'); ?></th>
+                <th scope="col" class="manage-column column-type"><?php _e('Type', 'simplepco'); ?></th>
             </tr>
             </thead>
             <tbody id="the-list">
             <?php if (empty($shortcodes)): ?>
-                <tr class="no-items"><td class="colspanchange" colspan="5"><?php _e('No shortcodes found. Click "Add New" to create one.', 'simplepco-online'); ?></td></tr>
+                <tr class="no-items"><td class="colspanchange" colspan="5"><?php _e('No shortcodes found. Click "Add New" to create one.', 'simplepco'); ?></td></tr>
             <?php else: ?>
                 <?php foreach ($shortcodes as $sc_id => $sc):
                     $sc_type_slug = SimplePCO_Shortcodes_Admin::resolve_legacy_type($sc['shortcode_type'] ?? '', $sc);
@@ -523,7 +523,7 @@ $is_edit_view = isset($action) && $action === 'edit';
                     $sc_tag       = $sc_type ? $sc_type['tag'] : ($sc['shortcode_type'] ?? $sc_type_slug);
                     $sc_code      = '[' . $sc_tag . ' id="' . $sc_id . '"]';
                     $sc_desc      = $sc['description'] ?? '';
-                    $mod_name     = $sc_type ? $sc_type['module_name'] : __('Unknown', 'simplepco-online');
+                    $mod_name     = $sc_type ? $sc_type['module_name'] : __('Unknown', 'simplepco');
                     $type_name    = $sc_type ? $sc_type['name'] : $sc_type_slug;
                     $edit_url     = esc_url($page_url . '&action=edit&id=' . $sc_id);
                     $trash_url    = esc_url(wp_nonce_url($page_url . '&action=delete&id=' . $sc_id, 'simplepco_delete_module_shortcode_' . $sc_id));
@@ -533,9 +533,9 @@ $is_edit_view = isset($action) && $action === 'edit';
                         <td class="shortcode column-shortcode has-row-actions column-primary">
                             <strong><a class="row-title" href="<?php echo $edit_url; ?>"><code><?php echo esc_html($sc_code); ?></code></a></strong>
                             <div class="row-actions">
-                                <span class="edit"><a href="<?php echo $edit_url; ?>"><?php _e('Edit', 'simplepco-online'); ?></a></span>
-                                | <span class="copy"><a href="#" class="simplepco-copy-link" data-copy="<?php echo esc_attr($sc_code); ?>"><?php _e('Copy', 'simplepco-online'); ?></a></span>
-                                | <span class="trash"><a href="<?php echo $trash_url; ?>" class="submitdelete" onclick="return confirm('<?php echo esc_js(__('Are you sure you want to delete this shortcode?', 'simplepco-online')); ?>');"><?php _e('Trash', 'simplepco-online'); ?></a></span>
+                                <span class="edit"><a href="<?php echo $edit_url; ?>"><?php _e('Edit', 'simplepco'); ?></a></span>
+                                | <span class="copy"><a href="#" class="simplepco-copy-link" data-copy="<?php echo esc_attr($sc_code); ?>"><?php _e('Copy', 'simplepco'); ?></a></span>
+                                | <span class="trash"><a href="<?php echo $trash_url; ?>" class="submitdelete" onclick="return confirm('<?php echo esc_js(__('Are you sure you want to delete this shortcode?', 'simplepco')); ?>');"><?php _e('Trash', 'simplepco'); ?></a></span>
                             </div>
                         </td>
                         <td class="description column-description"><?php echo !empty($sc_desc) ? esc_html($sc_desc) : '<span class="simplepco-no-description">&mdash;</span>'; ?></td>
@@ -548,10 +548,10 @@ $is_edit_view = isset($action) && $action === 'edit';
             <tfoot>
             <tr>
                 <td class="manage-column column-cb check-column"><input id="cb-select-all-2" type="checkbox"></td>
-                <th scope="col" class="manage-column column-shortcode column-primary"><?php _e('Shortcode', 'simplepco-online'); ?></th>
-                <th scope="col" class="manage-column column-description"><?php _e('Description', 'simplepco-online'); ?></th>
-                <th scope="col" class="manage-column column-module"><?php _e('Module', 'simplepco-online'); ?></th>
-                <th scope="col" class="manage-column column-type"><?php _e('Type', 'simplepco-online'); ?></th>
+                <th scope="col" class="manage-column column-shortcode column-primary"><?php _e('Shortcode', 'simplepco'); ?></th>
+                <th scope="col" class="manage-column column-description"><?php _e('Description', 'simplepco'); ?></th>
+                <th scope="col" class="manage-column column-module"><?php _e('Module', 'simplepco'); ?></th>
+                <th scope="col" class="manage-column column-type"><?php _e('Type', 'simplepco'); ?></th>
             </tr>
             </tfoot>
         </table>
@@ -559,13 +559,13 @@ $is_edit_view = isset($action) && $action === 'edit';
         <div class="tablenav bottom">
             <div class="alignleft actions bulkactions">
                 <select name="bulk_action2" id="bulk-action-selector-bottom">
-                    <option value="-1"><?php _e('Bulk actions', 'simplepco-online'); ?></option>
-                    <option value="trash"><?php _e('Move to Trash', 'simplepco-online'); ?></option>
+                    <option value="-1"><?php _e('Bulk actions', 'simplepco'); ?></option>
+                    <option value="trash"><?php _e('Move to Trash', 'simplepco'); ?></option>
                 </select>
-                <input type="submit" class="button action" value="<?php esc_attr_e('Apply', 'simplepco-online'); ?>">
+                <input type="submit" class="button action" value="<?php esc_attr_e('Apply', 'simplepco'); ?>">
             </div>
             <div class="tablenav-pages one-page">
-                <span class="displaying-num"><?php printf(_n('%s item', '%s items', count($shortcodes), 'simplepco-online'), count($shortcodes)); ?></span>
+                <span class="displaying-num"><?php printf(_n('%s item', '%s items', count($shortcodes), 'simplepco'), count($shortcodes)); ?></span>
             </div>
             <br class="clear">
         </div>
@@ -586,7 +586,7 @@ $is_edit_view = isset($action) && $action === 'edit';
             var text = $(this).data('copy'), $l = $(this), orig = $l.text();
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(text).then(function() {
-                    $l.text('<?php echo esc_js(__('Copied!', 'simplepco-online')); ?>');
+                    $l.text('<?php echo esc_js(__('Copied!', 'simplepco')); ?>');
                     setTimeout(function() { $l.text(orig); }, 2000);
                 });
             }

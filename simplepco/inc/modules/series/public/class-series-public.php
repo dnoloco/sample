@@ -118,7 +118,7 @@ class SimplePCO_Series_Public {
         ]);
 
         if (empty($messages)) {
-            return '<div class="simplepco-messages-empty"><p>' . esc_html__('No messages found.', 'simplepco-online') . '</p></div>';
+            return '<div class="simplepco-messages-empty"><p>' . esc_html__('No messages found.', 'simplepco') . '</p></div>';
         }
 
         $template = ($view === 'list') ? 'messages-list' : 'messages-gallery';
@@ -141,7 +141,7 @@ class SimplePCO_Series_Public {
         $message = $this->fetch_single_message($message_id);
 
         if (!$message) {
-            return '<div class="simplepco-messages-empty"><p>' . esc_html__('Message not found.', 'simplepco-online') . '</p></div>';
+            return '<div class="simplepco-messages-empty"><p>' . esc_html__('Message not found.', 'simplepco') . '</p></div>';
         }
 
         return $this->load_template('message-single', [

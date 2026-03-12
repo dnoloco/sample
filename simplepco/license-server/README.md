@@ -1,6 +1,6 @@
 # SimplePCO License Server
 
-A simple PHP-based license server for the SimplePCO Online WordPress plugin.
+A simple PHP-based license server for the SimplePCO WordPress plugin.
 
 ## Installation on Hostinger
 

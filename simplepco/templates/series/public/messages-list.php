@@ -101,7 +101,7 @@ endif;
 
                 <?php if (!empty($message->scripture)): ?>
                     <div class="simplepco-message-scripture">
-                        <strong><?php _e('Scripture:', 'simplepco-online'); ?></strong>
+                        <strong><?php _e('Scripture:', 'simplepco'); ?></strong>
                         <?php echo esc_html($message->scripture); ?>
                     </div>
                 <?php endif; ?>
@@ -116,7 +116,7 @@ endif;
                     <div class="simplepco-message-links">
                         <a href="<?php echo esc_url($message->audio_url); ?>" class="simplepco-message-link simplepco-message-audio" target="_blank" rel="noopener noreferrer">
                             <span class="simplepco-icon-audio"></span>
-                            <?php _e('Listen', 'simplepco-online'); ?>
+                            <?php _e('Listen', 'simplepco'); ?>
                         </a>
                     </div>
                 <?php endif; ?>
@@ -139,7 +139,7 @@ endif;
                             <?php else: ?>
                                 <div class="simplepco-message-video-placeholder"></div>
                             <?php endif; ?>
-                            <button class="simplepco-message-play-btn" aria-label="<?php esc_attr_e('Play video', 'simplepco-online'); ?>">
+                            <button class="simplepco-message-play-btn" aria-label="<?php esc_attr_e('Play video', 'simplepco'); ?>">
                                 <svg viewBox="0 0 68 48" width="68" height="48">
                                     <path class="simplepco-play-bg" d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.63 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#212121" fill-opacity="0.8"/>
                                     <path d="M45 24L27 14v20" fill="#fff"/>

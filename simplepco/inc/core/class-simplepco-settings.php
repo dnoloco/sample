@@ -36,8 +36,8 @@ class SimplePCO_Settings {
     public function add_settings_menu() {
         add_submenu_page(
             'simplepco-dashboard',
-            __( 'Settings', 'simplepco-online' ),
-            __( 'Settings', 'simplepco-online' ),
+            __( 'Settings', 'simplepco' ),
+            __( 'Settings', 'simplepco' ),
             'manage_options',
             'simplepco-settings',
             [ $this, 'render_settings_view' ]

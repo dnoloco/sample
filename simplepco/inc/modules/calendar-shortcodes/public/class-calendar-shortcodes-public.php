@@ -123,7 +123,7 @@ class SimplePCO_Calendar_Shortcodes_Public {
         if (empty($events)) {
             $empty_msg = !empty($settings['empty_message'])
                 ? $settings['empty_message']
-                : __('No upcoming events found.', 'simplepco-online');
+                : __('No upcoming events found.', 'simplepco');
             return '<div class="simplepco-location-empty">' . esc_html($empty_msg) . '</div>';
         }
 
@@ -207,7 +207,7 @@ class SimplePCO_Calendar_Shortcodes_Public {
         if (empty($events)) {
             $empty_msg = !empty($settings['empty_message'])
                 ? $settings['empty_message']
-                : __('No upcoming featured events found.', 'simplepco-online');
+                : __('No upcoming featured events found.', 'simplepco');
             return '<div class="simplepco-location-empty">' . esc_html($empty_msg) . '</div>';
         }
 
@@ -420,7 +420,7 @@ class SimplePCO_Calendar_Shortcodes_Public {
         if (empty($events)) {
             $empty_msg = !empty($settings['empty_message'])
                 ? $settings['empty_message']
-                : __('No upcoming events found.', 'simplepco-online');
+                : __('No upcoming events found.', 'simplepco');
             return '<div class="simplepco-location-empty">' . esc_html($empty_msg) . '</div>';
         }
 

@@ -12,14 +12,14 @@ import { __ } from '@wordpress/i18n';
 import Edit from './edit';
 
 registerBlockType( 'simplepco/calendar-events', {
-    title: __( 'PCO Calendar Events', 'simplepco-online' ),
-    description: __( 'Display upcoming events from Planning Center Calendar.', 'simplepco-online' ),
+    title: __( 'PCO Calendar Events', 'simplepco' ),
+    description: __( 'Display upcoming events from Planning Center Calendar.', 'simplepco' ),
     category: 'widgets',
     icon: 'calendar-alt',
     keywords: [
-        __( 'events', 'simplepco-online' ),
-        __( 'calendar', 'simplepco-online' ),
-        __( 'planning center', 'simplepco-online' ),
+        __( 'events', 'simplepco' ),
+        __( 'calendar', 'simplepco' ),
+        __( 'planning center', 'simplepco' ),
     ],
     attributes: {
         count: {

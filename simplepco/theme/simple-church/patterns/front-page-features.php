@@ -2,7 +2,7 @@
 /**
  * Title: Features Grid
  * Slug: simple-church/front-page-features
- * Description: Dark section with a features heading and the PCO-aware module grid. When the SimplePCO Online plugin is active, cards show live Planning Center data.
+ * Description: Dark section with a features heading and the PCO-aware module grid. When the SimplePCO plugin is active, cards show live Planning Center data.
  * Categories: simple-church
  * Keywords: features, modules, grid, dark, pco
  */

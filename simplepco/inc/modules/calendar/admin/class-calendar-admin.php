@@ -35,8 +35,8 @@ class SimplePCO_Calendar_Admin {
     public function add_settings_page() {
         add_submenu_page(
             'simplepco-dashboard',
-            __('Calendar', 'simplepco-online'),
-            __('Calendar', 'simplepco-online'),
+            __('Calendar', 'simplepco'),
+            __('Calendar', 'simplepco'),
             'manage_options',
             'simplepco-calendar',
             [$this, 'render_settings_page']
