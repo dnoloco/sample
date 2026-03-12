@@ -584,11 +584,22 @@ $is_edit_view = isset($action) && $action === 'edit';
         $('.simplepco-copy-link').on('click', function(e) {
             e.preventDefault();
             var text = $(this).data('copy'), $l = $(this), orig = $l.text();
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(function() {
-                    $l.text('<?php echo esc_js(__('Copied!', 'simplepco')); ?>');
-                    setTimeout(function() { $l.text(orig); }, 2000);
-                });
+            var onSuccess = function() {
+                $l.text('<?php echo esc_js(__('Copied!', 'simplepco')); ?>');
+                setTimeout(function() { $l.text(orig); }, 2000);
+            };
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(onSuccess);
+            } else {
+                var ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                onSuccess();
             }
         });
     })(jQuery);
