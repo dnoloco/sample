@@ -156,13 +156,15 @@ $settings = new SimplePCO_Settings( SIMPLEPCO_VERSION, $api_model, $settings_rep
 $loader->add_action( 'admin_menu',            $settings, 'add_settings_menu', 99 );
 $loader->add_action( 'admin_enqueue_scripts', $settings, 'enqueue_assets' );
 
-// OAuth callback — intercept early (before headers are sent) so wp_safe_redirect works.
+// OAuth callback — register hidden page so WordPress accepts the URL, and
+// intercept on admin_init (before headers) so wp_safe_redirect works.
+add_action( 'admin_menu', function () {
+    add_submenu_page( null, '', '', 'manage_options', 'simplepco-oauth-callback', '__return_null' );
+} );
 add_action( 'admin_init', function () use ( $oauth_handler ) {
     // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- OAuth state param serves as CSRF token.
     if ( isset( $_GET['page'] ) && $_GET['page'] === 'simplepco-oauth-callback' ) {
-        if ( current_user_can( 'manage_options' ) ) {
-            $oauth_handler->handle_callback();
-        }
+        $oauth_handler->handle_callback();
     }
 } );
 
