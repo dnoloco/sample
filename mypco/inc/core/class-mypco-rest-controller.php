@@ -26,17 +26,24 @@ class MyPCO_REST_Controller {
     private $settings_repo;
 
     /**
+     * @var MyPCO_License_Manager  Remote license verifier.
+     */
+    private $license_manager;
+
+    /**
      * @var MyPCO_Loader  Loader for accessing other repositories (events, cache).
      */
     protected $loader;
 
     /**
-     * @param MyPCO_Settings_Repository $settings_repo The settings data repository.
-     * @param MyPCO_Loader              $loader        The loader (for event repos, cache clearing).
+     * @param MyPCO_Settings_Repository $settings_repo   The settings data repository.
+     * @param MyPCO_License_Manager     $license_manager The license verifier.
+     * @param MyPCO_Loader              $loader          The loader (for event repos, cache clearing).
      */
-    public function __construct( MyPCO_Settings_Repository $settings_repo, MyPCO_Loader $loader ) {
-        $this->settings_repo = $settings_repo;
-        $this->loader        = $loader;
+    public function __construct( MyPCO_Settings_Repository $settings_repo, MyPCO_License_Manager $license_manager, MyPCO_Loader $loader ) {
+        $this->settings_repo   = $settings_repo;
+        $this->license_manager = $license_manager;
+        $this->loader          = $loader;
     }
 
     /**
@@ -88,6 +95,25 @@ class MyPCO_REST_Controller {
         register_rest_route( self::NAMESPACE, '/cache/clear', [
             'methods'             => 'POST',
             'callback'            => [ $this, 'clear_cache' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        // License management
+        register_rest_route( self::NAMESPACE, '/license/status', [
+            'methods'             => 'GET',
+            'callback'            => [ $this, 'get_license_status' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        register_rest_route( self::NAMESPACE, '/license/activate', [
+            'methods'             => 'POST',
+            'callback'            => [ $this, 'activate_license' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        register_rest_route( self::NAMESPACE, '/license/deactivate', [
+            'methods'             => 'POST',
+            'callback'            => [ $this, 'deactivate_license' ],
             'permission_callback' => [ $this, 'check_admin_permission' ],
         ] );
     }
@@ -183,6 +209,38 @@ class MyPCO_REST_Controller {
         MyPCO_API_Model::clear_all_cache();
 
         return rest_ensure_response( [ 'success' => true ] );
+    }
+
+    /**
+     * GET /license/status — Current license status for the React dashboard.
+     */
+    public function get_license_status() {
+        return rest_ensure_response( $this->license_manager->get_status_summary() );
+    }
+
+    /**
+     * POST /license/activate — Verify key with remote server and activate.
+     */
+    public function activate_license( $request ) {
+        $params      = $request->get_json_params();
+        $license_key = isset( $params['license_key'] ) ? sanitize_text_field( $params['license_key'] ) : '';
+
+        if ( empty( $license_key ) ) {
+            return new WP_Error( 'missing_key', __( 'Please enter a license key.', 'mypco-online' ), [ 'status' => 400 ] );
+        }
+
+        $result = $this->license_manager->activate_license( $license_key );
+
+        return rest_ensure_response( $result );
+    }
+
+    /**
+     * POST /license/deactivate — Deactivate license from this site.
+     */
+    public function deactivate_license() {
+        $result = $this->license_manager->deactivate_license();
+
+        return rest_ensure_response( $result );
     }
 
     /**

@@ -7,6 +7,7 @@
  * Tabs:
  *  - API Credentials (PCO + Clearstream)
  *  - Modules (enable/disable with feature toggles)
+ *  - License (activate/deactivate via remote server verification)
  *  - Cache (clear transient caches per-module)
  */
 
@@ -244,6 +245,137 @@ function CacheTab() {
 }
 
 /**
+ * License Management Tab
+ *
+ * Uses the React Feedback Loop: React → REST Controller → License Manager → Remote Server.
+ * License status is cached server-side via transients (12h) so we don't hammer the remote API.
+ */
+function LicenseTab() {
+    const [ key, setKey ] = useState( '' );
+    const [ license, setLicense ] = useState( null );
+    const [ loading, setLoading ] = useState( true );
+    const [ busy, setBusy ] = useState( false );
+    const [ notice, setNotice ] = useState( null );
+
+    // Fetch current license status on mount (reads from transient cache).
+    useEffect( () => {
+        apiFetch( { path: '/mypco/v1/license/status' } )
+            .then( ( data ) => {
+                setLicense( data );
+                setLoading( false );
+            } )
+            .catch( () => {
+                setLoading( false );
+            } );
+    }, [] );
+
+    const isActive = license && license.status === 'active';
+
+    const handleActivate = async () => {
+        setBusy( true );
+        setNotice( null );
+
+        try {
+            const result = await apiFetch( {
+                path: '/mypco/v1/license/activate',
+                method: 'POST',
+                data: { license_key: key },
+            } );
+
+            if ( result.success ) {
+                setNotice( { status: 'success', message: result.message } );
+                // Refresh status to get tier, modules, expiry from server.
+                const updated = await apiFetch( { path: '/mypco/v1/license/status' } );
+                setLicense( updated );
+                setKey( '' );
+            } else {
+                setNotice( { status: 'error', message: result.message || __( 'Activation failed.', 'mypco-online' ) } );
+            }
+        } catch ( err ) {
+            setNotice( { status: 'error', message: err.message || __( 'Could not connect to license server.', 'mypco-online' ) } );
+        }
+
+        setBusy( false );
+    };
+
+    const handleDeactivate = async () => {
+        setBusy( true );
+        setNotice( null );
+
+        try {
+            const result = await apiFetch( {
+                path: '/mypco/v1/license/deactivate',
+                method: 'POST',
+            } );
+            setNotice( { status: 'success', message: result.message } );
+            setLicense( { status: 'inactive', tier: null, modules: [] } );
+        } catch ( err ) {
+            setNotice( { status: 'error', message: err.message } );
+        }
+
+        setBusy( false );
+    };
+
+    if ( loading ) {
+        return <Spinner />;
+    }
+
+    return (
+        <div>
+            { notice && (
+                <Notice status={ notice.status } isDismissible onDismiss={ () => setNotice( null ) }>
+                    { notice.message }
+                </Notice>
+            ) }
+
+            { isActive ? (
+                <Card>
+                    <CardHeader>
+                        <h3>{ __( 'License Active', 'mypco-online' ) }</h3>
+                    </CardHeader>
+                    <CardBody>
+                        <p><strong>{ __( 'Tier:', 'mypco-online' ) }</strong> { license.tier_label }</p>
+                        { license.expires_at && (
+                            <p><strong>{ __( 'Expires:', 'mypco-online' ) }</strong> { license.expires_at }</p>
+                        ) }
+                        { license.modules && license.modules.length > 0 && (
+                            <p>
+                                <strong>{ __( 'Modules:', 'mypco-online' ) }</strong>{ ' ' }
+                                { license.modules.map( ( m ) => m.charAt( 0 ).toUpperCase() + m.slice( 1 ) ).join( ', ' ) }
+                            </p>
+                        ) }
+                        { typeof license.sites_remaining !== 'undefined' && (
+                            <p><strong>{ __( 'Sites remaining:', 'mypco-online' ) }</strong> { license.sites_remaining }</p>
+                        ) }
+                        <Button variant="secondary" isDestructive onClick={ handleDeactivate } disabled={ busy }>
+                            { busy ? <Spinner /> : __( 'Deactivate License', 'mypco-online' ) }
+                        </Button>
+                    </CardBody>
+                </Card>
+            ) : (
+                <Card>
+                    <CardHeader>
+                        <h3>{ __( 'Activate License', 'mypco-online' ) }</h3>
+                    </CardHeader>
+                    <CardBody>
+                        <TextControl
+                            label={ __( 'License Key', 'mypco-online' ) }
+                            value={ key }
+                            onChange={ setKey }
+                            placeholder="MYPCO-XXXX-XXXX-XXXX-XXXX"
+                            help={ __( 'Enter your license key to unlock premium modules.', 'mypco-online' ) }
+                        />
+                        <Button variant="primary" onClick={ handleActivate } isBusy={ busy } disabled={ busy || ! key }>
+                            { busy ? __( 'Verifying...', 'mypco-online' ) : __( 'Activate Pro', 'mypco-online' ) }
+                        </Button>
+                    </CardBody>
+                </Card>
+            ) }
+        </div>
+    );
+}
+
+/**
  * Main Settings App with Tab Navigation
  */
 export function SettingsApp() {
@@ -257,6 +389,11 @@ export function SettingsApp() {
             name: 'modules',
             title: __( 'Modules', 'mypco-online' ),
             className: 'mypco-tab-modules',
+        },
+        {
+            name: 'license',
+            title: __( 'License', 'mypco-online' ),
+            className: 'mypco-tab-license',
         },
         {
             name: 'cache',
@@ -275,6 +412,8 @@ export function SettingsApp() {
                             return <CredentialsTab />;
                         case 'modules':
                             return <ModulesTab />;
+                        case 'license':
+                            return <LicenseTab />;
                         case 'cache':
                             return <CacheTab />;
                         default:

@@ -205,7 +205,8 @@ $forms_webhook = new MyPCO_Google_Forms_Webhook();
 $loader->add_action( 'rest_api_init', $forms_webhook, 'register_rest_route' );
 
 // REST API routes for React UI
-$rest_controller = new MyPCO_REST_Controller( $settings_repo, $loader );
+$license_manager = MyPCO_License_Manager::get_instance();
+$rest_controller = new MyPCO_REST_Controller( $settings_repo, $license_manager, $loader );
 $loader->add_action( 'rest_api_init', $rest_controller, 'register_routes' );
 
 /*--------------------------------------------------------------------------
