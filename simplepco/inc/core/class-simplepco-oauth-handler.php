@@ -21,13 +21,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 class SimplePCO_OAuth_Handler {
 
     /**
-     * Your external server's OAuth endpoints.
-     * Override via constants in wp-config.php for staging/dev.
+     * Planning Center OAuth endpoints.
      */
-    private $authorize_url;
-    private $token_url;
-    private $client_id;
-    private $client_secret;
+    const AUTHORIZE_URL = 'https://api.planningcenteronline.com/oauth/authorize';
+    const TOKEN_URL     = 'https://api.planningcenteronline.com/oauth/token';
+
+    /**
+     * Your app's OAuth credentials from PCO's developer portal.
+     * Register at: https://api.planningcenteronline.com/oauth/applications
+     *
+     * These are YOUR plugin's credentials, not the end-user's.
+     * The end-user never sees or configures these — they just click "Connect".
+     */
+    const CLIENT_ID     = 'YOUR_PCO_APP_ID_HERE';
+    const CLIENT_SECRET = 'YOUR_PCO_APP_SECRET_HERE';
 
     /**
      * @var SimplePCO_Settings_Repository
@@ -39,22 +46,6 @@ class SimplePCO_OAuth_Handler {
      */
     public function __construct( SimplePCO_Settings_Repository $settings_repo ) {
         $this->settings_repo = $settings_repo;
-
-        $this->authorize_url = defined( 'SIMPLEPCO_OAUTH_AUTHORIZE_URL' )
-            ? SIMPLEPCO_OAUTH_AUTHORIZE_URL
-            : 'https://api.planningcenteronline.com/oauth/authorize';
-
-        $this->token_url = defined( 'SIMPLEPCO_OAUTH_TOKEN_URL' )
-            ? SIMPLEPCO_OAUTH_TOKEN_URL
-            : 'https://api.planningcenteronline.com/oauth/token';
-
-        $this->client_id = defined( 'SIMPLEPCO_OAUTH_CLIENT_ID' )
-            ? SIMPLEPCO_OAUTH_CLIENT_ID
-            : '';
-
-        $this->client_secret = defined( 'SIMPLEPCO_OAUTH_CLIENT_SECRET' )
-            ? SIMPLEPCO_OAUTH_CLIENT_SECRET
-            : '';
     }
 
     /**
@@ -69,12 +60,12 @@ class SimplePCO_OAuth_Handler {
         set_transient( 'simplepco_oauth_state', $state, 600 ); // 10 minutes
 
         return add_query_arg( [
-            'client_id'     => $this->client_id,
+            'client_id'     => self::CLIENT_ID,
             'redirect_uri'  => $this->get_callback_url(),
             'response_type' => 'code',
             'scope'         => 'people services calendar groups publishing',
             'state'         => $state,
-        ], $this->authorize_url );
+        ], self::AUTHORIZE_URL );
     }
 
     /**
@@ -136,14 +127,14 @@ class SimplePCO_OAuth_Handler {
      * @return true|WP_Error
      */
     public function exchange_code( $code ) {
-        $response = wp_remote_post( $this->token_url, [
+        $response = wp_remote_post( self::TOKEN_URL, [
             'timeout' => 30,
             'body'    => [
                 'grant_type'    => 'authorization_code',
                 'code'          => $code,
                 'redirect_uri'  => $this->get_callback_url(),
-                'client_id'     => $this->client_id,
-                'client_secret' => $this->client_secret,
+                'client_id'     => self::CLIENT_ID,
+                'client_secret' => self::CLIENT_SECRET,
             ],
         ] );
 
@@ -162,13 +153,13 @@ class SimplePCO_OAuth_Handler {
             return new WP_Error( 'no_refresh_token', 'No refresh token available.' );
         }
 
-        $response = wp_remote_post( $this->token_url, [
+        $response = wp_remote_post( self::TOKEN_URL, [
             'timeout' => 30,
             'body'    => [
                 'grant_type'    => 'refresh_token',
                 'refresh_token' => $refresh_token,
-                'client_id'     => $this->client_id,
-                'client_secret' => $this->client_secret,
+                'client_id'     => self::CLIENT_ID,
+                'client_secret' => self::CLIENT_SECRET,
             ],
         ] );
 
