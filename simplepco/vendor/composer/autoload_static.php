@@ -32,6 +32,7 @@ class ComposerStaticInit4712c89781d87f7ef30735d87d6fdac9
         'SimplePCO_License_Manager' => __DIR__ . '/../..' . '/inc/core/class-simplepco-license-manager.php',
         'SimplePCO_License_Page' => __DIR__ . '/../..' . '/inc/core/class-simplepco-license-page.php',
         'SimplePCO_Loader' => __DIR__ . '/../..' . '/inc/core/class-simplepco-loader.php',
+        'SimplePCO_OAuth_Handler' => __DIR__ . '/../..' . '/inc/core/class-simplepco-oauth-handler.php',
         'SimplePCO_Module_Base' => __DIR__ . '/../..' . '/inc/core/class-simplepco-module-base.php',
         'SimplePCO_Module_Manager' => __DIR__ . '/../..' . '/inc/core/class-simplepco-module-manager.php',
         'SimplePCO_Modules' => __DIR__ . '/../..' . '/inc/modules/class-simplepco-modules.php',
