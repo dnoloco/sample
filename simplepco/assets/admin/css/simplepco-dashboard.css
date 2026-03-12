@@ -1,0 +1,134 @@
+/**
+ * SimplePCO Dashboard (Complete)
+ */
+#dashboard-widgets-wrap { margin-top: 20px; }
+
+/* Dashboard Container Layout */
+#dashboard-widgets.columns-3 .postbox-container {
+    width: 33.33%;
+    box-sizing: border-box;
+}
+
+@media only screen and (max-width: 782px) {
+    #dashboard-widgets.columns-3 .postbox-container {
+        width: 100%;
+    }
+}
+
+.simplepco-status-card.connected {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+/* Status Cards (Green Alert Boxes) */
+.simplepco-status-card {
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #46b450; /* WordPress Success Green */
+    background: #fff;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+    border-top: 1px solid #ccd0d4;
+    border-right: 1px solid #ccd0d4;
+    border-bottom: 1px solid #ccd0d4;
+}
+
+.simplepco-status-card h4 {
+    margin: 0 0 4px 0;
+    color: #1d2327;
+    font-size: 14px;
+}
+
+.simplepco-status-card p {
+    margin: 0;
+    color: #50575e;
+    font-size: 13px;
+}
+
+/* Container Spacing */
+.simplepco-dashboard-content {
+    padding: 10px 0;
+}
+
+/* Quick Links Styling */
+.simplepco-dashboard-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.simplepco-dashboard-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f1;
+    display: flex;
+    align-items: center;
+}
+
+.simplepco-dashboard-list li:last-child {
+    border-bottom: none;
+}
+
+.simplepco-dashboard-list .dashicons {
+    margin-right: 10px;
+    color: #2271b1;
+}
+
+.simplepco-dashboard-list a {
+    text-decoration: none;
+    font-weight: 500;
+}
+
+#dashboard-widgets::after { content: ""; display: table; clear: both; }
+
+/* Welcome Box UI */
+.simplepco-welcome-steps .step {
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+.simplepco-welcome-steps .dashicons {
+    margin-right: 10px;
+    color: #2271b1;
+}
+
+/* Quick Links UI */
+.simplepco-quick-links-list { margin: 0; padding: 0; list-style: none; }
+.simplepco-quick-links-list li { margin-bottom: 12px; }
+.simplepco-quick-links-list a { text-decoration: none; font-weight: 500; }
+
+/* Status Box UI */
+.simplepco-status-box {
+    padding: 15px;
+    border-radius: 4px;
+    border-left: 4px solid #ccc;
+    background: #f6f7f7;
+}
+.simplepco-status-box .dashicons { margin-right: 8px; vertical-align: text-bottom; }
+.simplepco-status-connected { border-left-color: #00a32a; background: #edfaef; color: #005a17; }
+.simplepco-status-warning { border-left-color: #dba617; background: #fcf9e8; color: #6d530e; }
+
+/* Table Status Labels */
+.simplepco-status-active { color: #00a32a; font-weight: bold; }
+.simplepco-status-inactive { color: #646970; }
+
+/* Drag & Drop Placeholder */
+.ui-sortable-placeholder {
+    border: 2px dashed #ccd0d4;
+    background: #f0f0f1;
+    visibility: visible !important;
+    margin-bottom: 20px;
+}
+
+/* Responsive */
+@media screen and (max-width: 1200px) {
+    #dashboard-widgets.columns-3 #postbox-container-1,
+    #dashboard-widgets.columns-3 #postbox-container-2 {
+        width: 50%;
+    }
+    #dashboard-widgets.columns-3 #postbox-container-3 {
+        width: 100%;
+        clear: both;
+    }
+}
+@media screen and (max-width: 782px) {
+    #dashboard-widgets.columns-3 .postbox-container { width: 100% !important; float: none; padding: 0; }
+}

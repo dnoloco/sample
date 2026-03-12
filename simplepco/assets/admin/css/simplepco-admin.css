@@ -1,0 +1,80 @@
+/**
+ * SimplePCO Admin General Styles
+ * 
+ * General admin styles for all SimplePCO admin pages
+ */
+
+/* Admin notices */
+.simplepco-admin-notice {
+    margin: 15px 0;
+}
+
+/* Card styling */
+.simplepco-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+}
+
+.simplepco-card h2 {
+    margin-top: 0;
+}
+
+/* Button styling */
+.simplepco-button-group {
+    margin-top: 15px;
+}
+
+.simplepco-button-group .button {
+    margin-right: 10px;
+}
+
+/* Table styling */
+.simplepco-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.simplepco-table th,
+.simplepco-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.simplepco-table th {
+    font-weight: 600;
+    background-color: #f9f9f9;
+}
+
+/* Status indicators */
+.simplepco-status-active {
+    color: #46b450;
+}
+
+.simplepco-status-inactive {
+    color: #999;
+}
+
+.simplepco-status-error {
+    color: #dc3232;
+}
+
+/* Loading spinner */
+.simplepco-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: simplepco-spin 1s linear infinite;
+}
+
+@keyframes simplepco-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
