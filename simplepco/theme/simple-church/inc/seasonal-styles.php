@@ -842,6 +842,7 @@ function simple_church_seasonal_inline_css() {
 	// Link color.
 	if ( $season['link_color'] ) {
 		$lc = esc_attr( $season['link_color'] );
+		$css .= "body.seasonal-theme-active { --seasonal-link-color: " . $lc . "; }\n";
 		$css .= "body.seasonal-theme-active a { color: " . $lc . "; }\n";
 
 		// Buttons — use the link color for background and border.

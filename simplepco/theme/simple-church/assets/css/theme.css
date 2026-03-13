@@ -1536,6 +1536,19 @@ h1, h2, h3, h4, h5, h6 {
 	color: #1a1a1a;
 }
 
+/* Seasonal override for CTA button */
+body.seasonal-theme-active .section--cta .wp-block-button__link {
+	background: var(--seasonal-link-color, #1a1a1a);
+	border-color: var(--seasonal-link-color, #1a1a1a);
+	color: #ffffff;
+}
+
+body.seasonal-theme-active .section--cta .wp-block-button__link:hover {
+	background: transparent;
+	color: var(--seasonal-link-color, #1a1a1a);
+	border-color: var(--seasonal-link-color, #1a1a1a);
+}
+
 /* ==========================================================================
    20. BLOCK PATTERN COMPONENTS
    ========================================================================== */
