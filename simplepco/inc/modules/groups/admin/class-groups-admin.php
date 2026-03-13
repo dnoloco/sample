@@ -55,7 +55,7 @@ class SimplePCO_Groups_Admin {
 
         wp_enqueue_style(
             'simplepco-groups-admin',
-            SIMPLEPCO_PLUGIN_URL . 'modules/groups/admin/assets/css/groups-admin.css',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/groups/admin/assets/css/groups-admin.css',
             [],
             SIMPLEPCO_VERSION
         );

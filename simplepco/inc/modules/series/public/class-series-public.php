@@ -45,14 +45,14 @@ class SimplePCO_Series_Public {
 
         wp_enqueue_style(
             'simplepco-series-public',
-            SIMPLEPCO_PLUGIN_URL . 'modules/series/public/assets/css/series.css',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/series/public/assets/css/series.css',
             [],
             SIMPLEPCO_VERSION
         );
 
         wp_enqueue_script(
             'simplepco-series-public',
-            SIMPLEPCO_PLUGIN_URL . 'modules/series/public/assets/js/series.js',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/series/public/assets/js/series.js',
             ['jquery'],
             SIMPLEPCO_VERSION,
             true
@@ -63,7 +63,7 @@ class SimplePCO_Series_Public {
      * Get the URL for the default placeholder image.
      */
     public function get_placeholder_url() {
-        return SIMPLEPCO_PLUGIN_URL . 'modules/series/public/assets/images/series-placeholder.svg';
+        return SIMPLEPCO_PLUGIN_URL . 'inc/modules/series/public/assets/images/series-placeholder.svg';
     }
 
     /**

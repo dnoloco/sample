@@ -54,14 +54,14 @@ class SimplePCO_Calendar_Admin {
 
         wp_enqueue_style(
             'simplepco-calendar-admin',
-            SIMPLEPCO_PLUGIN_URL . 'modules/calendar/admin/assets/css/calendar-admin.css',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/calendar/admin/assets/css/calendar-admin.css',
             [],
             SIMPLEPCO_VERSION
         );
 
         wp_enqueue_script(
             'simplepco-calendar-admin',
-            SIMPLEPCO_PLUGIN_URL . 'modules/calendar/admin/assets/js/calendar-admin.js',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/calendar/admin/assets/js/calendar-admin.js',
             ['jquery'],
             SIMPLEPCO_VERSION,
             true

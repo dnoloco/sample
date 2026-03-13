@@ -64,7 +64,7 @@ class SimplePCO_Calendar_Public {
 
         wp_enqueue_style(
             'simplepco-calendar-public',
-            SIMPLEPCO_PLUGIN_URL . 'modules/calendar/public/assets/css/calendar.css',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/calendar/public/assets/css/calendar.css',
             [],
             SIMPLEPCO_VERSION
         );
@@ -84,7 +84,7 @@ class SimplePCO_Calendar_Public {
 
         wp_enqueue_script(
             'simplepco-calendar-public',
-            SIMPLEPCO_PLUGIN_URL . 'modules/calendar/public/assets/js/calendar.js',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/calendar/public/assets/js/calendar.js',
             ['jquery'],
             SIMPLEPCO_VERSION,
             true

@@ -105,14 +105,14 @@ class SimplePCO_Series_Admin {
 
         wp_enqueue_style(
             'simplepco-series-admin',
-            SIMPLEPCO_PLUGIN_URL . 'modules/series/admin/assets/css/series-admin.css',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/series/admin/assets/css/series-admin.css',
             [],
             SIMPLEPCO_VERSION
         );
 
         wp_enqueue_script(
             'simplepco-series-admin',
-            SIMPLEPCO_PLUGIN_URL . 'modules/series/admin/assets/js/series-admin.js',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/series/admin/assets/js/series-admin.js',
             ['jquery'],
             SIMPLEPCO_VERSION,
             true
@@ -140,7 +140,7 @@ class SimplePCO_Series_Admin {
         if ($is_settings_page && isset($_GET['tab']) && $_GET['tab'] === 'import') {
             wp_enqueue_script(
                 'simplepco-series-import',
-                SIMPLEPCO_PLUGIN_URL . 'modules/series/admin/assets/js/series-import.js',
+                SIMPLEPCO_PLUGIN_URL . 'inc/modules/series/admin/assets/js/series-import.js',
                 ['jquery'],
                 SIMPLEPCO_VERSION,
                 true

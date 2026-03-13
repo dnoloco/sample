@@ -49,7 +49,7 @@ class SimplePCO_Groups_Public {
         if (has_shortcode($post->post_content, 'pco_groups') || has_shortcode($post->post_content, 'simplepco_groups')) {
             wp_enqueue_style(
                 'simplepco-groups-public',
-                SIMPLEPCO_PLUGIN_URL . 'modules/groups/public/assets/css/groups-public.css',
+                SIMPLEPCO_PLUGIN_URL . 'inc/modules/groups/public/assets/css/groups-public.css',
                 [],
                 SIMPLEPCO_VERSION
             );

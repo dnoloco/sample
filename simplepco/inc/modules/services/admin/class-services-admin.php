@@ -75,14 +75,14 @@ class SimplePCO_Services_Admin
 
         wp_enqueue_style(
             'simplepco-services-admin',
-            SIMPLEPCO_PLUGIN_URL . 'modules/services/admin/assets/css/services-admin.css',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/services/admin/assets/css/services-admin.css',
             [],
             SIMPLEPCO_VERSION
         );
 
         wp_enqueue_script(
             'simplepco-services-admin',
-            SIMPLEPCO_PLUGIN_URL . 'modules/services/admin/assets/js/services-admin.js',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/services/admin/assets/js/services-admin.js',
             ['jquery'],
             SIMPLEPCO_VERSION,
             true

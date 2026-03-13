@@ -74,14 +74,14 @@ class SimplePCO_Signups_Admin {
 
         wp_enqueue_style(
             'simplepco-signups-admin',
-            SIMPLEPCO_PLUGIN_URL . 'modules/signups/admin/assets/css/signups-admin.css',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/signups/admin/assets/css/signups-admin.css',
             [],
             SIMPLEPCO_VERSION
         );
 
         wp_enqueue_script(
             'simplepco-signups-admin',
-            SIMPLEPCO_PLUGIN_URL . 'modules/signups/admin/assets/js/signups-admin.js',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/signups/admin/assets/js/signups-admin.js',
             ['jquery'],
             SIMPLEPCO_VERSION,
             true
