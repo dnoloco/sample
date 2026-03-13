@@ -842,12 +842,16 @@ function simple_church_seasonal_inline_css() {
 	// Link color.
 	if ( $season['link_color'] ) {
 		$lc = esc_attr( $season['link_color'] );
-		$css .= "body.seasonal-theme-active { --seasonal-link-color: " . $lc . "; }\n";
+		$btn_bg_var   = $season['dark_bg_color'] ? esc_attr( $season['dark_bg_color'] ) : $lc;
+		$btn_text_var = $season['dark_text_color'] ? esc_attr( $season['dark_text_color'] ) : '#ffffff';
+		$css .= "body.seasonal-theme-active { --seasonal-link-color: " . $lc . "; --seasonal-btn-bg: " . $btn_bg_var . "; --seasonal-btn-text: " . $btn_text_var . "; }\n";
 		$css .= "body.seasonal-theme-active a { color: " . $lc . "; }\n";
 
-		// Buttons — use the link color for background and border.
-		$css .= "body.seasonal-theme-active .wp-block-button__link { background: " . $lc . " !important; border-color: " . $lc . " !important; color: #ffffff !important; }\n";
-		$css .= "body.seasonal-theme-active .wp-block-button__link:hover { background: transparent !important; color: " . $lc . " !important; border-color: " . $lc . " !important; }\n";
+		// Buttons — use dark section colors for background and text.
+		$btn_bg   = $season['dark_bg_color'] ? esc_attr( $season['dark_bg_color'] ) : $lc;
+		$btn_text = $season['dark_text_color'] ? esc_attr( $season['dark_text_color'] ) : '#ffffff';
+		$css .= "body.seasonal-theme-active .wp-block-button__link { background: " . $btn_bg . " !important; border-color: " . $btn_bg . " !important; color: " . $btn_text . " !important; }\n";
+		$css .= "body.seasonal-theme-active .wp-block-button__link:hover { background: transparent !important; color: " . $btn_bg . " !important; border-color: " . $btn_bg . " !important; }\n";
 	}
 
 	// Footer overrides — uses CSS custom properties so every element
