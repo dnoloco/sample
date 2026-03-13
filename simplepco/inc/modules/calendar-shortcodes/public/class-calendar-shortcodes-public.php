@@ -55,7 +55,7 @@ class SimplePCO_Calendar_Shortcodes_Public {
 
         wp_enqueue_style(
             'simplepco-custom-events-public',
-            SIMPLEPCO_PLUGIN_URL . 'modules/calendar-shortcodes/public/assets/css/custom-events.css',
+            SIMPLEPCO_PLUGIN_URL . 'inc/modules/calendar-shortcodes/public/assets/css/custom-events.css',
             [],
             SIMPLEPCO_VERSION
         );
