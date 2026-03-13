@@ -37,55 +37,55 @@ foreach ($events as $event) {
 }
 
 $month_keys = array_keys($months);
-$list_id = 'simplepco-list-' . ($scope_class ?: wp_unique_id('cl-'));
+$list_id = 'sc-event-list-' . ($scope_class ?: wp_unique_id('cl-'));
 ?>
 
 <?php echo $scoped_css; ?>
 
 <div id="<?php echo esc_attr($list_id); ?>"
-     class="simplepco-location-list <?php echo esc_attr($scope_class); ?><?php echo $custom_class; ?>">
+     class="sc-event-list <?php echo esc_attr($scope_class); ?><?php echo $custom_class; ?>">
 
     <?php if (count($month_keys) > 1): ?>
     <!-- Month Navigation -->
-    <div class="simplepco-list-nav">
-        <button class="simplepco-list-nav-btn simplepco-list-prev" aria-label="<?php esc_attr_e('Previous month', 'simplepco'); ?>" disabled>
+    <div class="sc-event-list__nav">
+        <button class="sc-event-list__nav-btn sc-event-list__prev" aria-label="<?php esc_attr_e('Previous month', 'simplepco'); ?>" disabled>
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
-        <h3 class="simplepco-list-month-title"><?php echo esc_html($months[$month_keys[0]]['label']); ?></h3>
-        <button class="simplepco-list-nav-btn simplepco-list-next" aria-label="<?php esc_attr_e('Next month', 'simplepco'); ?>">
+        <h3 class="sc-event-list__title"><?php echo esc_html($months[$month_keys[0]]['label']); ?></h3>
+        <button class="sc-event-list__nav-btn sc-event-list__next" aria-label="<?php esc_attr_e('Next month', 'simplepco'); ?>">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </button>
     </div>
     <?php else: ?>
-    <h3 class="simplepco-list-month-title simplepco-list-month-title--solo"><?php echo esc_html($months[$month_keys[0]]['label']); ?></h3>
+    <h3 class="sc-event-list__title sc-event-list__title--solo"><?php echo esc_html($months[$month_keys[0]]['label']); ?></h3>
     <?php endif; ?>
 
     <!-- Month Groups -->
     <?php foreach ($months as $month_key => $month): ?>
-    <div class="simplepco-list-month" data-month="<?php echo esc_attr($month_key); ?>"
+    <div class="sc-event-list__group" data-month="<?php echo esc_attr($month_key); ?>"
          <?php echo ($month_key !== $month_keys[0]) ? 'style="display:none"' : ''; ?>>
-        <ul class="simplepco-location-list-items">
+        <ul class="sc-event-list__items">
             <?php foreach ($month['events'] as $event):
                 $has_location = !empty($event['location_full']);
                 $time_display = $event['date_obj']->format($time_format);
             ?>
-            <li class="simplepco-location-list-item">
+            <li class="sc-event-list__item">
                 <!-- Date Badge -->
-                <div class="simplepco-location-list-date-badge">
-                    <span class="simplepco-location-list-day"><?php echo esc_html($event['day_short']); ?></span>
-                    <span class="simplepco-location-list-number"><?php echo esc_html($event['day_number']); ?></span>
-                    <span class="simplepco-location-list-month"><?php echo esc_html($event['month_short']); ?></span>
+                <div class="sc-event-list__badge">
+                    <span class="sc-event-list__day"><?php echo esc_html($event['day_short']); ?></span>
+                    <span class="sc-event-list__num"><?php echo esc_html($event['day_number']); ?></span>
+                    <span class="sc-event-list__month"><?php echo esc_html($event['month_short']); ?></span>
                 </div>
 
                 <!-- Event Details -->
-                <div class="simplepco-location-list-details">
-                    <div class="simplepco-location-list-event-name">
+                <div class="sc-event-list__details">
+                    <div class="sc-event-list__name">
                         <?php echo esc_html($event['name']); ?>
                     </div>
-                    <div class="simplepco-location-list-meta">
+                    <div class="sc-event-list__meta">
                         <?php if ($show_time): ?>
-                        <span class="simplepco-location-list-meta-item">
-                            <svg class="simplepco-location-list-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <span class="sc-event-list__meta-item">
+                            <svg class="sc-event-list__icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <polyline points="12 6 12 12 16 14"></polyline>
                             </svg>
@@ -93,14 +93,14 @@ $list_id = 'simplepco-list-' . ($scope_class ?: wp_unique_id('cl-'));
                         </span>
                         <?php endif; ?>
                         <?php if ($has_location): ?>
-                        <span class="simplepco-location-list-meta-item">
-                            <svg class="simplepco-location-list-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <span class="sc-event-list__meta-item">
+                            <svg class="sc-event-list__icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                                 <circle cx="12" cy="10" r="3"></circle>
                             </svg>
                             <?php if (!empty($event['maps_url'])): ?>
                                 <a href="<?php echo esc_url($event['maps_url']); ?>"
-                                   class="simplepco-location-list-link"
+                                   class="sc-event-list__link"
                                    target="_blank"
                                    rel="noopener noreferrer"
                                    title="<?php esc_attr_e('Get directions', 'simplepco'); ?>">
@@ -129,16 +129,16 @@ $list_id = 'simplepco-list-' . ($scope_class ?: wp_unique_id('cl-'));
         return ['key' => $k, 'label' => $months[$k]['label']];
     }, $month_keys)); ?>;
     var idx = 0;
-    var title = root.querySelector('.simplepco-list-month-title');
-    var prev = root.querySelector('.simplepco-list-prev');
-    var next = root.querySelector('.simplepco-list-next');
+    var title = root.querySelector('.sc-event-list__title');
+    var prev = root.querySelector('.sc-event-list__prev');
+    var next = root.querySelector('.sc-event-list__next');
 
     function show(i) {
         idx = i;
         title.textContent = months[i].label;
         prev.disabled = (i === 0);
         next.disabled = (i === months.length - 1);
-        var groups = root.querySelectorAll('.simplepco-list-month');
+        var groups = root.querySelectorAll('.sc-event-list__group');
         for (var g = 0; g < groups.length; g++) {
             groups[g].style.display = (groups[g].getAttribute('data-month') === months[i].key) ? '' : 'none';
         }

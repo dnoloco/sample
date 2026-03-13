@@ -1026,25 +1026,25 @@ function simple_church_seasonal_inline_css() {
 
 	if ( $season['text_color'] ) {
 		$tc = esc_attr( $season['text_color'] );
-		$css .= "body.seasonal-theme-active .simplepco-location-list { --simplepco-loc-text: " . $tc . "; --simplepco-loc-muted: " . $tc . "99; }\n";
-		$css .= "body.seasonal-theme-active .simplepco-list-nav-btn { border-color: " . $tc . "; color: " . $tc . "; }\n";
+		$css .= "body.seasonal-theme-active .sc-event-list { --simplepco-loc-text: " . $tc . "; --simplepco-loc-muted: " . $tc . "99; }\n";
+		$css .= "body.seasonal-theme-active .sc-event-list__nav-btn { border-color: " . $tc . "; color: " . $tc . "; }\n";
 	}
 	if ( $season['bg_color'] ) {
 		$bg = esc_attr( $season['bg_color'] );
-		$css .= "body.seasonal-theme-active .simplepco-location-list { --simplepco-loc-bg: " . $bg . "; --simplepco-loc-border: " . $bg . "; }\n";
+		$css .= "body.seasonal-theme-active .sc-event-list { --simplepco-loc-bg: " . $bg . "; --simplepco-loc-border: " . $bg . "; }\n";
 	}
 	if ( $list_primary ) {
-		$css .= "body.seasonal-theme-active .simplepco-location-list { --simplepco-loc-primary: " . $list_primary . "; }\n";
+		$css .= "body.seasonal-theme-active .sc-event-list { --simplepco-loc-primary: " . $list_primary . "; }\n";
 	}
 	if ( $season['dark_text_color'] ) {
 		$dtc = esc_attr( $season['dark_text_color'] );
-		$css .= "body.seasonal-theme-active .simplepco-location-list-date-badge { color: " . $dtc . "; }\n";
-		$css .= "body.seasonal-theme-active .simplepco-location-list-day,\n";
-		$css .= "body.seasonal-theme-active .simplepco-location-list-month { color: " . $dtc . "cc; }\n";
+		$css .= "body.seasonal-theme-active .sc-event-list__badge { color: " . $dtc . "; }\n";
+		$css .= "body.seasonal-theme-active .sc-event-list__day,\n";
+		$css .= "body.seasonal-theme-active .sc-event-list__month { color: " . $dtc . "cc; }\n";
 	}
 	if ( $season['link_color'] ) {
 		$lc = esc_attr( $season['link_color'] );
-		$css .= "body.seasonal-theme-active .simplepco-location-list-link { color: " . $lc . "; }\n";
+		$css .= "body.seasonal-theme-active .sc-event-list__link { color: " . $lc . "; }\n";
 	}
 
 	if ( $css ) {
