@@ -845,8 +845,8 @@ function simple_church_seasonal_inline_css() {
 		$css .= "body.seasonal-theme-active a { color: " . $lc . "; }\n";
 
 		// Buttons — use the link color for background and border.
-		$css .= "body.seasonal-theme-active .wp-block-button__link { background: " . $lc . "; border-color: " . $lc . "; color: #ffffff; }\n";
-		$css .= "body.seasonal-theme-active .wp-block-button__link:hover { background: transparent; color: " . $lc . "; border-color: " . $lc . "; }\n";
+		$css .= "body.seasonal-theme-active .wp-block-button__link { background: " . $lc . " !important; border-color: " . $lc . " !important; color: #ffffff !important; }\n";
+		$css .= "body.seasonal-theme-active .wp-block-button__link:hover { background: transparent !important; color: " . $lc . " !important; border-color: " . $lc . " !important; }\n";
 	}
 
 	// Footer overrides — uses CSS custom properties so every element
