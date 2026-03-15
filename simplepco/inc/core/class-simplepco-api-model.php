@@ -3,7 +3,7 @@
 
 class SimplePCO_API_Model {
 
-    private $auth_context;
+    private $auth_header;
     private $base_url = "https://api.planningcenteronline.com";
     private $local_timezone;
     const CACHE_DURATION = 3600; // 1 hour
@@ -13,7 +13,8 @@ class SimplePCO_API_Model {
      */
     public function __construct($client_id, $secret_key, $timezone_string = 'America/Chicago') {
         $credentials = base64_encode($client_id . ":" . $secret_key);
-        $this->init_context("Authorization: Basic " . $credentials, $timezone_string);
+        $this->auth_header = "Basic " . $credentials;
+        $this->local_timezone = new DateTimeZone($timezone_string);
     }
 
     /**
@@ -25,24 +26,8 @@ class SimplePCO_API_Model {
      */
     public static function from_oauth_token($access_token, $timezone_string = 'America/Chicago') {
         $instance = new self('', '', $timezone_string);
-        $instance->init_context("Authorization: Bearer " . $access_token, $timezone_string);
+        $instance->auth_header = "Bearer " . $access_token;
         return $instance;
-    }
-
-    /**
-     * Initialize the stream context with the given auth header.
-     */
-    private function init_context($auth_header, $timezone_string = 'America/Chicago') {
-        $options = [
-            'http' => [
-                'header' => $auth_header . "\r\n" .
-                    "Accept: application/vnd.api+json\r\n",
-                'method' => 'GET',
-                'ignore_errors' => true
-            ]
-        ];
-        $this->auth_context = stream_context_create($options);
-        $this->local_timezone = new DateTimeZone($timezone_string);
     }
 
     /**
@@ -58,14 +43,31 @@ class SimplePCO_API_Model {
         if (false === $output) {
             $query_params = '?' . http_build_query($params);
             $url = $this->base_url . "/{$app_domain}{$endpoint_path}" . $query_params;
-            $json_response = @file_get_contents($url, false, $this->auth_context);
 
-            if ($json_response === FALSE) {
-                $error = 'API Connection Failed.';
+            $response = wp_remote_get($url, [
+                'timeout' => 30,
+                'headers' => [
+                    'Authorization' => $this->auth_header,
+                    'Accept'        => 'application/vnd.api+json',
+                ],
+            ]);
+
+            if (is_wp_error($response)) {
+                $error = 'API Connection Failed: ' . $response->get_error_message();
+                error_log('[SimplePCO] API error for ' . $app_domain . $endpoint_path . ': ' . $error);
             } else {
+                $status_code   = wp_remote_retrieve_response_code($response);
+                $json_response = wp_remote_retrieve_body($response);
                 $response_data = json_decode($json_response, true);
-                if (isset($response_data['errors'])) {
+
+                if ($status_code >= 400) {
+                    $error = isset($response_data['errors'][0]['detail'])
+                        ? $response_data['errors'][0]['detail']
+                        : 'API returned HTTP ' . $status_code;
+                    error_log('[SimplePCO] API error for ' . $app_domain . $endpoint_path . ' (HTTP ' . $status_code . '): ' . $error);
+                } elseif (isset($response_data['errors'])) {
                     $error = $response_data['errors'][0]['detail'] ?? 'Unknown API Error.';
+                    error_log('[SimplePCO] API error for ' . $app_domain . $endpoint_path . ': ' . $error);
                 } else {
                     $output = $response_data;
                 }
@@ -278,7 +280,7 @@ class SimplePCO_API_Model {
             'per_page' => min($per_page, 100),
             'offset'   => $offset,
             'order'    => $order === 'asc' ? 'published_at' : '-published_at',
-            'include'  => 'series,episode_resources,speakerships',
+            'include'  => 'series,episode_resources',
         ];
         $key = 'simplepco_pub_episodes_' . md5($per_page . $offset . $order);
         return $this->get_data_with_caching('publishing', $endpoint, $params, $key, 5 * MINUTE_IN_SECONDS);
@@ -293,7 +295,7 @@ class SimplePCO_API_Model {
     public function get_publishing_episode($episode_id) {
         $endpoint = "/v2/episodes/{$episode_id}";
         $params = [
-            'include' => 'series,episode_resources,speakerships',
+            'include' => 'series,episode_resources',
         ];
         $key = 'simplepco_pub_episode_' . $episode_id;
         return $this->get_data_with_caching('publishing', $endpoint, $params, $key, 5 * MINUTE_IN_SECONDS);

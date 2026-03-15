@@ -225,13 +225,14 @@ class SimplePCO_Publishing_Repository implements SimplePCO_Repository_Interface 
      */
     protected function extract_speakers( $response ) {
         $speakers = [];
-        if ( isset( $response['included'] ) ) {
-            foreach ( $response['included'] as $included ) {
-                if ( isset( $included['type'] ) && $included['type'] === 'Speakership' ) {
-                    $speakers[] = $included['attributes']['name'] ?? '';
-                }
-            }
+
+        // Get speaker name directly from episode attributes.
+        $data = $response['data'] ?? $response;
+        $speaker = $data['attributes']['speaker'] ?? '';
+        if ( $speaker ) {
+            $speakers[] = $speaker;
         }
+
         return array_filter( $speakers );
     }
 
