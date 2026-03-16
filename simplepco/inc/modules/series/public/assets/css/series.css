@@ -471,7 +471,7 @@
 
 .simplepco-series-archive {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 24px;
     max-width: 1200px;
     margin: 0 auto;
@@ -825,7 +825,7 @@
 
 @media (max-width: 768px) {
     .simplepco-series-archive {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: 1fr;
     }
 
     .simplepco-series-single-header,

@@ -17,7 +17,7 @@ $names = class_exists( 'SimplePCO_Series_Module' )
 	? SimplePCO_Series_Module::get_custom_labels()
 	: [ 'message_plural' => 'Messages', 'series_plural' => 'Series' ];
 
-$page_title = $names['series_plural'];
+$page_title = $names['message_plural'];
 ?>
 
 <section class="page-hero">
@@ -58,14 +58,6 @@ $page_title = $names['series_plural'];
 							<?php endif; ?>
 							<div class="simplepco-series-card-body">
 								<h3 class="simplepco-series-card-title"><?php echo esc_html( $term->name ); ?></h3>
-								<?php if ( $term->count > 0 ) : ?>
-									<span class="simplepco-series-card-count">
-										<?php echo esc_html( sprintf(
-											_n( '%d message', '%d messages', $term->count, 'simple-church' ),
-											$term->count
-										) ); ?>
-									</span>
-								<?php endif; ?>
 							</div>
 						</a>
 					<?php endforeach;

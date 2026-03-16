@@ -19,7 +19,6 @@
 
 defined('ABSPATH') || exit;
 
-$current_url = remove_query_arg(['simplepco_series', 'simplepco_message', 'simplepco_speaker']);
 ?>
 
 <?php do_action('simplepco/series/archive/before', $terms, $atts); ?>
@@ -33,11 +32,8 @@ $current_url = remove_query_arg(['simplepco_series', 'simplepco_message', 'simpl
             $artwork_url = $placeholder_url;
         }
 
-        // Message count
-        $message_count = $term->count;
-
-        // Series link
-        $series_url = add_query_arg('simplepco_series', $term->slug, $current_url);
+        // Series link — use the taxonomy archive URL
+        $series_url = get_term_link($term);
     ?>
 
         <?php do_action('simplepco/series/card/before', $term, $index); ?>
@@ -50,19 +46,6 @@ $current_url = remove_query_arg(['simplepco_series', 'simplepco_message', 'simpl
             </div>
             <div class="simplepco-series-card-body">
                 <h3 class="simplepco-series-card-title"><?php echo esc_html($term->name); ?></h3>
-                <?php if ($message_count > 0): ?>
-                    <span class="simplepco-series-card-count">
-                        <?php echo esc_html(sprintf(
-                            _n('%d message', '%d messages', $message_count, 'simplepco'),
-                            $message_count
-                        )); ?>
-                    </span>
-                <?php endif; ?>
-                <?php if (!empty($term->description)): ?>
-                    <p class="simplepco-series-card-description">
-                        <?php echo esc_html(wp_trim_words($term->description, 15)); ?>
-                    </p>
-                <?php endif; ?>
             </div>
         </a>
 
