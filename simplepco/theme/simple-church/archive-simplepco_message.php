@@ -2,9 +2,8 @@
 /**
  * Messages Archive Template
  *
- * Displays the messages archive at /messages/ using the Series module's
- * gallery view with pagination. Also handles series and speaker sub-views
- * via query parameters.
+ * Landing page at /messages/ — shows all series as a grid so users
+ * browse series first, then drill into a series to see its messages.
  *
  * WordPress template hierarchy: archive-{post_type}.php
  *
@@ -16,26 +15,9 @@ get_header();
 
 $names = class_exists( 'SimplePCO_Series_Module' )
 	? SimplePCO_Series_Module::get_custom_labels()
-	: [ 'message_plural' => 'Messages', 'series_plural' => 'Series', 'speaker_singular' => 'Speaker' ];
+	: [ 'message_plural' => 'Messages', 'series_plural' => 'Series' ];
 
-// Determine the view context
-$single_id   = isset( $_GET['simplepco_message'] ) ? absint( $_GET['simplepco_message'] ) : 0;
-$series_slug = isset( $_GET['simplepco_series'] ) ? sanitize_text_field( $_GET['simplepco_series'] ) : '';
-$speaker_id  = isset( $_GET['simplepco_speaker'] ) ? absint( $_GET['simplepco_speaker'] ) : 0;
-
-// Build the page title
-if ( $single_id > 0 ) {
-	$msg = get_post( $single_id );
-	$page_title = $msg ? $msg->post_title : $names['message_plural'];
-} elseif ( ! empty( $series_slug ) ) {
-	$term = get_term_by( 'slug', $series_slug, 'simplepco_series' );
-	$page_title = $term ? $term->name : $names['series_plural'];
-} elseif ( $speaker_id > 0 ) {
-	$spk = get_post( $speaker_id );
-	$page_title = $spk ? $spk->post_title : $names['speaker_singular'];
-} else {
-	$page_title = $names['message_plural'];
-}
+$page_title = $names['series_plural'];
 ?>
 
 <section class="page-hero">
@@ -48,36 +30,49 @@ if ( $single_id > 0 ) {
 	<div class="section__inner section__inner--narrow">
 		<div class="page-content reveal">
 			<?php
-			if ( shortcode_exists( 'simplepco_messages' ) ) {
-				// The shortcode handles single, series, speaker, and list views
-				// based on the query parameters.
-				echo do_shortcode( '[simplepco_messages view="gallery" count="12"]' );
+			if ( shortcode_exists( 'simplepco_series_list' ) ) {
+				// Show all series as a grid — each links to its taxonomy archive
+				echo do_shortcode( '[simplepco_series_list count="24"]' );
 			} else {
-				// Fallback: render using the standard WordPress loop
-				if ( have_posts() ) :
-					echo '<div class="simplepco-messages-gallery">';
-					while ( have_posts() ) : the_post(); ?>
-						<a href="<?php the_permalink(); ?>" class="simplepco-message-card">
-							<?php if ( has_post_thumbnail() ) : ?>
-								<div class="simplepco-message-card-image">
-									<?php the_post_thumbnail( 'medium_large' ); ?>
+				// Fallback: list series terms directly
+				$series_terms = get_terms( [
+					'taxonomy'   => 'simplepco_series',
+					'hide_empty' => true,
+					'orderby'    => 'name',
+					'order'      => 'DESC',
+				] );
+
+				if ( ! empty( $series_terms ) && ! is_wp_error( $series_terms ) ) :
+					echo '<div class="simplepco-series-archive">';
+					foreach ( $series_terms as $term ) :
+						$artwork_url = get_term_meta( $term->term_id, '_simplepco_series_image', true );
+						$term_link   = get_term_link( $term );
+					?>
+						<a href="<?php echo esc_url( $term_link ); ?>" class="simplepco-series-card">
+							<?php if ( ! empty( $artwork_url ) ) : ?>
+								<div class="simplepco-series-card-image">
+									<img src="<?php echo esc_url( $artwork_url ); ?>"
+									     alt="<?php echo esc_attr( $term->name ); ?>"
+									     loading="lazy">
 								</div>
 							<?php endif; ?>
-							<div class="simplepco-message-card-body">
-								<h3 class="simplepco-message-card-title"><?php the_title(); ?></h3>
+							<div class="simplepco-series-card-body">
+								<h3 class="simplepco-series-card-title"><?php echo esc_html( $term->name ); ?></h3>
+								<?php if ( $term->count > 0 ) : ?>
+									<span class="simplepco-series-card-count">
+										<?php echo esc_html( sprintf(
+											_n( '%d message', '%d messages', $term->count, 'simple-church' ),
+											$term->count
+										) ); ?>
+									</span>
+								<?php endif; ?>
 							</div>
 						</a>
-					<?php endwhile;
+					<?php endforeach;
 					echo '</div>';
-
-					the_posts_pagination( [
-						'mid_size'  => 1,
-						'prev_text' => '&larr;',
-						'next_text' => '&rarr;',
-					] );
 				else : ?>
 					<div class="simplepco-messages-empty">
-						<p><?php esc_html_e( 'No messages found.', 'simple-church' ); ?></p>
+						<p><?php esc_html_e( 'No series found.', 'simple-church' ); ?></p>
 					</div>
 				<?php endif;
 			}
