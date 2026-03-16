@@ -412,3 +412,450 @@
         width: auto;
     }
 }
+
+/* =========================================================================
+   Gallery Card Meta (speaker & date below title)
+   ========================================================================= */
+
+.simplepco-message-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin-top: 6px;
+    font-size: 0.85em;
+    color: #6b7280;
+}
+
+.simplepco-message-card-speaker,
+.simplepco-message-card-date {
+    white-space: nowrap;
+}
+
+/* =========================================================================
+   Pagination
+   ========================================================================= */
+
+.simplepco-messages-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-top: 32px;
+    font-size: 0.9em;
+}
+
+.simplepco-messages-pagination a,
+.simplepco-messages-pagination span {
+    display: inline-block;
+    padding: 8px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #374151;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.simplepco-messages-pagination a:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+.simplepco-messages-pagination .current {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
+}
+
+/* =========================================================================
+   Series Archive (card grid)
+   ========================================================================= */
+
+.simplepco-series-archive {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.simplepco-series-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.simplepco-series-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.simplepco-series-card-image {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #e5e7eb;
+}
+
+.simplepco-series-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.simplepco-series-card-body {
+    padding: 12px 16px 16px;
+}
+
+.simplepco-series-card-title {
+    margin: 0;
+    font-size: 1em;
+    line-height: 1.4;
+    font-weight: 600;
+}
+
+.simplepco-series-card-count {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.85em;
+    color: #6b7280;
+}
+
+.simplepco-series-card-description {
+    margin: 8px 0 0;
+    font-size: 0.85em;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* =========================================================================
+   Series Single (header + message list)
+   ========================================================================= */
+
+.simplepco-series-single {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.simplepco-series-single-header {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    align-items: flex-start;
+}
+
+.simplepco-series-single-artwork {
+    flex-shrink: 0;
+    width: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.simplepco-series-single-artwork img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.simplepco-series-single-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.simplepco-series-single-title {
+    margin: 0 0 8px;
+    font-size: 1.6em;
+    line-height: 1.3;
+}
+
+.simplepco-series-single-date {
+    font-size: 0.9em;
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.simplepco-series-single-description {
+    font-size: 0.95em;
+    line-height: 1.6;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.simplepco-series-single-description p:last-child {
+    margin-bottom: 0;
+}
+
+.simplepco-series-single-count {
+    display: inline-block;
+    font-size: 0.85em;
+    color: #6b7280;
+}
+
+/* Series message list items */
+.simplepco-series-single-messages {
+    border-top: 1px solid #e5e7eb;
+}
+
+.simplepco-series-single-message,
+.simplepco-speaker-single-message {
+    display: flex;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid #f3f4f6;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.15s;
+    align-items: center;
+}
+
+.simplepco-series-single-message:hover,
+.simplepco-speaker-single-message:hover {
+    background-color: #f9fafb;
+}
+
+.simplepco-series-single-message:last-child,
+.simplepco-speaker-single-message:last-child {
+    border-bottom: none;
+}
+
+.simplepco-series-single-message-image,
+.simplepco-speaker-single-message-image {
+    flex-shrink: 0;
+    width: 100px;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.simplepco-series-single-message-image img,
+.simplepco-speaker-single-message-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.simplepco-series-single-message-info,
+.simplepco-speaker-single-message-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.simplepco-series-single-message-title,
+.simplepco-speaker-single-message-title {
+    margin: 0 0 4px;
+    font-size: 1em;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.simplepco-series-single-message-meta,
+.simplepco-speaker-single-message-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    font-size: 0.85em;
+    color: #6b7280;
+}
+
+.simplepco-series-single-message-media,
+.simplepco-speaker-single-message-media {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+/* Media badges */
+.simplepco-media-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 0.75em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.simplepco-media-badge--video {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.simplepco-media-badge--audio {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+/* =========================================================================
+   Speaker Single (header + message list)
+   ========================================================================= */
+
+.simplepco-speaker-single {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.simplepco-speaker-single-header {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    align-items: flex-start;
+}
+
+.simplepco-speaker-single-photo {
+    flex-shrink: 0;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.simplepco-speaker-single-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.simplepco-speaker-single-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.simplepco-speaker-single-name {
+    margin: 0 0 4px;
+    font-size: 1.6em;
+    line-height: 1.3;
+}
+
+.simplepco-speaker-single-title {
+    font-size: 1em;
+    color: #6b7280;
+    margin-bottom: 12px;
+}
+
+.simplepco-speaker-single-bio {
+    font-size: 0.95em;
+    line-height: 1.6;
+    color: #374151;
+    margin-bottom: 12px;
+}
+
+.simplepco-speaker-single-bio p:last-child {
+    margin-bottom: 0;
+}
+
+.simplepco-speaker-single-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.simplepco-speaker-single-link {
+    display: inline-block;
+    padding: 4px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.85em;
+    text-decoration: none;
+    color: #2563eb;
+    transition: background-color 0.15s;
+}
+
+.simplepco-speaker-single-link:hover {
+    background: #f0f7ff;
+}
+
+.simplepco-speaker-single-count {
+    display: inline-block;
+    font-size: 0.85em;
+    color: #6b7280;
+}
+
+.simplepco-speaker-single-messages {
+    border-top: 1px solid #e5e7eb;
+}
+
+/* =========================================================================
+   Single Message: Speaker title, Files section
+   ========================================================================= */
+
+.simplepco-message-single-speaker-title {
+    display: block;
+    font-size: 0.85em;
+    color: #6b7280;
+}
+
+.simplepco-message-single-files {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.simplepco-message-single-files-title {
+    margin: 0 0 12px;
+    font-size: 1.1em;
+}
+
+.simplepco-message-single-files-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.simplepco-message-single-files-list li {
+    padding: 6px 0;
+}
+
+.simplepco-message-single-files-list a {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.simplepco-message-single-files-list a:hover {
+    text-decoration: underline;
+}
+
+/* =========================================================================
+   Responsive (new templates)
+   ========================================================================= */
+
+@media (max-width: 768px) {
+    .simplepco-series-archive {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .simplepco-series-single-header,
+    .simplepco-speaker-single-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .simplepco-series-single-artwork {
+        width: 160px;
+    }
+
+    .simplepco-speaker-single-photo {
+        width: 120px;
+        height: 120px;
+    }
+
+    .simplepco-series-single-message,
+    .simplepco-speaker-single-message {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .simplepco-series-single-message-image,
+    .simplepco-speaker-single-message-image {
+        width: 100%;
+    }
+
+    .simplepco-speaker-single-links {
+        justify-content: center;
+    }
+}

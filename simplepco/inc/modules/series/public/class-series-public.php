@@ -4,6 +4,9 @@
  *
  * Handles all frontend/public functionality for the Series module.
  * Provides shortcodes for displaying messages in various formats.
+ *
+ * Uses WordPress CPTs (simplepco_message, simplepco_speaker) and
+ * taxonomies (simplepco_series, simplepco_service_type) with post meta.
  */
 
 if (!defined('ABSPATH')) {
@@ -26,6 +29,7 @@ class SimplePCO_Series_Public {
     public function init() {
         add_shortcode('simplepco_messages', [$this, 'render_messages_shortcode']);
         add_shortcode('simplepco_sermons', [$this, 'render_messages_shortcode']); // backward compat
+        add_shortcode('simplepco_series_list', [$this, 'render_series_archive_shortcode']);
         $this->loader->add_action('wp_enqueue_scripts', $this, 'enqueue_public_assets');
     }
 
@@ -39,7 +43,16 @@ class SimplePCO_Series_Public {
             return;
         }
 
-        if (!has_shortcode($post->post_content, 'simplepco_messages') && !has_shortcode($post->post_content, 'simplepco_sermons')) {
+        $shortcodes = ['simplepco_messages', 'simplepco_sermons', 'simplepco_series_list'];
+        $has_shortcode = false;
+        foreach ($shortcodes as $sc) {
+            if (has_shortcode($post->post_content, $sc)) {
+                $has_shortcode = true;
+                break;
+            }
+        }
+
+        if (!$has_shortcode) {
             return;
         }
 
@@ -70,7 +83,7 @@ class SimplePCO_Series_Public {
      * Render the messages shortcode.
      *
      * If ?simplepco_message=ID is present, renders the single message detail page.
-     * Otherwise, renders the gallery of message cards.
+     * Otherwise, renders the gallery/list of message cards.
      *
      * @param array $atts Shortcode attributes
      * @return string HTML output
@@ -85,6 +98,7 @@ class SimplePCO_Series_Public {
             'view'    => 'gallery',
             'orderby' => 'date',
             'order'   => 'DESC',
+            'paged'   => '',
         ], $atts, 'simplepco_messages');
 
         // Load centralized shortcode settings when id is provided
@@ -107,25 +121,142 @@ class SimplePCO_Series_Public {
             return $this->render_single_message($single_id);
         }
 
-        // Fetch messages from database
-        $messages = $this->fetch_messages([
-            'count'   => $count,
-            'series'  => $atts['series'],
-            'speaker' => $atts['speaker'],
-            'topic'   => $atts['topic'],
-            'orderby' => $atts['orderby'],
-            'order'   => $order,
-        ]);
+        // Build WP_Query args
+        $paged = !empty($atts['paged']) ? absint($atts['paged']) : max(1, get_query_var('paged'));
+        $query_args = [
+            'post_type'      => 'simplepco_message',
+            'posts_per_page' => min($count, 100),
+            'paged'          => $paged,
+            'post_status'    => 'publish',
+        ];
 
-        if (empty($messages)) {
+        // Order
+        if ($atts['orderby'] === 'title') {
+            $query_args['orderby'] = 'title';
+        } else {
+            $query_args['meta_key'] = '_simplepco_message_date';
+            $query_args['orderby']  = 'meta_value';
+        }
+        $query_args['order'] = $order;
+
+        // Filter by series taxonomy
+        if (!empty($atts['series'])) {
+            $query_args['tax_query'] = [[
+                'taxonomy' => 'simplepco_series',
+                'field'    => is_numeric($atts['series']) ? 'term_id' : 'name',
+                'terms'    => $atts['series'],
+            ]];
+        }
+
+        // Filter by speaker (post meta → speaker post)
+        if (!empty($atts['speaker'])) {
+            if (is_numeric($atts['speaker'])) {
+                $query_args['meta_query'][] = [
+                    'key'   => '_simplepco_speaker_id',
+                    'value' => absint($atts['speaker']),
+                ];
+            } else {
+                // Lookup speaker post by name
+                $speaker_posts = get_posts([
+                    'post_type'      => 'simplepco_speaker',
+                    'posts_per_page' => 1,
+                    'title'          => sanitize_text_field($atts['speaker']),
+                    'post_status'    => 'publish',
+                    'fields'         => 'ids',
+                ]);
+                if (!empty($speaker_posts)) {
+                    $query_args['meta_query'][] = [
+                        'key'   => '_simplepco_speaker_id',
+                        'value' => $speaker_posts[0],
+                    ];
+                }
+            }
+        }
+
+        // Filter by topic taxonomy (service_type used as topic)
+        if (!empty($atts['topic'])) {
+            $topic_query = [
+                'taxonomy' => 'simplepco_service_type',
+                'field'    => is_numeric($atts['topic']) ? 'term_id' : 'name',
+                'terms'    => $atts['topic'],
+            ];
+            if (!empty($query_args['tax_query'])) {
+                $query_args['tax_query'][] = $topic_query;
+            } else {
+                $query_args['tax_query'] = [$topic_query];
+            }
+        }
+
+        /**
+         * Filter the messages query args before execution.
+         *
+         * @param array $query_args WP_Query arguments.
+         * @param array $atts       Shortcode attributes.
+         */
+        $query_args = apply_filters('simplepco/messages/query_args', $query_args, $atts);
+
+        $messages_query = new WP_Query($query_args);
+
+        if (!$messages_query->have_posts()) {
+            wp_reset_postdata();
             return '<div class="simplepco-messages-empty"><p>' . esc_html__('No messages found.', 'simplepco') . '</p></div>';
         }
 
         $template = ($view === 'list') ? 'messages-list' : 'messages-gallery';
 
-        return $this->load_template($template, [
-            'messages'        => $messages,
+        $output = $this->load_template($template, [
+            'messages_query'  => $messages_query,
             'view'            => $view,
+            'atts'            => $atts,
+            'placeholder_url' => $this->get_placeholder_url(),
+        ]);
+
+        wp_reset_postdata();
+
+        return $output;
+    }
+
+    /**
+     * Render the series archive shortcode.
+     *
+     * Displays all series as cards with artwork and message counts.
+     *
+     * @param array $atts Shortcode attributes.
+     * @return string HTML output.
+     */
+    public function render_series_archive_shortcode($atts) {
+        $atts = shortcode_atts([
+            'count'   => 12,
+            'orderby' => 'name',
+            'order'   => 'ASC',
+        ], $atts, 'simplepco_series_list');
+
+        // Check for single series view
+        $series_slug = isset($_GET['simplepco_series']) ? sanitize_text_field($_GET['simplepco_series']) : '';
+        if (!empty($series_slug)) {
+            return $this->render_series_single($series_slug);
+        }
+
+        // Check for single speaker view
+        $speaker_id = isset($_GET['simplepco_speaker']) ? absint($_GET['simplepco_speaker']) : 0;
+        if ($speaker_id > 0) {
+            return $this->render_speaker_single($speaker_id);
+        }
+
+        $terms = get_terms([
+            'taxonomy'   => 'simplepco_series',
+            'number'     => min(absint($atts['count']), 100),
+            'orderby'    => $atts['orderby'],
+            'order'      => strtoupper($atts['order']) === 'DESC' ? 'DESC' : 'ASC',
+            'hide_empty' => true,
+        ]);
+
+        if (is_wp_error($terms) || empty($terms)) {
+            return '<div class="simplepco-messages-empty"><p>' . esc_html__('No series found.', 'simplepco') . '</p></div>';
+        }
+
+        return $this->load_template('series-archive', [
+            'terms'           => $terms,
             'atts'            => $atts,
             'placeholder_url' => $this->get_placeholder_url(),
         ]);
@@ -134,128 +265,93 @@ class SimplePCO_Series_Public {
     /**
      * Render a single message detail page.
      *
-     * @param int $message_id Message ID.
+     * @param int $message_id Message post ID.
      * @return string HTML output.
      */
     private function render_single_message($message_id) {
-        $message = $this->fetch_single_message($message_id);
+        $post = get_post($message_id);
 
-        if (!$message) {
+        if (!$post || $post->post_type !== 'simplepco_message' || $post->post_status !== 'publish') {
             return '<div class="simplepco-messages-empty"><p>' . esc_html__('Message not found.', 'simplepco') . '</p></div>';
         }
 
         return $this->load_template('message-single', [
-            'message'         => $message,
+            'message'         => $post,
             'placeholder_url' => $this->get_placeholder_url(),
         ]);
     }
 
     /**
-     * Fetch a single message by ID with all joined data.
+     * Render messages for a single series.
      *
-     * @param int $message_id Message ID.
-     * @return object|null Message object or null.
+     * @param string $series_slug Series term slug.
+     * @return string HTML output.
      */
-    private function fetch_single_message($message_id) {
-        global $wpdb;
+    private function render_series_single($series_slug) {
+        $term = get_term_by('slug', $series_slug, 'simplepco_series');
 
-        $table_messages = $wpdb->prefix . 'simplepco_messages';
-        $table_speakers = $wpdb->prefix . 'simplepco_speakers';
-        $table_series = $wpdb->prefix . 'simplepco_series';
-        $table_topics = $wpdb->prefix . 'simplepco_topics';
+        if (!$term) {
+            return '<div class="simplepco-messages-empty"><p>' . esc_html__('Series not found.', 'simplepco') . '</p></div>';
+        }
 
-        $query = "SELECT m.*,
-                    sp.name AS speaker_name,
-                    sp.title AS speaker_title,
-                    sp.image_url AS speaker_image_url,
-                    sr.title AS series_title,
-                    sr.image_url AS series_image_url,
-                    t.name AS topic_name
-                  FROM {$table_messages} m
-                  LEFT JOIN {$table_speakers} sp ON m.speaker_id = sp.id
-                  LEFT JOIN {$table_series} sr ON m.series_id = sr.id
-                  LEFT JOIN {$table_topics} t ON m.topic_id = t.id
-                  WHERE m.id = %d";
+        $messages_query = new WP_Query([
+            'post_type'      => 'simplepco_message',
+            'posts_per_page' => 100,
+            'post_status'    => 'publish',
+            'meta_key'       => '_simplepco_message_date',
+            'orderby'        => 'meta_value',
+            'order'          => 'DESC',
+            'tax_query'      => [[
+                'taxonomy' => 'simplepco_series',
+                'field'    => 'term_id',
+                'terms'    => $term->term_id,
+            ]],
+        ]);
 
-        return $wpdb->get_row($wpdb->prepare($query, $message_id));
+        $output = $this->load_template('series-single', [
+            'term'            => $term,
+            'messages_query'  => $messages_query,
+            'placeholder_url' => $this->get_placeholder_url(),
+        ]);
+
+        wp_reset_postdata();
+        return $output;
     }
 
     /**
-     * Fetch messages from the database.
+     * Render a speaker detail page with their messages.
      *
-     * @param array $args Query arguments.
-     * @return array Array of message objects.
+     * @param int $speaker_id Speaker post ID.
+     * @return string HTML output.
      */
-    private function fetch_messages($args) {
-        global $wpdb;
+    private function render_speaker_single($speaker_id) {
+        $speaker = get_post($speaker_id);
 
-        $table_messages = $wpdb->prefix . 'simplepco_messages';
-        $table_speakers = $wpdb->prefix . 'simplepco_speakers';
-        $table_series = $wpdb->prefix . 'simplepco_series';
-        $table_topics = $wpdb->prefix . 'simplepco_topics';
-
-        $where = '1=1';
-        $params = [];
-
-        // Filter by series (by ID or slug/title)
-        if (!empty($args['series'])) {
-            if (is_numeric($args['series'])) {
-                $where .= ' AND m.series_id = %d';
-                $params[] = absint($args['series']);
-            } else {
-                $where .= ' AND sr.title LIKE %s';
-                $params[] = '%' . $wpdb->esc_like(sanitize_text_field($args['series'])) . '%';
-            }
+        if (!$speaker || $speaker->post_type !== 'simplepco_speaker' || $speaker->post_status !== 'publish') {
+            return '<div class="simplepco-messages-empty"><p>' . esc_html__('Speaker not found.', 'simplepco') . '</p></div>';
         }
 
-        // Filter by speaker (by ID or name)
-        if (!empty($args['speaker'])) {
-            if (is_numeric($args['speaker'])) {
-                $where .= ' AND m.speaker_id = %d';
-                $params[] = absint($args['speaker']);
-            } else {
-                $where .= ' AND sp.name LIKE %s';
-                $params[] = '%' . $wpdb->esc_like(sanitize_text_field($args['speaker'])) . '%';
-            }
-        }
+        $messages_query = new WP_Query([
+            'post_type'      => 'simplepco_message',
+            'posts_per_page' => 100,
+            'post_status'    => 'publish',
+            'meta_key'       => '_simplepco_message_date',
+            'orderby'        => 'meta_value',
+            'order'          => 'DESC',
+            'meta_query'     => [[
+                'key'   => '_simplepco_speaker_id',
+                'value' => $speaker_id,
+            ]],
+        ]);
 
-        // Filter by topic (by ID or name)
-        if (!empty($args['topic'])) {
-            if (is_numeric($args['topic'])) {
-                $where .= ' AND m.topic_id = %d';
-                $params[] = absint($args['topic']);
-            } else {
-                $where .= ' AND t.name LIKE %s';
-                $params[] = '%' . $wpdb->esc_like(sanitize_text_field($args['topic'])) . '%';
-            }
-        }
+        $output = $this->load_template('speaker-single', [
+            'speaker'         => $speaker,
+            'messages_query'  => $messages_query,
+            'placeholder_url' => $this->get_placeholder_url(),
+        ]);
 
-        // Order
-        $order_col = 'm.message_date';
-        if ($args['orderby'] === 'title') {
-            $order_col = 'm.title';
-        }
-
-        $order = $args['order'] === 'ASC' ? 'ASC' : 'DESC';
-        $limit = min(absint($args['count']), 100);
-
-        $query = "SELECT m.*,
-                    sp.name AS speaker_name,
-                    sp.image_url AS speaker_image_url,
-                    sr.title AS series_title,
-                    sr.image_url AS series_image_url,
-                    t.name AS topic_name
-                  FROM {$table_messages} m
-                  LEFT JOIN {$table_speakers} sp ON m.speaker_id = sp.id
-                  LEFT JOIN {$table_series} sr ON m.series_id = sr.id
-                  LEFT JOIN {$table_topics} t ON m.topic_id = t.id
-                  WHERE {$where}
-                  ORDER BY {$order_col} {$order}
-                  LIMIT %d";
-
-        $params[] = $limit;
-
-        return $wpdb->get_results($wpdb->prepare($query, $params));
+        wp_reset_postdata();
+        return $output;
     }
 
     /**
@@ -267,6 +363,17 @@ class SimplePCO_Series_Public {
         ob_start();
 
         $template_path = SIMPLEPCO_PLUGIN_DIR . 'templates/series/public/' . $template_name . '.php';
+
+        /**
+         * Filter the template path for series templates.
+         *
+         * Allows themes to override plugin templates by providing their own version.
+         *
+         * @param string $template_path Full path to the template file.
+         * @param string $template_name Template name (without .php extension).
+         * @param array  $data          Template data.
+         */
+        $template_path = apply_filters('simplepco/series/template_path', $template_path, $template_name, $data);
 
         if (file_exists($template_path)) {
             include $template_path;

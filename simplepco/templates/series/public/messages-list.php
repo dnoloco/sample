@@ -2,10 +2,20 @@
 /**
  * Public Messages List Template
  *
+ * Displays messages in a list layout with video player, audio links, and metadata.
+ * Uses WordPress CPT data (simplepco_message) with post meta for media fields.
+ *
  * Available variables:
- * - $messages (array) - Array of message objects with joined speaker/series/topic data
+ * - $messages_query (WP_Query) - Query object with simplepco_message posts
  * - $view (string) - Display view type
  * - $atts (array) - Shortcode attributes
+ * - $placeholder_url (string) - URL to the default placeholder image
+ *
+ * Available Hooks:
+ * - simplepco/messages/list/before: Before the list container
+ * - simplepco/messages/list/after: After the list container
+ * - simplepco/messages/item/before: Before each message item
+ * - simplepco/messages/item/after: After each message item
  */
 
 defined('ABSPATH') || exit;
@@ -19,7 +29,6 @@ function simplepco_parse_video_url($url) {
         return null;
     }
 
-    // YouTube: various URL formats
     $youtube_id = null;
     if (preg_match('/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/', $url, $matches)) {
         $youtube_id = $matches[1];
@@ -34,7 +43,6 @@ function simplepco_parse_video_url($url) {
         ];
     }
 
-    // Vimeo
     if (preg_match('/vimeo\.com\/(?:video\/)?(\d+)/', $url, $matches)) {
         return [
             'type'      => 'vimeo',
@@ -44,7 +52,6 @@ function simplepco_parse_video_url($url) {
         ];
     }
 
-    // Direct video file (mp4, webm, etc.)
     if (preg_match('/\.(mp4|webm|ogg)(\?|$)/i', $url)) {
         return [
             'type'      => 'direct',
@@ -57,64 +64,141 @@ function simplepco_parse_video_url($url) {
     return null;
 }
 endif;
+
+$current_url = remove_query_arg('simplepco_message');
 ?>
+
+<?php do_action('simplepco/messages/list/before', $messages_query, $atts); ?>
 
 <div class="simplepco-messages-wrapper">
 
-    <?php foreach ($messages as $message):
-        $message_date = !empty($message->message_date)
-            ? date_i18n(get_option('date_format'), strtotime($message->message_date))
+    <?php while ($messages_query->have_posts()) : $messages_query->the_post();
+        $post_id = get_the_ID();
+
+        // Message date
+        $message_date = get_post_meta($post_id, '_simplepco_message_date', true);
+        $formatted_date = $message_date
+            ? date_i18n(get_option('date_format'), strtotime($message_date))
             : '';
 
-        $image_url = !empty($message->image_url) ? $message->image_url : (!empty($message->series_image_url) ? $message->series_image_url : '');
-        $video = simplepco_parse_video_url($message->video_url ?? '');
+        // Speaker
+        $speaker_name = '';
+        $speaker_id = get_post_meta($post_id, '_simplepco_speaker_id', true);
+        if ($speaker_id) {
+            $speaker_post = get_post($speaker_id);
+            if ($speaker_post) {
+                $speaker_name = $speaker_post->post_title;
+            }
+        }
 
-        // Use YouTube thumbnail as fallback if no message/series image
+        // Series
+        $series_title = '';
+        $series_terms = wp_get_post_terms($post_id, 'simplepco_series', ['fields' => 'all']);
+        if (!empty($series_terms) && !is_wp_error($series_terms)) {
+            $series_title = $series_terms[0]->name;
+        }
+
+        // Topic / Service Type
+        $topic_name = '';
+        $topic_terms = wp_get_post_terms($post_id, 'simplepco_service_type', ['fields' => 'all']);
+        if (!empty($topic_terms) && !is_wp_error($topic_terms)) {
+            $topic_name = $topic_terms[0]->name;
+        }
+
+        // Image
+        $image_url = get_post_meta($post_id, '_simplepco_message_image', true);
+        if (empty($image_url) && !empty($series_terms) && !is_wp_error($series_terms)) {
+            $image_url = get_term_meta($series_terms[0]->term_id, '_simplepco_series_image', true);
+        }
+
+        // Video
+        $video_url = get_post_meta($post_id, '_simplepco_message_video', true);
+        $video = simplepco_parse_video_url($video_url);
+
         if (empty($image_url) && $video && !empty($video['thumb_url'])) {
             $image_url = $video['thumb_url'];
         }
 
         $has_video = !empty($video);
+
+        // Audio
+        $audio_url = get_post_meta($post_id, '_simplepco_message_audio', true);
+
+        // Description
+        $description = get_post_meta($post_id, '_simplepco_message_description', true);
+        if (empty($description)) {
+            $description = get_the_excerpt();
+        }
+
+        // Scripture
+        $scriptures = get_post_meta($post_id, '_simplepco_message_scriptures', true);
+        $scripture_text = '';
+        if (is_array($scriptures) && !empty($scriptures)) {
+            $parts = [];
+            foreach ($scriptures as $s) {
+                $ref = ($s['book'] ?? '');
+                if (!empty($s['chapter'])) {
+                    $ref .= ' ' . $s['chapter'];
+                    if (!empty($s['verse_start'])) {
+                        $ref .= ':' . $s['verse_start'];
+                        if (!empty($s['verse_end']) && $s['verse_end'] != $s['verse_start']) {
+                            $ref .= '-' . $s['verse_end'];
+                        }
+                    }
+                }
+                if (trim($ref)) {
+                    $parts[] = trim($ref);
+                }
+            }
+            $scripture_text = implode('; ', $parts);
+        }
+
+        $detail_url = add_query_arg('simplepco_message', $post_id, $current_url);
     ?>
+
+        <?php do_action('simplepco/messages/item/before', $post_id); ?>
+
         <div class="simplepco-message-item">
 
             <div class="simplepco-message-content">
-                <h3 class="simplepco-message-title"><?php echo esc_html($message->title); ?></h3>
+                <h3 class="simplepco-message-title">
+                    <a href="<?php echo esc_url($detail_url); ?>"><?php echo esc_html(get_the_title()); ?></a>
+                </h3>
 
                 <div class="simplepco-message-meta">
-                    <?php if (!empty($message_date)): ?>
-                        <span class="simplepco-message-date"><?php echo esc_html($message_date); ?></span>
+                    <?php if (!empty($formatted_date)): ?>
+                        <span class="simplepco-message-date"><?php echo esc_html($formatted_date); ?></span>
                     <?php endif; ?>
 
-                    <?php if (!empty($message->speaker_name)): ?>
-                        <span class="simplepco-message-speaker"><?php echo esc_html($message->speaker_name); ?></span>
+                    <?php if (!empty($speaker_name)): ?>
+                        <span class="simplepco-message-speaker"><?php echo esc_html($speaker_name); ?></span>
                     <?php endif; ?>
 
-                    <?php if (!empty($message->series_title)): ?>
-                        <span class="simplepco-message-series"><?php echo esc_html($message->series_title); ?></span>
+                    <?php if (!empty($series_title)): ?>
+                        <span class="simplepco-message-series"><?php echo esc_html($series_title); ?></span>
                     <?php endif; ?>
 
-                    <?php if (!empty($message->topic_name)): ?>
-                        <span class="simplepco-message-topic"><?php echo esc_html($message->topic_name); ?></span>
+                    <?php if (!empty($topic_name)): ?>
+                        <span class="simplepco-message-topic"><?php echo esc_html($topic_name); ?></span>
                     <?php endif; ?>
                 </div>
 
-                <?php if (!empty($message->scripture)): ?>
+                <?php if (!empty($scripture_text)): ?>
                     <div class="simplepco-message-scripture">
                         <strong><?php _e('Scripture:', 'simplepco'); ?></strong>
-                        <?php echo esc_html($message->scripture); ?>
+                        <?php echo esc_html($scripture_text); ?>
                     </div>
                 <?php endif; ?>
 
-                <?php if (!empty($message->description)): ?>
+                <?php if (!empty($description)): ?>
                     <div class="simplepco-message-description">
-                        <?php echo esc_html(wp_trim_words($message->description, 30)); ?>
+                        <?php echo esc_html(wp_trim_words($description, 30)); ?>
                     </div>
                 <?php endif; ?>
 
-                <?php if (!empty($message->audio_url)): ?>
+                <?php if (!empty($audio_url)): ?>
                     <div class="simplepco-message-links">
-                        <a href="<?php echo esc_url($message->audio_url); ?>" class="simplepco-message-link simplepco-message-audio" target="_blank" rel="noopener noreferrer">
+                        <a href="<?php echo esc_url($audio_url); ?>" class="simplepco-message-link simplepco-message-audio" target="_blank" rel="noopener noreferrer">
                             <span class="simplepco-icon-audio"></span>
                             <?php _e('Listen', 'simplepco'); ?>
                         </a>
@@ -123,7 +207,6 @@ endif;
             </div>
 
             <?php if ($has_video): ?>
-                <!-- Video player with thumbnail overlay -->
                 <div class="simplepco-message-video-player"
                      data-embed-url="<?php echo esc_attr($video['embed_url']); ?>"
                      data-video-type="<?php echo esc_attr($video['type']); ?>">
@@ -135,7 +218,7 @@ endif;
                     <?php else: ?>
                         <div class="simplepco-message-video-thumb">
                             <?php if (!empty($image_url)): ?>
-                                <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($message->title); ?>" loading="lazy">
+                                <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr(get_the_title()); ?>" loading="lazy">
                             <?php else: ?>
                                 <div class="simplepco-message-video-placeholder"></div>
                             <?php endif; ?>
@@ -149,13 +232,35 @@ endif;
                     <?php endif; ?>
                 </div>
             <?php elseif (!empty($image_url)): ?>
-                <!-- Static image (no video) -->
                 <div class="simplepco-message-image">
-                    <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr($message->title); ?>" loading="lazy">
+                    <img src="<?php echo esc_url($image_url); ?>" alt="<?php echo esc_attr(get_the_title()); ?>" loading="lazy">
                 </div>
             <?php endif; ?>
 
         </div>
-    <?php endforeach; ?>
+
+        <?php do_action('simplepco/messages/item/after', $post_id); ?>
+
+    <?php endwhile; ?>
 
 </div>
+
+<?php
+// Pagination
+$total_pages = $messages_query->max_num_pages;
+if ($total_pages > 1) {
+    $current_page = max(1, get_query_var('paged'));
+    echo '<div class="simplepco-messages-pagination">';
+    echo paginate_links([
+        'base'      => get_pagenum_link(1) . '%_%',
+        'format'    => 'page/%#%',
+        'current'   => $current_page,
+        'total'     => $total_pages,
+        'prev_text' => __('&laquo; Previous', 'simplepco'),
+        'next_text' => __('Next &raquo;', 'simplepco'),
+    ]);
+    echo '</div>';
+}
+?>
+
+<?php do_action('simplepco/messages/list/after', $messages_query, $atts); ?>
