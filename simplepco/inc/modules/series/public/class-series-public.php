@@ -37,23 +37,32 @@ class SimplePCO_Series_Public {
      * Enqueue public-facing assets.
      */
     public function enqueue_public_assets() {
-        global $post;
+        // Always load on message/speaker CPT pages and series taxonomy archives
+        $is_series_page = is_post_type_archive('simplepco_message')
+            || is_singular('simplepco_message')
+            || is_singular('simplepco_speaker')
+            || is_tax('simplepco_series')
+            || is_tax('simplepco_service_type');
 
-        if (!is_a($post, 'WP_Post')) {
-            return;
-        }
-
-        $shortcodes = ['simplepco_messages', 'simplepco_sermons', 'simplepco_series_list'];
-        $has_shortcode = false;
-        foreach ($shortcodes as $sc) {
-            if (has_shortcode($post->post_content, $sc)) {
-                $has_shortcode = true;
-                break;
+        if (!$is_series_page) {
+            // Check for shortcodes on regular pages/posts
+            global $post;
+            if (!is_a($post, 'WP_Post')) {
+                return;
             }
-        }
 
-        if (!$has_shortcode) {
-            return;
+            $shortcodes = ['simplepco_messages', 'simplepco_sermons', 'simplepco_series_list'];
+            $has_shortcode = false;
+            foreach ($shortcodes as $sc) {
+                if (has_shortcode($post->post_content, $sc)) {
+                    $has_shortcode = true;
+                    break;
+                }
+            }
+
+            if (!$has_shortcode) {
+                return;
+            }
         }
 
         wp_enqueue_style(
