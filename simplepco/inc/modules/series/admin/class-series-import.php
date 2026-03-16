@@ -196,6 +196,20 @@ class SimplePCO_Series_Import {
             wp_send_json_error(['message' => __('No episodes found in Planning Center Publishing.', 'simplepco')]);
         }
 
+        // Fetch all speakers to build a speaker ID → name map
+        $speakers_raw = $this->api_model->get_all_publishing_speakers();
+        $speakers_map = []; // speaker ID → name
+        foreach ($speakers_raw as $spk_id => $spk) {
+            $sa = $spk['attributes'] ?? [];
+            if (!empty($sa['full_name'])) {
+                $speakers_map[$spk_id] = $sa['full_name'];
+            } elseif (!empty($sa['first_name']) || !empty($sa['last_name'])) {
+                $speakers_map[$spk_id] = trim(($sa['first_name'] ?? '') . ' ' . ($sa['last_name'] ?? ''));
+            } else {
+                $speakers_map[$spk_id] = $sa['name'] ?? '';
+            }
+        }
+
         // Build a series lookup and episode resources lookup from included data
         $series_map = [];
         $resources_map = [];    // episode_resource ID → full included item
@@ -228,8 +242,18 @@ class SimplePCO_Series_Import {
                 }
             }
 
-            // Resolve speaker name from episode attributes
-            $speaker_name = !empty($attrs['speaker']) ? $attrs['speaker'] : '';
+            // Resolve speaker name via speakerships endpoint
+            $speaker_name = '';
+            $speakerships_resp = $this->api_model->get_episode_speakerships($ep_id);
+            if (!empty($speakerships_resp['data'])) {
+                foreach ($speakerships_resp['data'] as $ss) {
+                    $spk_id = $ss['relationships']['speaker']['data']['id'] ?? '';
+                    if ($spk_id && isset($speakers_map[$spk_id])) {
+                        $speaker_name = $speakers_map[$spk_id];
+                        break; // Use the first speaker
+                    }
+                }
+            }
 
             // Determine media availability
             $has_video       = !empty($attrs['library_video_url']) || !empty($attrs['library_video_embed_code']);
@@ -293,6 +317,7 @@ class SimplePCO_Series_Import {
         set_transient(self::IMPORT_CACHE_KEY, [
             'episodes'     => $cache,
             'included'     => $included_cache,
+            'speakers_map' => $speakers_map,
         ], 15 * MINUTE_IN_SECONDS);
 
         wp_send_json_success([
@@ -330,6 +355,7 @@ class SimplePCO_Series_Import {
 
         $cached_episodes     = $cache['episodes'];
         $cached_included     = $cache['included'];
+        $cached_speakers     = isset($cache['speakers_map']) ? $cache['speakers_map'] : [];
 
         $imported = 0;
         $skipped  = 0;
@@ -380,9 +406,19 @@ class SimplePCO_Series_Import {
                 }
             }
 
-            // Resolve speaker name from episode attributes
-            $ep_attrs = $cached_episodes[$episode_id]['attributes'] ?? [];
-            $ep_data['speaker_name'] = !empty($ep_attrs['speaker']) ? $ep_attrs['speaker'] : '';
+            // Resolve speaker name via speakerships endpoint
+            $speaker_name = '';
+            $speakerships_resp = $this->api_model->get_episode_speakerships($episode_id);
+            if (!empty($speakerships_resp['data'])) {
+                foreach ($speakerships_resp['data'] as $ss) {
+                    $spk_id = $ss['relationships']['speaker']['data']['id'] ?? '';
+                    if ($spk_id && isset($cached_speakers[$spk_id])) {
+                        $speaker_name = $cached_speakers[$spk_id];
+                        break;
+                    }
+                }
+            }
+            $ep_data['speaker_name'] = $speaker_name;
 
             $result = $this->import_episode($ep_data);
 

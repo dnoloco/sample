@@ -226,11 +226,25 @@ class SimplePCO_Publishing_Repository implements SimplePCO_Repository_Interface 
     protected function extract_speakers( $response ) {
         $speakers = [];
 
-        // Get speaker name directly from episode attributes.
         $data = $response['data'] ?? $response;
-        $speaker = $data['attributes']['speaker'] ?? '';
-        if ( $speaker ) {
-            $speakers[] = $speaker;
+        $episode_id = $data['id'] ?? '';
+
+        // Fetch speakerships for this episode and resolve via speakers endpoint.
+        if ( $episode_id ) {
+            $speakerships = $this->api_model->get_episode_speakerships( $episode_id );
+            if ( ! empty( $speakerships['data'] ) ) {
+                $all_speakers = $this->api_model->get_all_publishing_speakers();
+                foreach ( $speakerships['data'] as $ss ) {
+                    $spk_id = $ss['relationships']['speaker']['data']['id'] ?? '';
+                    if ( $spk_id && isset( $all_speakers[ $spk_id ] ) ) {
+                        $sa = $all_speakers[ $spk_id ]['attributes'] ?? [];
+                        $name = $sa['full_name'] ?? trim( ( $sa['first_name'] ?? '' ) . ' ' . ( $sa['last_name'] ?? '' ) );
+                        if ( $name ) {
+                            $speakers[] = $name;
+                        }
+                    }
+                }
+            }
         }
 
         return array_filter( $speakers );

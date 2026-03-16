@@ -314,6 +314,21 @@ class SimplePCO_API_Model {
     }
 
     /**
+     * Fetches speakerships for a specific episode.
+     *
+     * Speakerships link episodes to speakers via a relationship.
+     * Each speakership has a relationship to a Speaker ID.
+     *
+     * @param string $episode_id The PCO episode ID.
+     * @return array API response with speakership data.
+     */
+    public function get_episode_speakerships($episode_id) {
+        $endpoint = "/v2/episodes/{$episode_id}/speakerships";
+        $key = 'simplepco_pub_ep_spk_' . $episode_id;
+        return $this->get_data_with_caching('publishing', $endpoint, [], $key, 15 * MINUTE_IN_SECONDS);
+    }
+
+    /**
      * Fetches all series from the Publishing API.
      *
      * @param int $per_page Number of series per page.
