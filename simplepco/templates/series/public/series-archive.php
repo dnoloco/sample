@@ -44,9 +44,6 @@ defined('ABSPATH') || exit;
                      alt="<?php echo esc_attr($term->name); ?>"
                      loading="lazy">
             </div>
-            <div class="simplepco-series-card-body">
-                <h3 class="simplepco-series-card-title"><?php echo esc_html($term->name); ?></h3>
-            </div>
         </a>
 
         <?php do_action('simplepco/series/card/after', $term, $index); ?>

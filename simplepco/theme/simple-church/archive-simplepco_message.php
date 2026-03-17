@@ -56,9 +56,6 @@ $page_title = $names['message_plural'];
 									     loading="lazy">
 								</div>
 							<?php endif; ?>
-							<div class="simplepco-series-card-body">
-								<h3 class="simplepco-series-card-title"><?php echo esc_html( $term->name ); ?></h3>
-							</div>
 						</a>
 					<?php endforeach;
 					echo '</div>';
