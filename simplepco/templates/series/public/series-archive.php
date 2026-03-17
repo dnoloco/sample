@@ -38,13 +38,7 @@ defined('ABSPATH') || exit;
 
         <?php do_action('simplepco/series/card/before', $term, $index); ?>
 
-        <a href="<?php echo esc_url($series_url); ?>" class="simplepco-series-card">
-            <div class="simplepco-series-card-image">
-                <img src="<?php echo esc_url($artwork_url); ?>"
-                     alt="<?php echo esc_attr($term->name); ?>"
-                     loading="lazy">
-            </div>
-        </a>
+        <a href="<?php echo esc_url($series_url); ?>" class="simplepco-series-card"><img src="<?php echo esc_url($artwork_url); ?>" alt="<?php echo esc_attr($term->name); ?>" loading="lazy"></a>
 
         <?php do_action('simplepco/series/card/after', $term, $index); ?>
 

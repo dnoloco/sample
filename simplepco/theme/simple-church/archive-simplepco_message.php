@@ -48,15 +48,7 @@ $page_title = $names['message_plural'];
 						$artwork_url = get_term_meta( $term->term_id, '_simplepco_series_image', true );
 						$term_link   = get_term_link( $term );
 					?>
-						<a href="<?php echo esc_url( $term_link ); ?>" class="simplepco-series-card">
-							<?php if ( ! empty( $artwork_url ) ) : ?>
-								<div class="simplepco-series-card-image">
-									<img src="<?php echo esc_url( $artwork_url ); ?>"
-									     alt="<?php echo esc_attr( $term->name ); ?>"
-									     loading="lazy">
-								</div>
-							<?php endif; ?>
-						</a>
+						<a href="<?php echo esc_url( $term_link ); ?>" class="simplepco-series-card"><?php if ( ! empty( $artwork_url ) ) : ?><img src="<?php echo esc_url( $artwork_url ); ?>" alt="<?php echo esc_attr( $term->name ); ?>" loading="lazy"><?php endif; ?></a>
 					<?php endforeach;
 					echo '</div>';
 				else : ?>
