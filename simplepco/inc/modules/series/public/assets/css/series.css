@@ -493,7 +493,7 @@
     transform: translateY(-2px);
 }
 
-.simplepco-series-card img {
+.simplepco-series-archive .simplepco-series-card img {
     width: 100%;
     display: block;
     margin: 0;
