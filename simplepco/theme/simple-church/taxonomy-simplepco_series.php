@@ -32,6 +32,14 @@ $artwork_url = get_term_meta( $term->term_id, '_simplepco_series_image', true );
 	</div>
 </section>
 
+<nav class="simplepco-breadcrumbs" aria-label="<?php esc_attr_e( 'Breadcrumb', 'simple-church' ); ?>">
+	<div class="simplepco-breadcrumbs__inner">
+		<a href="<?php echo esc_url( get_post_type_archive_link( 'simplepco_message' ) ); ?>"><?php echo esc_html( $names['message_plural'] ?? 'Messages' ); ?></a>
+		<span class="simplepco-breadcrumbs__sep" aria-hidden="true">/</span>
+		<span aria-current="page"><?php echo esc_html( $term->name ); ?></span>
+	</div>
+</nav>
+
 <section class="section section--light">
 	<div class="section__inner section__inner--narrow">
 		<div class="page-content reveal">

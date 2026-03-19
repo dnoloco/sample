@@ -466,6 +466,39 @@
 }
 
 /* =========================================================================
+   Breadcrumbs
+   ========================================================================= */
+
+.simplepco-breadcrumbs {
+    background: #f5f5f0;
+    padding: 0.75rem 2.5rem;
+    font-size: 0.875rem;
+}
+
+.simplepco-breadcrumbs__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.simplepco-breadcrumbs a {
+    color: #6b7280;
+    text-decoration: none;
+}
+
+.simplepco-breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+.simplepco-breadcrumbs__sep {
+    margin: 0 0.5rem;
+    color: #9ca3af;
+}
+
+.simplepco-breadcrumbs span[aria-current] {
+    color: #374151;
+}
+
+/* =========================================================================
    Series Archive (card grid)
    ========================================================================= */
 
