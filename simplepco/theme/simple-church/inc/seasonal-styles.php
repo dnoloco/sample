@@ -934,6 +934,14 @@ function simple_church_seasonal_inline_css() {
 			$css .= "body.seasonal-theme-active .page-content a { color: " . $lc . "; }\n";
 		}
 
+		// Series breadcrumbs — use primary accent for link, secondary accent for hover.
+		if ( $primary ) {
+			$css .= "body.seasonal-theme-active .simplepco-breadcrumbs a { color: " . $primary . "; }\n";
+		}
+		if ( $secondary ) {
+			$css .= "body.seasonal-theme-active .simplepco-breadcrumbs a:hover { color: " . $secondary . "; }\n";
+		}
+
 		// Blog listing cards (index.php).
 		if ( $season['text_color'] ) {
 			$tc = esc_attr( $season['text_color'] );

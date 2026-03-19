@@ -470,13 +470,12 @@
    ========================================================================= */
 
 .simplepco-breadcrumbs {
-    background: #f5f5f0;
     padding: 0.75rem 2.5rem;
     font-size: 0.875rem;
 }
 
 .simplepco-breadcrumbs__inner {
-    max-width: 1200px;
+    max-width: 780px;
     margin: 0 auto;
 }
 
