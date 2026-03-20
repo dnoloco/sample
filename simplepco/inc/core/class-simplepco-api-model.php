@@ -314,56 +314,55 @@ class SimplePCO_API_Model {
     }
 
     /**
-     * Fetches the public download URL for a hosted sermon audio file.
+     * Fetches the sermon audio file data for an episode.
      *
-     * Calls the /open endpoint which returns a redirect to the CDN URL.
+     * Returns the File resource which may contain a streaming URL
+     * or can be used to construct a download link.
      *
      * @param string $episode_id The PCO episode ID.
-     * @return string|false The public audio URL or false on failure.
+     * @return array|false API response or false on error.
      */
     public function get_sermon_audio_url($episode_id) {
-        $url = $this->base_url . "/publishing/v2/episodes/{$episode_id}/sermon_audio/open";
+        $url = $this->base_url . "/publishing/v2/episodes/{$episode_id}/sermon_audio";
 
-        $response = wp_remote_head($url, [
-            'timeout'     => 15,
-            'redirection' => 0,
-            'headers'     => [
+        $response = wp_remote_get($url, [
+            'timeout' => 15,
+            'headers' => [
                 'Authorization' => $this->auth_header,
             ],
         ]);
 
         if (is_wp_error($response)) {
+            error_log('[SimplePCO] Sermon audio fetch error for episode ' . $episode_id . ': ' . $response->get_error_message());
             return false;
         }
 
-        $status = wp_remote_retrieve_response_code($response);
-        if ($status >= 300 && $status < 400) {
-            $location = wp_remote_retrieve_header($response, 'location');
-            if (!empty($location)) {
-                return $location;
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+
+        // Check for a streaming link or download link in the response
+        if (!empty($body['data']['links']['streaming'])) {
+            return $body['data']['links']['streaming'];
+        }
+        if (!empty($body['data']['links']['download'])) {
+            return $body['data']['links']['download'];
+        }
+        if (!empty($body['data']['links']['self'])) {
+            return $body['data']['links']['self'];
+        }
+
+        // Check attributes for a direct URL
+        if (!empty($body['data']['attributes']['url'])) {
+            return $body['data']['attributes']['url'];
+        }
+        if (!empty($body['data']['attributes']['variants'])) {
+            $variants = $body['data']['attributes']['variants'];
+            if (is_array($variants)) {
+                return $variants['original'] ?? reset($variants);
             }
         }
 
-        // If no redirect, try GET and check for a URL in the response
-        $response = wp_remote_get($url, [
-            'timeout'     => 15,
-            'redirection' => 5,
-            'headers'     => [
-                'Authorization' => $this->auth_header,
-            ],
-        ]);
-
-        if (is_wp_error($response)) {
-            return false;
-        }
-
-        // The final URL after redirects might be the audio file
-        $final_url = wp_remote_retrieve_header($response, 'x-final-url');
-        if (!empty($final_url)) {
-            return $final_url;
-        }
-
-        return false;
+        // Last resort: construct the /open URL for the browser to resolve
+        return $this->base_url . "/publishing/v2/episodes/{$episode_id}/sermon_audio/open";
     }
 
     /**

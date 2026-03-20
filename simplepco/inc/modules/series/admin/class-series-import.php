@@ -602,6 +602,9 @@ class SimplePCO_Series_Import {
                 $resolved_url = $this->api_model->get_sermon_audio_url($ep_id);
                 if ($resolved_url) {
                     $audio_url = $resolved_url;
+                    error_log('[SimplePCO] Resolved sermon audio URL for episode ' . $ep_id . ': ' . $audio_url);
+                } else {
+                    error_log('[SimplePCO] Failed to resolve sermon audio URL for episode ' . $ep_id);
                 }
             }
 
