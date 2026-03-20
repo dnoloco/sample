@@ -688,15 +688,19 @@ class SimplePCO_Series_Import {
             $filename .= '.mp3';
         }
 
+        // Rename tmp file to .mp3 so WordPress MIME check passes
+        $mp3_tmp = $tmp_file . '.mp3';
+        rename($tmp_file, $mp3_tmp);
+
         $file_array = [
             'name'     => sanitize_file_name($filename),
-            'tmp_name' => $tmp_file,
+            'tmp_name' => $mp3_tmp,
         ];
 
         $attachment_id = media_handle_sideload($file_array, $post_id);
 
         if (is_wp_error($attachment_id)) {
-            @unlink($tmp_file);
+            @unlink($mp3_tmp);
             error_log('[SimplePCO] Audio sideload failed: ' . $attachment_id->get_error_message());
             return false;
         }
