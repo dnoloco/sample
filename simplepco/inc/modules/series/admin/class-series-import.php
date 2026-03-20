@@ -597,11 +597,16 @@ class SimplePCO_Series_Import {
             if (!$audio_url && !empty($sa_attrs['url'])) {
                 $audio_url = $sa_attrs['url'];
             }
-            // For hosted files, use the Church Center public URL
+            // For hosted files, download from Church Center and sideload into WP
             if (!$audio_url && !empty($sa_attrs['signed_identifier']) && !empty($attrs['church_center_url'])) {
-                $audio_url = rtrim($attrs['church_center_url'], '/') . '/sermon_audio';
-                error_log('[SimplePCO] Using Church Center sermon audio URL for episode ' . $ep_id . ': ' . $audio_url);
-            }
+                $cc_audio_url = rtrim($attrs['church_center_url'], '/') . '/sermon_audio';
+                $sideloaded = $this->sideload_audio($cc_audio_url, $post_id, $sa_attrs['name'] ?? '');
+                if ($sideloaded) {
+                    $audio_url = $sideloaded;
+                    error_log('[SimplePCO] Sideloaded sermon audio for episode ' . $ep_id . ': ' . $audio_url);
+                } else {
+                    error_log('[SimplePCO] Failed to sideload sermon audio for episode ' . $ep_id . ' from ' . $cc_audio_url);
+                }
             }
 
             // Store sermon audio metadata for reference even if no direct URL
@@ -649,6 +654,54 @@ class SimplePCO_Series_Import {
         if (!empty($attrs['library_video_thumbnail_url'])) {
             update_post_meta($post_id, '_simplepco_message_video_thumbnail', esc_url_raw($attrs['library_video_thumbnail_url']));
         }
+    }
+
+    /**
+     * Download an audio file from a URL and sideload it into the WP media library.
+     *
+     * @param string $url       The public URL to download from.
+     * @param int    $post_id   The post to attach the audio to.
+     * @param string $filename  Preferred filename (e.g. "sermon.mp3").
+     * @return string|false     The local WordPress URL on success, false on failure.
+     */
+    private function sideload_audio($url, $post_id, $filename = '') {
+        if (!function_exists('download_url')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+        if (!function_exists('media_handle_sideload')) {
+            require_once ABSPATH . 'wp-admin/includes/media.php';
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+        }
+
+        // Download to a temp file
+        $tmp_file = download_url($url, 120);
+        if (is_wp_error($tmp_file)) {
+            error_log('[SimplePCO] Audio download failed: ' . $tmp_file->get_error_message());
+            return false;
+        }
+
+        // Ensure we have a good filename with .mp3 extension
+        if (empty($filename)) {
+            $filename = basename(parse_url($url, PHP_URL_PATH));
+        }
+        if (!preg_match('/\.\w+$/', $filename)) {
+            $filename .= '.mp3';
+        }
+
+        $file_array = [
+            'name'     => sanitize_file_name($filename),
+            'tmp_name' => $tmp_file,
+        ];
+
+        $attachment_id = media_handle_sideload($file_array, $post_id);
+
+        if (is_wp_error($attachment_id)) {
+            @unlink($tmp_file);
+            error_log('[SimplePCO] Audio sideload failed: ' . $attachment_id->get_error_message());
+            return false;
+        }
+
+        return wp_get_attachment_url($attachment_id);
     }
 
     /**
