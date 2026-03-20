@@ -314,6 +314,59 @@ class SimplePCO_API_Model {
     }
 
     /**
+     * Fetches the public download URL for a hosted sermon audio file.
+     *
+     * Calls the /open endpoint which returns a redirect to the CDN URL.
+     *
+     * @param string $episode_id The PCO episode ID.
+     * @return string|false The public audio URL or false on failure.
+     */
+    public function get_sermon_audio_url($episode_id) {
+        $url = $this->base_url . "/publishing/v2/episodes/{$episode_id}/sermon_audio/open";
+
+        $response = wp_remote_head($url, [
+            'timeout'     => 15,
+            'redirection' => 0,
+            'headers'     => [
+                'Authorization' => $this->auth_header,
+            ],
+        ]);
+
+        if (is_wp_error($response)) {
+            return false;
+        }
+
+        $status = wp_remote_retrieve_response_code($response);
+        if ($status >= 300 && $status < 400) {
+            $location = wp_remote_retrieve_header($response, 'location');
+            if (!empty($location)) {
+                return $location;
+            }
+        }
+
+        // If no redirect, try GET and check for a URL in the response
+        $response = wp_remote_get($url, [
+            'timeout'     => 15,
+            'redirection' => 5,
+            'headers'     => [
+                'Authorization' => $this->auth_header,
+            ],
+        ]);
+
+        if (is_wp_error($response)) {
+            return false;
+        }
+
+        // The final URL after redirects might be the audio file
+        $final_url = wp_remote_retrieve_header($response, 'x-final-url');
+        if (!empty($final_url)) {
+            return $final_url;
+        }
+
+        return false;
+    }
+
+    /**
      * Fetches speakerships for a specific episode.
      *
      * Speakerships link episodes to speakers via a relationship.

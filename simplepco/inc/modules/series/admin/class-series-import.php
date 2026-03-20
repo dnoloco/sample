@@ -597,6 +597,13 @@ class SimplePCO_Series_Import {
             if (!$audio_url && !empty($sa_attrs['url'])) {
                 $audio_url = $sa_attrs['url'];
             }
+            // For hosted files with signed_identifier, fetch the public URL via API
+            if (!$audio_url && !empty($sa_attrs['signed_identifier'])) {
+                $resolved_url = $this->api_model->get_sermon_audio_url($ep_id);
+                if ($resolved_url) {
+                    $audio_url = $resolved_url;
+                }
+            }
 
             // Store sermon audio metadata for reference even if no direct URL
             $sa_name = $sa_attrs['name'] ?? '';
