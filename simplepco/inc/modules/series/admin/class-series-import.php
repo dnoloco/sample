@@ -258,8 +258,15 @@ class SimplePCO_Series_Import {
             // Determine media availability
             $has_video       = !empty($attrs['library_video_url']) || !empty($attrs['library_video_embed_code']);
             $has_audio       = !empty($attrs['library_audio_url']);
-            $has_sermon_audio = !empty($attrs['sermon_audio']['id']);
             $has_art         = !empty($attrs['art']['id']);
+
+            // Check sermon_audio File object for actual audio content (not just a reference)
+            if (!$has_audio && !empty($attrs['sermon_audio']['id'])) {
+                $sa_attrs = $attrs['sermon_audio']['attributes'] ?? [];
+                if (!empty($sa_attrs['variants']) || !empty($sa_attrs['url'])) {
+                    $has_audio = true;
+                }
+            }
 
             // Check for episode_resources with a URL
             $has_resources = false;
@@ -294,7 +301,6 @@ class SimplePCO_Series_Import {
                 'speaker_name'     => $speaker_name,
                 'has_video'        => $has_video,
                 'has_audio'        => $has_audio,
-                'has_sermon_audio' => $has_sermon_audio,
                 'has_art'          => $has_art,
                 'has_resources'    => $has_resources,
                 'already_imported' => in_array($ep_id, $imported_ids, true),

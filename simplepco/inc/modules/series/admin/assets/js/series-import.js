@@ -70,7 +70,6 @@
                 var mediaHtml = [];
                 if (ep.has_video) mediaHtml.push('<span class="simplepco-import-media-tag simplepco-media-video">' + i18n.video + '</span>');
                 if (ep.has_audio) mediaHtml.push('<span class="simplepco-import-media-tag simplepco-media-audio">' + i18n.audio + '</span>');
-                if (ep.has_sermon_audio) mediaHtml.push('<span class="simplepco-import-media-tag simplepco-media-sermon-audio">' + i18n.sermonAudio + '</span>');
                 if (ep.has_art) mediaHtml.push('<span class="simplepco-import-media-tag simplepco-media-art">' + i18n.art + '</span>');
                 if (ep.has_resources) mediaHtml.push('<span class="simplepco-import-media-tag simplepco-media-files">' + i18n.files + '</span>');
                 if (!mediaHtml.length) mediaHtml.push('<span class="simplepco-import-media-tag simplepco-media-none">' + i18n.none + '</span>');
