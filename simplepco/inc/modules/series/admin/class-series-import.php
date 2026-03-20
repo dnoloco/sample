@@ -260,10 +260,10 @@ class SimplePCO_Series_Import {
             $has_audio       = !empty($attrs['library_audio_url']);
             $has_art         = !empty($attrs['art']['id']);
 
-            // Check sermon_audio File object for actual audio content (not just a reference)
+            // Check sermon_audio File object for actual audio content
             if (!$has_audio && !empty($attrs['sermon_audio']['id'])) {
                 $sa_attrs = $attrs['sermon_audio']['attributes'] ?? [];
-                if (!empty($sa_attrs['variants']) || !empty($sa_attrs['url'])) {
+                if (!empty($sa_attrs['signed_identifier']) || !empty($sa_attrs['variants']) || !empty($sa_attrs['url'])) {
                     $has_audio = true;
                 }
             }
