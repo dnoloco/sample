@@ -597,16 +597,11 @@ class SimplePCO_Series_Import {
             if (!$audio_url && !empty($sa_attrs['url'])) {
                 $audio_url = $sa_attrs['url'];
             }
-            // For hosted files with signed_identifier, fetch the public URL via API
-            if (!$audio_url && !empty($sa_attrs['signed_identifier'])) {
-                $sa_filename = $sa_attrs['name'] ?? '';
-                $resolved_url = $this->api_model->get_sermon_audio_url($ep_id, $sa_attrs['signed_identifier'], $sa_filename);
-                if ($resolved_url) {
-                    $audio_url = $resolved_url;
-                    error_log('[SimplePCO] Resolved sermon audio URL for episode ' . $ep_id . ': ' . $audio_url);
-                } else {
-                    error_log('[SimplePCO] Failed to resolve sermon audio URL for episode ' . $ep_id);
-                }
+            // For hosted files, use the Church Center public URL
+            if (!$audio_url && !empty($sa_attrs['signed_identifier']) && !empty($attrs['church_center_url'])) {
+                $audio_url = rtrim($attrs['church_center_url'], '/') . '/sermon_audio';
+                error_log('[SimplePCO] Using Church Center sermon audio URL for episode ' . $ep_id . ': ' . $audio_url);
+            }
             }
 
             // Store sermon audio metadata for reference even if no direct URL
