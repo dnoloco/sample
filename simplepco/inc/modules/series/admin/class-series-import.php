@@ -697,7 +697,20 @@ class SimplePCO_Series_Import {
             'tmp_name' => $mp3_tmp,
         ];
 
+        // Temporarily override WordPress file type check to allow audio uploads
+        $allow_audio = function ($data, $file, $real_filename, $mimes) {
+            if (preg_match('/\.mp3$/i', $real_filename) || preg_match('/\.mp3$/i', $file)) {
+                $data['ext']             = 'mp3';
+                $data['type']            = 'audio/mpeg';
+                $data['proper_filename'] = false;
+            }
+            return $data;
+        };
+        add_filter('wp_check_filetype_and_ext', $allow_audio, 10, 4);
+
         $attachment_id = media_handle_sideload($file_array, $post_id);
+
+        remove_filter('wp_check_filetype_and_ext', $allow_audio, 10);
 
         if (is_wp_error($attachment_id)) {
             @unlink($mp3_tmp);
