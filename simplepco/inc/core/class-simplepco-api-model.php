@@ -430,4 +430,41 @@ class SimplePCO_API_Model {
             'meta'     => ['total_count' => count($all_episodes)],
         ];
     }
+
+    /**
+     * Resolve a PCO file's actual download URL via the /open action.
+     *
+     * Makes an authenticated request that returns a 302 redirect to the
+     * signed file URL (e.g. S3). Returns the redirect URL without following it.
+     *
+     * @param string $app_domain  e.g. 'publishing'.
+     * @param string $endpoint_path e.g. '/v2/episodes/123/sermon_audio/open'.
+     * @return string|false The direct download URL, or false on failure.
+     */
+    public function get_file_redirect_url($app_domain, $endpoint_path) {
+        $url = $this->base_url . "/{$app_domain}{$endpoint_path}";
+
+        $response = wp_remote_get($url, [
+            'timeout'     => 30,
+            'redirection' => 0, // Don't follow redirects — we want the Location header
+            'headers'     => [
+                'Authorization' => $this->auth_header,
+            ],
+        ]);
+
+        if (is_wp_error($response)) {
+            error_log('[SimplePCO] File redirect request failed: ' . $response->get_error_message());
+            return false;
+        }
+
+        $status = wp_remote_retrieve_response_code($response);
+        $location = wp_remote_retrieve_header($response, 'location');
+
+        if ($location) {
+            return $location;
+        }
+
+        error_log('[SimplePCO] No redirect for ' . $url . ' (HTTP ' . $status . ')');
+        return false;
+    }
 }

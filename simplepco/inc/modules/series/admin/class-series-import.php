@@ -597,10 +597,9 @@ class SimplePCO_Series_Import {
             if (!$audio_url && !empty($sa_attrs['url'])) {
                 $audio_url = $sa_attrs['url'];
             }
-            // For hosted files, download from Church Center and sideload into WP
-            if (!$audio_url && !empty($sa_attrs['signed_identifier']) && !empty($attrs['church_center_url'])) {
-                $cc_audio_url = rtrim($attrs['church_center_url'], '/') . '/sermon_audio';
-                $sideloaded = $this->sideload_audio($cc_audio_url, $post_id, $sa_attrs['name'] ?? '');
+            // For hosted files, fetch the real MP3 URL via the PCO API and sideload into WP
+            if (!$audio_url && !empty($sa_attrs['signed_identifier'])) {
+                $sideloaded = $this->sideload_audio($ep_id, $post_id, $sa_attrs['name'] ?? '');
                 if ($sideloaded) {
                     $audio_url = $sideloaded;
                     error_log('[SimplePCO] Sideloaded sermon audio for episode ' . $ep_id . ': ' . $audio_url);
@@ -657,14 +656,30 @@ class SimplePCO_Series_Import {
     }
 
     /**
-     * Download an audio file from a URL and sideload it into the WP media library.
+     * Download sermon audio from the PCO API and sideload it into the WP media library.
      *
-     * @param string $url       The public URL to download from.
-     * @param int    $post_id   The post to attach the audio to.
-     * @param string $filename  Preferred filename (e.g. "sermon.mp3").
-     * @return string|false     The local WordPress URL on success, false on failure.
+     * Uses the authenticated API to resolve the actual file URL via the
+     * /sermon_audio/open redirect, then downloads and imports into WP.
+     *
+     * @param string $episode_id The PCO episode ID.
+     * @param int    $post_id    The post to attach the audio to.
+     * @param string $filename   Preferred filename (e.g. "sermon.mp3").
+     * @return string|false      The local WordPress URL on success, false on failure.
      */
-    private function sideload_audio($url, $post_id, $filename = '') {
+    private function sideload_audio($episode_id, $post_id, $filename = '') {
+        // Resolve the actual file URL via the PCO API redirect
+        $real_url = $this->api_model->get_file_redirect_url(
+            'publishing',
+            "/v2/episodes/{$episode_id}/sermon_audio/open"
+        );
+
+        if (!$real_url) {
+            error_log('[SimplePCO] Could not resolve audio URL for episode ' . $episode_id);
+            return false;
+        }
+
+        error_log('[SimplePCO] Resolved audio URL for episode ' . $episode_id . ': ' . $real_url);
+
         if (!function_exists('download_url')) {
             require_once ABSPATH . 'wp-admin/includes/file.php';
         }
@@ -673,8 +688,8 @@ class SimplePCO_Series_Import {
             require_once ABSPATH . 'wp-admin/includes/image.php';
         }
 
-        // Download to a temp file
-        $tmp_file = download_url($url, 120);
+        // Download the actual MP3 from the signed URL
+        $tmp_file = download_url($real_url, 120);
         if (is_wp_error($tmp_file)) {
             error_log('[SimplePCO] Audio download failed: ' . $tmp_file->get_error_message());
             return false;
@@ -682,7 +697,7 @@ class SimplePCO_Series_Import {
 
         // Ensure we have a good filename with .mp3 extension
         if (empty($filename)) {
-            $filename = basename(parse_url($url, PHP_URL_PATH));
+            $filename = 'sermon-' . $episode_id;
         }
         if (!preg_match('/\.\w+$/', $filename)) {
             $filename .= '.mp3';
