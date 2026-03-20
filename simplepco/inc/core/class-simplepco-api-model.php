@@ -314,55 +314,59 @@ class SimplePCO_API_Model {
     }
 
     /**
-     * Fetches the sermon audio file data for an episode.
+     * Fetches the public download URL for a hosted sermon audio file.
      *
-     * Returns the File resource which may contain a streaming URL
-     * or can be used to construct a download link.
+     * Calls the /open endpoint with auth, follows the redirect to get
+     * the actual CDN URL that can be used publicly without auth.
      *
      * @param string $episode_id The PCO episode ID.
-     * @return array|false API response or false on error.
+     * @return string|false The public audio URL or false on failure.
      */
     public function get_sermon_audio_url($episode_id) {
-        $url = $this->base_url . "/publishing/v2/episodes/{$episode_id}/sermon_audio";
+        $open_url = $this->base_url . "/publishing/v2/episodes/{$episode_id}/sermon_audio/open";
 
-        $response = wp_remote_get($url, [
-            'timeout' => 15,
-            'headers' => [
+        // First try: HEAD request with no redirect following to capture the Location header
+        $response = wp_remote_head($open_url, [
+            'timeout'     => 15,
+            'redirection' => 0,
+            'headers'     => [
                 'Authorization' => $this->auth_header,
             ],
         ]);
 
-        if (is_wp_error($response)) {
-            error_log('[SimplePCO] Sermon audio fetch error for episode ' . $episode_id . ': ' . $response->get_error_message());
-            return false;
-        }
-
-        $body = json_decode(wp_remote_retrieve_body($response), true);
-
-        // Check for a streaming link or download link in the response
-        if (!empty($body['data']['links']['streaming'])) {
-            return $body['data']['links']['streaming'];
-        }
-        if (!empty($body['data']['links']['download'])) {
-            return $body['data']['links']['download'];
-        }
-        if (!empty($body['data']['links']['self'])) {
-            return $body['data']['links']['self'];
-        }
-
-        // Check attributes for a direct URL
-        if (!empty($body['data']['attributes']['url'])) {
-            return $body['data']['attributes']['url'];
-        }
-        if (!empty($body['data']['attributes']['variants'])) {
-            $variants = $body['data']['attributes']['variants'];
-            if (is_array($variants)) {
-                return $variants['original'] ?? reset($variants);
+        if (!is_wp_error($response)) {
+            $location = wp_remote_retrieve_header($response, 'location');
+            if (!empty($location)) {
+                error_log('[SimplePCO] Sermon audio redirect URL for episode ' . $episode_id . ': ' . $location);
+                return $location;
             }
         }
 
-        // Last resort: construct the /open URL for the browser to resolve
-        return $this->base_url . "/publishing/v2/episodes/{$episode_id}/sermon_audio/open";
+        // Second try: GET request with no redirect following
+        $response = wp_remote_get($open_url, [
+            'timeout'     => 15,
+            'redirection' => 0,
+            'headers'     => [
+                'Authorization' => $this->auth_header,
+            ],
+        ]);
+
+        if (!is_wp_error($response)) {
+            $status = wp_remote_retrieve_response_code($response);
+            $location = wp_remote_retrieve_header($response, 'location');
+
+            if (!empty($location)) {
+                error_log('[SimplePCO] Sermon audio redirect URL for episode ' . $episode_id . ': ' . $location);
+                return $location;
+            }
+
+            // Log the response for debugging
+            error_log('[SimplePCO] Sermon audio /open response for episode ' . $episode_id . ': HTTP ' . $status . ' Body: ' . substr(wp_remote_retrieve_body($response), 0, 500));
+        } else {
+            error_log('[SimplePCO] Sermon audio /open error for episode ' . $episode_id . ': ' . $response->get_error_message());
+        }
+
+        return false;
     }
 
     /**
