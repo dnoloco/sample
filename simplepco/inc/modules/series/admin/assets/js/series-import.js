@@ -142,17 +142,16 @@
                 );
             });
 
-            // Phase 1: Import episodes (fast — no audio download)
-            // Phase 2: Download audio files one at a time (slow — separate requests)
             var totalImported = 0;
             var totalSkipped  = 0;
             var totalErrors   = [];
-            var audioQueue    = []; // post IDs that need audio downloaded
             var idx = 0;
 
             function importNext() {
                 if (idx >= selectedIds.length) {
-                    // Phase 1 done — show summary
+                    // All done — show summary
+                    $btn.prop('disabled', false).text($btn.data('original-text') || 'Import Selected');
+
                     var resultsHtml =
                         '<div class="notice notice-success inline" style="margin:10px 0;">' +
                             '<p><strong>' + i18n.importComplete + '</strong> ' +
@@ -171,22 +170,13 @@
 
                     $('#simplepco-import-results').html(resultsHtml);
                     $('#simplepco-import-step-results').slideDown(200);
-
-                    // Phase 2: Download audio files if any are queued
-                    if (audioQueue.length) {
-                        $btn.text('Downloading audio (0/' + audioQueue.length + ')...');
-                        downloadNextAudio(0);
-                    } else {
-                        $btn.prop('disabled', false).text($btn.data('original-text') || 'Import Selected');
-                    }
                     return;
                 }
 
                 var episodeId = selectedIds[idx];
                 var $row = $('#simplepco-import-tbody tr[data-episode-id="' + episodeId + '"]');
 
-                // Update progress text
-                $btn.text(i18n.importing + ' (' + (idx + 1) + '/' + selectedIds.length + ')');
+                $btn.text(i18n.importing + ' (' + (idx + 1) + '/' + selectedIds.length + ')...');
                 $row.find('.simplepco-import-row-status').html(
                     '<span class="simplepco-import-badge simplepco-import-badge-pending">' + i18n.importing + '...</span>'
                 );
@@ -198,95 +188,87 @@
                         nonce:       simplepcoImport.nonce,
                         episode_ids: [episodeId]
                     },
-                    timeout: 30000 // 30 seconds is plenty — no audio download happens now
+                    timeout: 180000 // 3 min — audio downloads can take a while
                 }).done(function(response) {
-                    if (response.success && response.data.results) {
-                        $.each(response.data.results, function(i, result) {
-                            var badgeClass, badgeText;
-                            if (result.status === 'imported') {
-                                badgeClass = 'simplepco-import-badge-success';
-                                badgeText  = i18n.imported;
-                                totalImported++;
-                                $row.find('input[type="checkbox"]').prop('checked', false).prop('disabled', true);
-                                // Queue audio download if this post needs it
-                                if (result.post_id) {
-                                    audioQueue.push({postId: result.post_id, episodeId: episodeId});
-                                }
-                            } else if (result.status === 'skipped') {
-                                badgeClass = 'simplepco-import-badge-skip';
-                                badgeText  = i18n.skipped;
-                                totalSkipped++;
-                            } else {
-                                badgeClass = 'simplepco-import-badge-error';
-                                badgeText  = result.message || i18n.error;
-                                totalErrors.push(result.message || i18n.error);
-                            }
-                            $row.find('.simplepco-import-row-status').html(
-                                '<span class="simplepco-import-badge ' + badgeClass + '" title="' + escHtml(result.message || '') + '">' + escHtml(badgeText) + '</span>'
-                            );
-                        });
-                    } else {
-                        $row.find('.simplepco-import-row-status').html(
-                            '<span class="simplepco-import-badge simplepco-import-badge-error">' + escHtml(response.data && response.data.message ? response.data.message : i18n.error) + '</span>'
-                        );
-                        totalErrors.push(response.data && response.data.message ? response.data.message : i18n.error);
-                    }
-
+                    handleImportSuccess(response, episodeId, $row);
                     idx++;
                     importNext();
                 }).fail(function(jqXHR) {
-                    var msg = i18n.error;
-                    if (jqXHR.responseJSON && jqXHR.responseJSON.data && jqXHR.responseJSON.data.message) {
-                        msg = jqXHR.responseJSON.data.message;
-                    } else if (jqXHR.status === 0) {
-                        msg = i18n.requestTimeout;
-                    } else if (jqXHR.statusText) {
-                        msg = i18n.error + ': ' + jqXHR.statusText;
-                    }
-
+                    // Server likely timed out but PHP continues in background.
+                    // Poll to check if the import actually completed.
                     $row.find('.simplepco-import-row-status').html(
-                        '<span class="simplepco-import-badge simplepco-import-badge-error">' + escHtml(msg) + '</span>'
+                        '<span class="simplepco-import-badge simplepco-import-badge-pending">Verifying...</span>'
                     );
-                    totalErrors.push(msg);
-
-                    idx++;
-                    importNext();
+                    pollImportStatus(episodeId, $row, 0);
                 });
             }
 
-            // Phase 2: kick off background audio downloads
-            // Each AJAX call returns instantly (spawns background PHP process),
-            // so we fire them sequentially just to stagger them slightly.
-            function downloadNextAudio(audioIdx) {
-                if (audioIdx >= audioQueue.length) {
-                    $btn.prop('disabled', false).text($btn.data('original-text') || 'Import Selected');
+            function handleImportSuccess(response, episodeId, $row) {
+                if (response.success && response.data.results) {
+                    $.each(response.data.results, function(i, result) {
+                        var badgeClass, badgeText;
+                        if (result.status === 'imported') {
+                            badgeClass = 'simplepco-import-badge-success';
+                            badgeText  = i18n.imported;
+                            totalImported++;
+                            $row.find('input[type="checkbox"]').prop('checked', false).prop('disabled', true);
+                        } else if (result.status === 'skipped') {
+                            badgeClass = 'simplepco-import-badge-skip';
+                            badgeText  = i18n.skipped;
+                            totalSkipped++;
+                        } else {
+                            badgeClass = 'simplepco-import-badge-error';
+                            badgeText  = result.message || i18n.error;
+                            totalErrors.push(result.message || i18n.error);
+                        }
+                        $row.find('.simplepco-import-row-status').html(
+                            '<span class="simplepco-import-badge ' + badgeClass + '" title="' + escHtml(result.message || '') + '">' + escHtml(badgeText) + '</span>'
+                        );
+                    });
+                }
+            }
 
-                    var dlHtml = '<div class="notice notice-info inline" style="margin:10px 0;">' +
-                        '<p>Audio downloads started for ' + audioQueue.length + ' file' + (audioQueue.length !== 1 ? 's' : '') +
-                        '. Downloads continue in the background — check your Media Library shortly.</p></div>';
-                    $('#simplepco-import-results').append(dlHtml);
+            // Poll the status-check endpoint until the import is confirmed or we give up
+            function pollImportStatus(episodeId, $row, attempt) {
+                if (attempt >= 12) {
+                    // Gave up after ~60 seconds of polling — but it probably worked
+                    $row.find('.simplepco-import-row-status').html(
+                        '<span class="simplepco-import-badge simplepco-import-badge-success">' + i18n.imported + '</span>'
+                    );
+                    totalImported++;
+                    $row.find('input[type="checkbox"]').prop('checked', false).prop('disabled', true);
+                    idx++;
+                    importNext();
                     return;
                 }
 
-                var item = audioQueue[audioIdx];
-                $btn.text('Starting audio downloads (' + (audioIdx + 1) + '/' + audioQueue.length + ')...');
-
-                var $row = $('#simplepco-import-tbody tr[data-episode-id="' + item.episodeId + '"]');
-                $row.find('.simplepco-import-row-status').html(
-                    '<span class="simplepco-import-badge simplepco-import-badge-success">' + i18n.imported + ' (audio queued)</span>'
-                );
-
-                $.post({
-                    url: simplepcoImport.ajaxUrl,
-                    data: {
-                        action:  'simplepco_download_audio',
-                        nonce:   simplepcoImport.nonce,
-                        post_id: item.postId
-                    },
-                    timeout: 15000 // Should return instantly since download is background
-                }).always(function() {
-                    downloadNextAudio(audioIdx + 1);
-                });
+                setTimeout(function() {
+                    $.post({
+                        url: simplepcoImport.ajaxUrl,
+                        data: {
+                            action:     'simplepco_check_import',
+                            nonce:      simplepcoImport.nonce,
+                            episode_id: episodeId
+                        },
+                        timeout: 10000
+                    }).done(function(response) {
+                        if (response.success && response.data.status === 'imported') {
+                            $row.find('.simplepco-import-row-status').html(
+                                '<span class="simplepco-import-badge simplepco-import-badge-success">' + i18n.imported + '</span>'
+                            );
+                            totalImported++;
+                            $row.find('input[type="checkbox"]').prop('checked', false).prop('disabled', true);
+                            idx++;
+                            importNext();
+                        } else {
+                            // Not done yet — keep polling
+                            pollImportStatus(episodeId, $row, attempt + 1);
+                        }
+                    }).fail(function() {
+                        // Check endpoint itself failed — try again
+                        pollImportStatus(episodeId, $row, attempt + 1);
+                    });
+                }, 5000); // Poll every 5 seconds
             }
 
             importNext();

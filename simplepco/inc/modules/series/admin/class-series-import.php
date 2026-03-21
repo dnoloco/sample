@@ -35,9 +35,7 @@ class SimplePCO_Series_Import {
     public function init() {
         $this->loader->add_action('wp_ajax_simplepco_import_fetch_episodes', $this, 'ajax_fetch_episodes');
         $this->loader->add_action('wp_ajax_simplepco_import_run', $this, 'ajax_run_import');
-        $this->loader->add_action('wp_ajax_simplepco_download_audio', $this, 'ajax_download_audio');
-        $this->loader->add_action('wp_ajax_nopriv_simplepco_bg_download_audio', $this, 'bg_download_audio');
-        $this->loader->add_action('wp_ajax_simplepco_bg_download_audio', $this, 'bg_download_audio');
+        $this->loader->add_action('wp_ajax_simplepco_check_import', $this, 'ajax_check_import');
     }
 
     // =========================================================================
@@ -489,84 +487,34 @@ class SimplePCO_Series_Import {
     }
 
     /**
-     * AJAX handler: trigger background audio download for a single post.
+     * AJAX handler: check if an episode was successfully imported.
      *
-     * Spawns a non-blocking loopback request to do the actual download,
-     * then returns success immediately so the browser doesn't time out.
+     * Lightweight endpoint used by the frontend to verify an import completed
+     * when the original AJAX request timed out (server timeout, not PHP).
      */
-    public function ajax_download_audio() {
+    public function ajax_check_import() {
         check_ajax_referer('simplepco_import_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Permission denied.', 'simplepco')]);
         }
 
-        $post_id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
-        if (!$post_id) {
-            wp_send_json_error(['message' => __('No post ID provided.', 'simplepco')]);
+        $episode_id = isset($_POST['episode_id']) ? sanitize_text_field($_POST['episode_id']) : '';
+        if (empty($episode_id)) {
+            wp_send_json_error(['message' => __('No episode ID.', 'simplepco')]);
         }
 
-        if (!get_post_meta($post_id, '_simplepco_audio_needs_download', true)) {
-            wp_send_json_success(['message' => __('Audio already downloaded.', 'simplepco')]);
-        }
-
-        // Spawn background download via a non-blocking loopback request
-        $bg_url = admin_url('admin-ajax.php');
-        wp_remote_post($bg_url, [
-            'timeout'   => 0.01, // Don't wait for response
-            'blocking'  => false,
-            'sslverify' => false,
-            'body'      => [
-                'action'  => 'simplepco_bg_download_audio',
+        $post_id = $this->get_post_by_episode_id($episode_id);
+        if ($post_id) {
+            wp_send_json_success([
+                'status'  => 'imported',
                 'post_id' => $post_id,
-                'nonce'   => wp_create_nonce('simplepco_bg_download_' . $post_id),
-            ],
-        ]);
-
-        wp_send_json_success(['message' => __('Audio download started.', 'simplepco')]);
-    }
-
-    /**
-     * Background handler: actually download the audio file.
-     *
-     * Called via a non-blocking loopback from ajax_download_audio().
-     * Runs in its own PHP process with no browser waiting.
-     */
-    public function bg_download_audio() {
-        // Verify nonce
-        $post_id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
-        if (!$post_id || !wp_verify_nonce($_POST['nonce'] ?? '', 'simplepco_bg_download_' . $post_id)) {
-            wp_die('Invalid request', '', ['response' => 403]);
-        }
-
-        @set_time_limit(600);
-
-        // Close the connection immediately so the spawning request doesn't wait
-        if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();
-        }
-
-        $remote_url = get_post_meta($post_id, '_simplepco_message_audio', true);
-        if (empty($remote_url) || !get_post_meta($post_id, '_simplepco_audio_needs_download', true)) {
-            return;
-        }
-
-        $filename = get_post_meta($post_id, '_simplepco_sermon_audio_name', true);
-        $ep_id    = get_post_meta($post_id, '_simplepco_sermon_audio_pco_id', true);
-
-        error_log('[SimplePCO] Background download starting for post ' . $post_id . ': ' . $remote_url);
-
-        $local_url = $this->sideload_audio_from_url($remote_url, $post_id, $filename, $ep_id);
-
-        if ($local_url) {
-            update_post_meta($post_id, '_simplepco_message_audio', esc_url_raw($local_url));
-            delete_post_meta($post_id, '_simplepco_audio_needs_download');
-            error_log('[SimplePCO] Background download complete for post ' . $post_id . ': ' . $local_url);
+            ]);
         } else {
-            error_log('[SimplePCO] Background download failed for post ' . $post_id);
+            wp_send_json_success([
+                'status' => 'pending',
+            ]);
         }
-
-        wp_die();
     }
 
     /**
@@ -772,14 +720,19 @@ class SimplePCO_Series_Import {
                 $audio_url = $sa_attrs['url'];
                 error_log('[SimplePCO] Episode ' . $ep_id . ' audio from url attr: ' . $audio_url);
             }
-            // For hosted files, resolve the direct MP3 URL from the podcast feed
+            // For hosted files, resolve MP3 URL via podcast feed and sideload into WP
             if (!$audio_url && !empty($sa_attrs['signed_identifier'])) {
                 $feed_url = $this->resolve_audio_from_podcast_feed($ep_id);
                 if ($feed_url) {
-                    $audio_url = $feed_url;
-                    // Flag this as a remote URL that can be downloaded later
-                    update_post_meta($post_id, '_simplepco_audio_needs_download', '1');
-                    error_log('[SimplePCO] Stored podcast feed audio URL for episode ' . $ep_id . ': ' . $audio_url);
+                    $local_url = $this->sideload_audio_from_url($feed_url, $post_id, $sa_attrs['name'] ?? '', $ep_id);
+                    if ($local_url) {
+                        $audio_url = $local_url;
+                        error_log('[SimplePCO] Sideloaded sermon audio for episode ' . $ep_id . ': ' . $audio_url);
+                    } else {
+                        // Sideload failed — store the remote URL as fallback
+                        $audio_url = $feed_url;
+                        error_log('[SimplePCO] Sideload failed, stored remote URL for episode ' . $ep_id);
+                    }
                 } else {
                     error_log('[SimplePCO] Could not resolve podcast feed audio URL for episode ' . $ep_id);
                 }
