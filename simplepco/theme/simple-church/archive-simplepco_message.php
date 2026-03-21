@@ -47,31 +47,20 @@ $placeholder_url = class_exists( 'SimplePCO_Series_Public' )
 			<?php if ( $recent_query->have_posts() ) : $recent_query->the_post();
 				$post_id = get_the_ID();
 
-				// Image fallback: message image → series image → featured image → placeholder
-				$image_url = get_post_meta( $post_id, '_simplepco_message_image', true );
+				// Message thumbnail (message image → featured image → placeholder)
+				$thumb_url = get_post_meta( $post_id, '_simplepco_message_image', true );
+				if ( empty( $thumb_url ) && has_post_thumbnail( $post_id ) ) {
+					$thumb_url = get_the_post_thumbnail_url( $post_id, 'large' );
+				}
+				if ( empty( $thumb_url ) ) {
+					$thumb_url = $placeholder_url;
+				}
 
+				// Series info & background artwork
 				$series_terms = wp_get_post_terms( $post_id, 'simplepco_series', [ 'fields' => 'all' ] );
 				$series_term  = ( ! empty( $series_terms ) && ! is_wp_error( $series_terms ) ) ? $series_terms[0] : null;
-
-				if ( empty( $image_url ) && $series_term ) {
-					$image_url = get_term_meta( $series_term->term_id, '_simplepco_series_image', true );
-				}
-				if ( empty( $image_url ) && has_post_thumbnail( $post_id ) ) {
-					$image_url = get_the_post_thumbnail_url( $post_id, 'large' );
-				}
-				if ( empty( $image_url ) ) {
-					$image_url = $placeholder_url;
-				}
-
-				// Speaker name
-				$speaker_name = '';
-				$speaker_id   = get_post_meta( $post_id, '_simplepco_speaker_id', true );
-				if ( $speaker_id ) {
-					$speaker_post = get_post( $speaker_id );
-					if ( $speaker_post ) {
-						$speaker_name = $speaker_post->post_title;
-					}
-				}
+				$series_artwork = $series_term ? get_term_meta( $series_term->term_id, '_simplepco_series_image', true ) : '';
+				$bg_image = ! empty( $series_artwork ) ? $series_artwork : $thumb_url;
 
 				// Message date
 				$message_date   = get_post_meta( $post_id, '_simplepco_message_date', true );
@@ -79,34 +68,51 @@ $placeholder_url = class_exists( 'SimplePCO_Series_Public' )
 					? date_i18n( get_option( 'date_format' ), strtotime( $message_date ) )
 					: '';
 
+				// Description
+				$description = get_post_meta( $post_id, '_simplepco_message_description', true );
+
+				// Video & Audio URLs
+				$video_url = get_post_meta( $post_id, '_simplepco_message_video', true );
+				$audio_url = get_post_meta( $post_id, '_simplepco_message_audio', true );
+
 				// Series link
 				$series_link = $series_term ? get_term_link( $series_term ) : '';
 				$series_name = $series_term ? $series_term->name : '';
 			?>
 
-				<div class="simplepco-featured-message">
-					<a href="<?php the_permalink(); ?>" class="simplepco-featured-message__image">
-						<img src="<?php echo esc_url( $image_url ); ?>"
+				<h2 class="simplepco-featured-heading">Recent Message</h2>
+
+				<div class="simplepco-featured-message" style="background-image: url('<?php echo esc_url( $bg_image ); ?>');">
+					<a href="<?php the_permalink(); ?>" class="simplepco-featured-message__thumb">
+						<img src="<?php echo esc_url( $thumb_url ); ?>"
 						     alt="<?php echo esc_attr( get_the_title() ); ?>"
 						     loading="eager">
 					</a>
-					<div class="simplepco-featured-message__body">
-						<h2 class="simplepco-featured-message__title">
+					<div class="simplepco-featured-message__card">
+						<h3 class="simplepco-featured-message__title">
 							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-						</h2>
+						</h3>
 						<?php if ( ! empty( $series_name ) && ! is_wp_error( $series_link ) ) : ?>
 							<div class="simplepco-featured-message__series">
 								<a href="<?php echo esc_url( $series_link ); ?>"><?php echo esc_html( $series_name ); ?></a>
 							</div>
 						<?php endif; ?>
-						<div class="simplepco-featured-message__meta">
-							<?php if ( ! empty( $speaker_name ) ) : ?>
-								<span class="simplepco-featured-message__speaker"><?php echo esc_html( $speaker_name ); ?></span>
-							<?php endif; ?>
-							<?php if ( ! empty( $formatted_date ) ) : ?>
-								<span class="simplepco-featured-message__date"><?php echo esc_html( $formatted_date ); ?></span>
-							<?php endif; ?>
-						</div>
+						<?php if ( ! empty( $formatted_date ) ) : ?>
+							<div class="simplepco-featured-message__date"><?php echo esc_html( $formatted_date ); ?></div>
+						<?php endif; ?>
+						<?php if ( ! empty( $description ) ) : ?>
+							<div class="simplepco-featured-message__desc"><?php echo esc_html( wp_trim_words( $description, 30 ) ); ?></div>
+						<?php endif; ?>
+						<?php if ( ! empty( $video_url ) || ! empty( $audio_url ) ) : ?>
+							<div class="simplepco-featured-message__actions">
+								<?php if ( ! empty( $video_url ) ) : ?>
+									<a href="<?php the_permalink(); ?>" class="simplepco-featured-btn">Watch</a>
+								<?php endif; ?>
+								<?php if ( ! empty( $audio_url ) ) : ?>
+									<a href="<?php the_permalink(); ?>" class="simplepco-featured-btn">Listen</a>
+								<?php endif; ?>
+							</div>
+						<?php endif; ?>
 					</div>
 				</div>
 
