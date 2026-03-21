@@ -142,17 +142,17 @@
                 );
             });
 
-            // Import episodes one at a time to avoid server timeouts (audio downloads can take 30+ seconds each)
+            // Phase 1: Import episodes (fast — no audio download)
+            // Phase 2: Download audio files one at a time (slow — separate requests)
             var totalImported = 0;
             var totalSkipped  = 0;
             var totalErrors   = [];
+            var audioQueue    = []; // post IDs that need audio downloaded
             var idx = 0;
 
             function importNext() {
                 if (idx >= selectedIds.length) {
-                    // All done — show summary
-                    $btn.prop('disabled', false).text($btn.data('original-text') || 'Import Selected');
-
+                    // Phase 1 done — show summary
                     var resultsHtml =
                         '<div class="notice notice-success inline" style="margin:10px 0;">' +
                             '<p><strong>' + i18n.importComplete + '</strong> ' +
@@ -171,6 +171,14 @@
 
                     $('#simplepco-import-results').html(resultsHtml);
                     $('#simplepco-import-step-results').slideDown(200);
+
+                    // Phase 2: Download audio files if any are queued
+                    if (audioQueue.length) {
+                        $btn.text('Downloading audio (0/' + audioQueue.length + ')...');
+                        downloadNextAudio(0);
+                    } else {
+                        $btn.prop('disabled', false).text($btn.data('original-text') || 'Import Selected');
+                    }
                     return;
                 }
 
@@ -190,7 +198,7 @@
                         nonce:       simplepcoImport.nonce,
                         episode_ids: [episodeId]
                     },
-                    timeout: 120000 // 2 minutes per episode for audio download
+                    timeout: 30000 // 30 seconds is plenty — no audio download happens now
                 }).done(function(response) {
                     if (response.success && response.data.results) {
                         $.each(response.data.results, function(i, result) {
@@ -200,6 +208,10 @@
                                 badgeText  = i18n.imported;
                                 totalImported++;
                                 $row.find('input[type="checkbox"]').prop('checked', false).prop('disabled', true);
+                                // Queue audio download if this post needs it
+                                if (result.post_id) {
+                                    audioQueue.push({postId: result.post_id, episodeId: episodeId});
+                                }
                             } else if (result.status === 'skipped') {
                                 badgeClass = 'simplepco-import-badge-skip';
                                 badgeText  = i18n.skipped;
@@ -239,6 +251,54 @@
 
                     idx++;
                     importNext();
+                });
+            }
+
+            // Phase 2: download audio files one at a time
+            function downloadNextAudio(audioIdx) {
+                if (audioIdx >= audioQueue.length) {
+                    $btn.prop('disabled', false).text($btn.data('original-text') || 'Import Selected');
+
+                    // Update results with download info
+                    var dlHtml = '<div class="notice notice-info inline" style="margin:10px 0;">' +
+                        '<p>Audio downloads complete (' + audioQueue.length + ' file' + (audioQueue.length !== 1 ? 's' : '') + ').</p></div>';
+                    $('#simplepco-import-results').append(dlHtml);
+                    return;
+                }
+
+                var item = audioQueue[audioIdx];
+                $btn.text('Downloading audio (' + (audioIdx + 1) + '/' + audioQueue.length + ')...');
+
+                // Update the row badge
+                var $row = $('#simplepco-import-tbody tr[data-episode-id="' + item.episodeId + '"]');
+                $row.find('.simplepco-import-row-status').html(
+                    '<span class="simplepco-import-badge simplepco-import-badge-pending">Downloading audio...</span>'
+                );
+
+                $.post({
+                    url: simplepcoImport.ajaxUrl,
+                    data: {
+                        action:  'simplepco_download_audio',
+                        nonce:   simplepcoImport.nonce,
+                        post_id: item.postId
+                    },
+                    timeout: 180000 // 3 minutes per file
+                }).done(function(response) {
+                    if (response.success) {
+                        $row.find('.simplepco-import-row-status').html(
+                            '<span class="simplepco-import-badge simplepco-import-badge-success">' + i18n.imported + '</span>'
+                        );
+                    } else {
+                        $row.find('.simplepco-import-row-status').html(
+                            '<span class="simplepco-import-badge simplepco-import-badge-error">Audio: ' + escHtml(response.data.message || i18n.error) + '</span>'
+                        );
+                    }
+                    downloadNextAudio(audioIdx + 1);
+                }).fail(function() {
+                    $row.find('.simplepco-import-row-status').html(
+                        '<span class="simplepco-import-badge simplepco-import-badge-error">Audio download timeout</span>'
+                    );
+                    downloadNextAudio(audioIdx + 1);
                 });
             }
 
