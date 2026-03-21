@@ -510,4 +510,65 @@ class SimplePCO_API_Model {
 
         return false;
     }
+
+    /**
+     * Probe a PCO API endpoint and log the full response for diagnostics.
+     *
+     * @param string $app_domain  e.g. 'publishing'.
+     * @param string $endpoint_path e.g. '/v2/episodes/123/sermon_audio'.
+     * @param string $method       HTTP method: 'GET' or 'POST'.
+     * @return array|false Decoded JSON response, or false on error.
+     */
+    public function probe_endpoint($app_domain, $endpoint_path, $method = 'GET') {
+        $url = $this->base_url . "/{$app_domain}{$endpoint_path}";
+
+        $args = [
+            'timeout'     => 30,
+            'redirection' => 0,
+            'headers'     => [
+                'Authorization' => $this->auth_header,
+                'Accept'        => 'application/vnd.api+json',
+            ],
+        ];
+
+        $response = ($method === 'POST')
+            ? wp_remote_post($url, $args)
+            : wp_remote_get($url, $args);
+
+        if (is_wp_error($response)) {
+            error_log("[SimplePCO] PROBE {$method} {$url} => error: " . $response->get_error_message());
+            return false;
+        }
+
+        $status   = wp_remote_retrieve_response_code($response);
+        $location = wp_remote_retrieve_header($response, 'location');
+        $body     = wp_remote_retrieve_body($response);
+
+        error_log("[SimplePCO] PROBE {$method} {$url} => HTTP {$status}");
+        if ($location) {
+            error_log("[SimplePCO] PROBE Location: {$location}");
+        }
+        if ($body) {
+            error_log('[SimplePCO] PROBE body: ' . substr($body, 0, 1000));
+        }
+
+        $result = [
+            'status'   => $status,
+            'location' => $location,
+            'body'     => $body ? json_decode($body, true) : null,
+        ];
+
+        return $result;
+    }
+
+    /**
+     * Fetch publishing channels from the PCO API.
+     *
+     * @return array|false API response or false on error.
+     */
+    public function get_publishing_channels() {
+        $endpoint = '/v2/channels';
+        $key = 'simplepco_pub_channels';
+        return $this->get_data_with_caching('publishing', $endpoint, [], $key, 15 * MINUTE_IN_SECONDS);
+    }
 }
