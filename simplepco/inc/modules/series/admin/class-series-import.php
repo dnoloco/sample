@@ -36,6 +36,8 @@ class SimplePCO_Series_Import {
         $this->loader->add_action('wp_ajax_simplepco_import_fetch_episodes', $this, 'ajax_fetch_episodes');
         $this->loader->add_action('wp_ajax_simplepco_import_run', $this, 'ajax_run_import');
         $this->loader->add_action('wp_ajax_simplepco_download_audio', $this, 'ajax_download_audio');
+        $this->loader->add_action('wp_ajax_nopriv_simplepco_bg_download_audio', $this, 'bg_download_audio');
+        $this->loader->add_action('wp_ajax_simplepco_bg_download_audio', $this, 'bg_download_audio');
     }
 
     // =========================================================================
@@ -487,59 +489,84 @@ class SimplePCO_Series_Import {
     }
 
     /**
-     * AJAX handler: download a single remote audio file into the WP media library.
+     * AJAX handler: trigger background audio download for a single post.
      *
-     * Called one post at a time from the frontend to avoid web server timeouts.
+     * Spawns a non-blocking loopback request to do the actual download,
+     * then returns success immediately so the browser doesn't time out.
      */
     public function ajax_download_audio() {
-        ob_start();
         check_ajax_referer('simplepco_import_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            ob_end_clean();
             wp_send_json_error(['message' => __('Permission denied.', 'simplepco')]);
         }
 
-        @set_time_limit(300);
-
         $post_id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
         if (!$post_id) {
-            ob_end_clean();
             wp_send_json_error(['message' => __('No post ID provided.', 'simplepco')]);
         }
 
-        $remote_url = get_post_meta($post_id, '_simplepco_message_audio', true);
-        if (empty($remote_url)) {
-            ob_end_clean();
-            wp_send_json_error(['message' => __('No audio URL found for this post.', 'simplepco')]);
+        if (!get_post_meta($post_id, '_simplepco_audio_needs_download', true)) {
+            wp_send_json_success(['message' => __('Audio already downloaded.', 'simplepco')]);
         }
 
-        // Already downloaded?
-        if (!get_post_meta($post_id, '_simplepco_audio_needs_download', true)) {
-            ob_end_clean();
-            wp_send_json_success(['message' => __('Audio already downloaded.', 'simplepco'), 'skipped' => true]);
+        // Spawn background download via a non-blocking loopback request
+        $bg_url = admin_url('admin-ajax.php');
+        wp_remote_post($bg_url, [
+            'timeout'   => 0.01, // Don't wait for response
+            'blocking'  => false,
+            'sslverify' => false,
+            'body'      => [
+                'action'  => 'simplepco_bg_download_audio',
+                'post_id' => $post_id,
+                'nonce'   => wp_create_nonce('simplepco_bg_download_' . $post_id),
+            ],
+        ]);
+
+        wp_send_json_success(['message' => __('Audio download started.', 'simplepco')]);
+    }
+
+    /**
+     * Background handler: actually download the audio file.
+     *
+     * Called via a non-blocking loopback from ajax_download_audio().
+     * Runs in its own PHP process with no browser waiting.
+     */
+    public function bg_download_audio() {
+        // Verify nonce
+        $post_id = isset($_POST['post_id']) ? absint($_POST['post_id']) : 0;
+        if (!$post_id || !wp_verify_nonce($_POST['nonce'] ?? '', 'simplepco_bg_download_' . $post_id)) {
+            wp_die('Invalid request', '', ['response' => 403]);
+        }
+
+        @set_time_limit(600);
+
+        // Close the connection immediately so the spawning request doesn't wait
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        }
+
+        $remote_url = get_post_meta($post_id, '_simplepco_message_audio', true);
+        if (empty($remote_url) || !get_post_meta($post_id, '_simplepco_audio_needs_download', true)) {
+            return;
         }
 
         $filename = get_post_meta($post_id, '_simplepco_sermon_audio_name', true);
         $ep_id    = get_post_meta($post_id, '_simplepco_sermon_audio_pco_id', true);
+
+        error_log('[SimplePCO] Background download starting for post ' . $post_id . ': ' . $remote_url);
 
         $local_url = $this->sideload_audio_from_url($remote_url, $post_id, $filename, $ep_id);
 
         if ($local_url) {
             update_post_meta($post_id, '_simplepco_message_audio', esc_url_raw($local_url));
             delete_post_meta($post_id, '_simplepco_audio_needs_download');
-            $stray = ob_get_clean();
-            if ($stray) {
-                error_log('[SimplePCO] Stray output during audio download: ' . substr($stray, 0, 500));
-            }
-            wp_send_json_success(['message' => __('Audio downloaded.', 'simplepco'), 'url' => $local_url]);
+            error_log('[SimplePCO] Background download complete for post ' . $post_id . ': ' . $local_url);
         } else {
-            $stray = ob_get_clean();
-            if ($stray) {
-                error_log('[SimplePCO] Stray output during audio download: ' . substr($stray, 0, 500));
-            }
-            wp_send_json_error(['message' => __('Failed to download audio file.', 'simplepco')]);
+            error_log('[SimplePCO] Background download failed for post ' . $post_id);
         }
+
+        wp_die();
     }
 
     /**

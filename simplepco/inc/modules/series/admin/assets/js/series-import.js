@@ -254,25 +254,26 @@
                 });
             }
 
-            // Phase 2: download audio files one at a time
+            // Phase 2: kick off background audio downloads
+            // Each AJAX call returns instantly (spawns background PHP process),
+            // so we fire them sequentially just to stagger them slightly.
             function downloadNextAudio(audioIdx) {
                 if (audioIdx >= audioQueue.length) {
                     $btn.prop('disabled', false).text($btn.data('original-text') || 'Import Selected');
 
-                    // Update results with download info
                     var dlHtml = '<div class="notice notice-info inline" style="margin:10px 0;">' +
-                        '<p>Audio downloads complete (' + audioQueue.length + ' file' + (audioQueue.length !== 1 ? 's' : '') + ').</p></div>';
+                        '<p>Audio downloads started for ' + audioQueue.length + ' file' + (audioQueue.length !== 1 ? 's' : '') +
+                        '. Downloads continue in the background — check your Media Library shortly.</p></div>';
                     $('#simplepco-import-results').append(dlHtml);
                     return;
                 }
 
                 var item = audioQueue[audioIdx];
-                $btn.text('Downloading audio (' + (audioIdx + 1) + '/' + audioQueue.length + ')...');
+                $btn.text('Starting audio downloads (' + (audioIdx + 1) + '/' + audioQueue.length + ')...');
 
-                // Update the row badge
                 var $row = $('#simplepco-import-tbody tr[data-episode-id="' + item.episodeId + '"]');
                 $row.find('.simplepco-import-row-status').html(
-                    '<span class="simplepco-import-badge simplepco-import-badge-pending">Downloading audio...</span>'
+                    '<span class="simplepco-import-badge simplepco-import-badge-success">' + i18n.imported + ' (audio queued)</span>'
                 );
 
                 $.post({
@@ -282,22 +283,8 @@
                         nonce:   simplepcoImport.nonce,
                         post_id: item.postId
                     },
-                    timeout: 180000 // 3 minutes per file
-                }).done(function(response) {
-                    if (response.success) {
-                        $row.find('.simplepco-import-row-status').html(
-                            '<span class="simplepco-import-badge simplepco-import-badge-success">' + i18n.imported + '</span>'
-                        );
-                    } else {
-                        $row.find('.simplepco-import-row-status').html(
-                            '<span class="simplepco-import-badge simplepco-import-badge-error">Audio: ' + escHtml(response.data.message || i18n.error) + '</span>'
-                        );
-                    }
-                    downloadNextAudio(audioIdx + 1);
-                }).fail(function() {
-                    $row.find('.simplepco-import-row-status').html(
-                        '<span class="simplepco-import-badge simplepco-import-badge-error">Audio download timeout</span>'
-                    );
+                    timeout: 15000 // Should return instantly since download is background
+                }).always(function() {
                     downloadNextAudio(audioIdx + 1);
                 });
             }
