@@ -341,24 +341,38 @@ class SimplePCO_Series_Import {
      * AJAX handler to import selected episodes as WordPress posts.
      */
     public function ajax_run_import() {
+        // Capture any stray PHP output (notices, warnings) so it doesn't break the JSON response
+        ob_start();
+
         check_ajax_referer('simplepco_import_nonce', 'nonce');
 
         if (!current_user_can('manage_options')) {
+            ob_end_clean();
             wp_send_json_error(['message' => __('Permission denied.', 'simplepco')]);
         }
 
         // Audio sideloading can take a long time — extend the execution limit
         @set_time_limit(600);
 
+        // Log any fatal errors that occur during import
+        register_shutdown_function(function () {
+            $error = error_get_last();
+            if ($error && in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE], true)) {
+                error_log('[SimplePCO] FATAL during import: ' . $error['message'] . ' in ' . $error['file'] . ':' . $error['line']);
+            }
+        });
+
         $episode_ids = isset($_POST['episode_ids']) ? array_map('sanitize_text_field', (array) $_POST['episode_ids']) : [];
 
         if (empty($episode_ids)) {
+            ob_end_clean();
             wp_send_json_error(['message' => __('No episodes selected for import.', 'simplepco')]);
         }
 
         // Load the cached episode data from the fetch step
         $cache = get_transient(self::IMPORT_CACHE_KEY);
         if (empty($cache) || empty($cache['episodes'])) {
+            ob_end_clean();
             wp_send_json_error(['message' => __('Episode data has expired. Please click "Fetch from Planning Center" again.', 'simplepco')]);
         }
 
@@ -456,6 +470,12 @@ class SimplePCO_Series_Import {
             'skipped' => $skipped,
             'errors'  => count($errors),
         ]);
+
+        // Discard any stray output (PHP notices, etc.) before sending JSON
+        $stray_output = ob_get_clean();
+        if ($stray_output) {
+            error_log('[SimplePCO] Stray output captured during import: ' . substr($stray_output, 0, 1000));
+        }
 
         wp_send_json_success([
             'imported' => $imported,
