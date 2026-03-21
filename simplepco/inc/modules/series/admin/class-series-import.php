@@ -347,6 +347,9 @@ class SimplePCO_Series_Import {
             wp_send_json_error(['message' => __('Permission denied.', 'simplepco')]);
         }
 
+        // Audio sideloading can take a long time — extend the execution limit
+        @set_time_limit(600);
+
         $episode_ids = isset($_POST['episode_ids']) ? array_map('sanitize_text_field', (array) $_POST['episode_ids']) : [];
 
         if (empty($episode_ids)) {
@@ -602,33 +605,15 @@ class SimplePCO_Series_Import {
                 $audio_url = $sa_attrs['url'];
                 error_log('[SimplePCO] Episode ' . $ep_id . ' audio from url attr: ' . $audio_url);
             }
-            // For hosted files, try to resolve the real MP3 URL via the PCO API
+            // For hosted files, resolve MP3 URL via podcast feed and sideload
             if (!$audio_url && !empty($sa_attrs['signed_identifier'])) {
                 $sideloaded = $this->sideload_audio($ep_id, $post_id, $sa_attrs['name'] ?? '');
                 if ($sideloaded) {
                     $audio_url = $sideloaded;
                     error_log('[SimplePCO] Sideloaded sermon audio for episode ' . $ep_id . ': ' . $audio_url);
                 } else {
-                    error_log('[SimplePCO] API sideload failed for episode ' . $ep_id);
+                    error_log('[SimplePCO] Could not sideload sermon audio for episode ' . $ep_id);
                 }
-            }
-            // Fallback: try downloading directly from Church Center URL
-            if (!$audio_url && !empty($attrs['church_center_url'])) {
-                $cc_audio_url = rtrim($attrs['church_center_url'], '/') . '/sermon_audio';
-                error_log('[SimplePCO] Trying Church Center download: ' . $cc_audio_url);
-                $sideloaded = $this->sideload_from_url($cc_audio_url, $post_id, $sa_attrs['name'] ?? '', $ep_id);
-                if ($sideloaded) {
-                    $audio_url = $sideloaded;
-                    error_log('[SimplePCO] Sideloaded from Church Center for episode ' . $ep_id . ': ' . $audio_url);
-                } else {
-                    error_log('[SimplePCO] Church Center download also failed for episode ' . $ep_id);
-                }
-            }
-            // Last resort: store the Church Center audio page URL so users can at least link to it
-            if (!$audio_url && !empty($attrs['church_center_url'])) {
-                $audio_url = rtrim($attrs['church_center_url'], '/') . '?media_intent=audio';
-                error_log('[SimplePCO] Using Church Center page URL as fallback for episode ' . $ep_id . ': ' . $audio_url);
-                update_post_meta($post_id, '_simplepco_sermon_audio_is_cc_link', '1');
             }
 
             // Store sermon audio metadata for reference even if no direct URL
@@ -690,36 +675,11 @@ class SimplePCO_Series_Import {
      * @return string|false      The local WordPress URL on success, false on failure.
      */
     private function sideload_audio($episode_id, $post_id, $filename = '') {
-        $real_url = false;
-
-        // Approach 1: Probe /sermon_audio (without /open) — may return file data with URL
-        $probe = $this->api_model->probe_endpoint('publishing', "/v2/episodes/{$episode_id}/sermon_audio");
-        if ($probe) {
-            if (!empty($probe['location'])) {
-                $real_url = $probe['location'];
-            } elseif (!empty($probe['body']['data']['attributes']['url'])) {
-                $real_url = $probe['body']['data']['attributes']['url'];
-            } elseif (!empty($probe['body']['data']['attributes']['variants'])) {
-                $variants = $probe['body']['data']['attributes']['variants'];
-                $real_url = $variants['original'] ?? reset($variants);
-            }
-        }
-
-        // Approach 2: Try POST /sermon_audio/open and GET /sermon_audio/open
-        if (!$real_url) {
-            $real_url = $this->api_model->get_file_redirect_url(
-                'publishing',
-                "/v2/episodes/{$episode_id}/sermon_audio/open"
-            );
-        }
-
-        // Approach 3: Try the podcast feed for a direct MP3 URL
-        if (!$real_url) {
-            $real_url = $this->resolve_audio_from_podcast_feed($episode_id);
-        }
+        // Resolve the direct MP3 URL via the podcast feed (cached after first call)
+        $real_url = $this->resolve_audio_from_podcast_feed($episode_id);
 
         if (!$real_url) {
-            error_log('[SimplePCO] Could not resolve audio URL for episode ' . $episode_id . ' via any method');
+            error_log('[SimplePCO] Could not resolve audio URL for episode ' . $episode_id);
             return false;
         }
 
@@ -782,207 +742,103 @@ class SimplePCO_Series_Import {
     }
 
     /**
-     * Try to resolve an episode's audio URL from the podcast RSS feed.
+     * Cached map of episode_id => MP3 enclosure URL from the podcast feed.
+     * Built once per import run to avoid re-fetching/parsing the feed for every episode.
      *
-     * Fetches the PCO Publishing channels, finds any podcast feed URLs,
-     * parses the feed, and matches the episode by ID in the <guid> element.
+     * @var array|null
+     */
+    private $podcast_feed_map = null;
+
+    /**
+     * Resolve an episode's audio URL via the cached podcast feed map.
+     *
+     * On first call, fetches the podcast feed from the PCO Publishing channel,
+     * builds a map of episode_id => MP3 URL, and caches it for the duration
+     * of the request. Subsequent calls are instant lookups.
      *
      * @param string $episode_id The PCO episode ID.
      * @return string|false      The direct MP3 URL, or false.
      */
     private function resolve_audio_from_podcast_feed($episode_id) {
-        // Get channels to find podcast feed URLs
+        // Build the map on first call
+        if ($this->podcast_feed_map === null) {
+            $this->podcast_feed_map = $this->build_podcast_feed_map();
+        }
+
+        return $this->podcast_feed_map[$episode_id] ?? false;
+    }
+
+    /**
+     * Build a map of episode_id => MP3 URL from all podcast feeds.
+     *
+     * @return array Map of episode_id => enclosure URL.
+     */
+    private function build_podcast_feed_map() {
+        $map = [];
+
         $channels = $this->api_model->get_publishing_channels();
         if (!$channels || empty($channels['data'])) {
             error_log('[SimplePCO] No channels found in Publishing API');
-            return false;
+            return $map;
         }
-
-        error_log('[SimplePCO] Found ' . count($channels['data']) . ' channel(s)');
 
         foreach ($channels['data'] as $channel) {
             $ch_attrs = $channel['attributes'] ?? [];
-            error_log('[SimplePCO] Channel ' . ($channel['id'] ?? '?') . ' attrs: ' . wp_json_encode(array_keys($ch_attrs)));
+            $feed_url = $ch_attrs['podcast_feed_url'] ?? '';
 
-            // Look for any attribute that might contain a feed URL
-            $feed_url = '';
-            foreach (['podcast_feed_url', 'feed_url', 'rss_url', 'audio_feed_url'] as $key) {
-                if (!empty($ch_attrs[$key])) {
-                    $feed_url = $ch_attrs[$key];
-                    error_log('[SimplePCO] Found feed URL in attribute ' . $key . ': ' . $feed_url);
-                    break;
-                }
-            }
-
-            // If no feed URL in attributes, try a common Church Center pattern
-            if (!$feed_url && !empty($ch_attrs['church_center_url'])) {
-                $feed_url = rtrim($ch_attrs['church_center_url'], '/') . '/feed.xml';
-                error_log('[SimplePCO] Trying Church Center feed pattern: ' . $feed_url);
-            }
-
-            if (!$feed_url) {
-                // Try constructing from channel ID
-                // Pattern: {church_center_base}/podcasts/{channel_id}/feed.xml
-                $org = $this->api_model->get_publishing_channels(); // already cached
-                error_log('[SimplePCO] No feed URL found for channel ' . ($channel['id'] ?? '?'));
+            if (empty($feed_url)) {
                 continue;
             }
 
-            $mp3_url = $this->find_episode_in_feed($feed_url, $episode_id);
-            if ($mp3_url) {
-                return $mp3_url;
+            error_log('[SimplePCO] Fetching podcast feed: ' . $feed_url);
+
+            $response = wp_remote_get($feed_url, ['timeout' => 30]);
+            if (is_wp_error($response)) {
+                error_log('[SimplePCO] Feed fetch failed: ' . $response->get_error_message());
+                continue;
             }
-        }
 
-        return false;
-    }
+            $status = wp_remote_retrieve_response_code($response);
+            $body   = wp_remote_retrieve_body($response);
+            if ($status !== 200 || empty($body)) {
+                error_log('[SimplePCO] Feed HTTP ' . $status);
+                continue;
+            }
 
-    /**
-     * Parse a podcast RSS feed and find the audio enclosure for a specific episode.
-     *
-     * @param string $feed_url   The RSS feed URL.
-     * @param string $episode_id The PCO episode ID to look for.
-     * @return string|false      The enclosure URL, or false.
-     */
-    private function find_episode_in_feed($feed_url, $episode_id) {
-        $response = wp_remote_get($feed_url, ['timeout' => 30]);
+            libxml_use_internal_errors(true);
+            $xml = simplexml_load_string($body);
+            if (!$xml) {
+                error_log('[SimplePCO] Could not parse feed XML');
+                continue;
+            }
 
-        if (is_wp_error($response)) {
-            error_log('[SimplePCO] Feed fetch failed for ' . $feed_url . ': ' . $response->get_error_message());
-            return false;
-        }
+            $items = $xml->channel->item ?? [];
+            error_log('[SimplePCO] Podcast feed has ' . count($items) . ' item(s)');
 
-        $status = wp_remote_retrieve_response_code($response);
-        $body   = wp_remote_retrieve_body($response);
+            foreach ($items as $item) {
+                $guid = (string) ($item->guid ?? '');
+                $link = (string) ($item->link ?? '');
 
-        if ($status !== 200 || empty($body)) {
-            error_log('[SimplePCO] Feed ' . $feed_url . ' => HTTP ' . $status);
-            return false;
-        }
+                // Extract episode ID from guid or link (e.g. ".../episodes/630636")
+                $ep_id = '';
+                if (preg_match('/episodes\/(\d+)/', $guid, $m)) {
+                    $ep_id = $m[1];
+                } elseif (preg_match('/episodes\/(\d+)/', $link, $m)) {
+                    $ep_id = $m[1];
+                }
 
-        // Check content type — should be XML
-        $content_type = wp_remote_retrieve_header($response, 'content-type');
-        if ($content_type && strpos($content_type, 'html') !== false) {
-            error_log('[SimplePCO] Feed URL returned HTML, not XML');
-            return false;
-        }
-
-        libxml_use_internal_errors(true);
-        $xml = simplexml_load_string($body);
-        if (!$xml) {
-            error_log('[SimplePCO] Could not parse feed XML from ' . $feed_url);
-            return false;
-        }
-
-        // Look through items for one matching our episode ID
-        $items = $xml->channel->item ?? [];
-        error_log('[SimplePCO] Feed has ' . count($items) . ' item(s)');
-
-        foreach ($items as $item) {
-            $guid = (string) ($item->guid ?? '');
-            $link = (string) ($item->link ?? '');
-
-            // Match by episode ID in guid or link
-            if (strpos($guid, (string) $episode_id) !== false || strpos($link, (string) $episode_id) !== false) {
-                // Get enclosure URL
-                if (isset($item->enclosure)) {
+                if ($ep_id && isset($item->enclosure)) {
                     $enc_url = (string) $item->enclosure['url'];
                     if ($enc_url) {
-                        error_log('[SimplePCO] Found episode ' . $episode_id . ' in feed, enclosure: ' . $enc_url);
-                        return $enc_url;
+                        $map[$ep_id] = $enc_url;
                     }
                 }
-                error_log('[SimplePCO] Found episode ' . $episode_id . ' in feed but no enclosure URL');
             }
+
+            error_log('[SimplePCO] Built podcast feed map with ' . count($map) . ' episode(s)');
         }
 
-        // Log first item guid/link for debugging
-        if (count($items) > 0) {
-            $first = $items[0];
-            error_log('[SimplePCO] Feed sample item guid: ' . (string) ($first->guid ?? 'none') . ', link: ' . (string) ($first->link ?? 'none'));
-        }
-
-        error_log('[SimplePCO] Episode ' . $episode_id . ' not found in feed');
-        return false;
-    }
-
-    /**
-     * Download audio from a direct URL (e.g. Church Center) and sideload into WP.
-     *
-     * Unlike sideload_audio() which resolves via the PCO API, this method
-     * downloads directly from the given URL (following any redirects).
-     *
-     * @param string $url        The URL to download from.
-     * @param int    $post_id    The post to attach the audio to.
-     * @param string $filename   Preferred filename.
-     * @param string $episode_id For logging/naming purposes.
-     * @return string|false      The local WordPress URL on success, false on failure.
-     */
-    private function sideload_from_url($url, $post_id, $filename = '', $episode_id = '') {
-        if (!function_exists('download_url')) {
-            require_once ABSPATH . 'wp-admin/includes/file.php';
-        }
-        if (!function_exists('media_handle_sideload')) {
-            require_once ABSPATH . 'wp-admin/includes/media.php';
-            require_once ABSPATH . 'wp-admin/includes/image.php';
-        }
-
-        // First do a HEAD request to check if this returns audio content
-        $head = wp_remote_head($url, ['timeout' => 15, 'redirection' => 5]);
-        if (!is_wp_error($head)) {
-            $content_type = wp_remote_retrieve_header($head, 'content-type');
-            $status       = wp_remote_retrieve_response_code($head);
-            error_log('[SimplePCO] HEAD ' . $url . ' => HTTP ' . $status . ' Content-Type: ' . $content_type);
-
-            // If it returns HTML, this isn't a direct audio download
-            if ($content_type && strpos($content_type, 'text/html') !== false) {
-                error_log('[SimplePCO] URL returns HTML, not audio — skipping download');
-                return false;
-            }
-        }
-
-        $tmp_file = download_url($url, 120);
-        if (is_wp_error($tmp_file)) {
-            error_log('[SimplePCO] Direct download failed from ' . $url . ': ' . $tmp_file->get_error_message());
-            return false;
-        }
-
-        if (empty($filename)) {
-            $filename = 'sermon-' . ($episode_id ?: uniqid());
-        }
-        if (!preg_match('/\.\w+$/', $filename)) {
-            $filename .= '.mp3';
-        }
-
-        $mp3_tmp = $tmp_file . '.mp3';
-        rename($tmp_file, $mp3_tmp);
-
-        $file_array = [
-            'name'     => sanitize_file_name($filename),
-            'tmp_name' => $mp3_tmp,
-        ];
-
-        $allow_audio = function ($data, $file, $real_filename, $mimes) {
-            if (preg_match('/\.mp3$/i', $real_filename) || preg_match('/\.mp3$/i', $file)) {
-                $data['ext']             = 'mp3';
-                $data['type']            = 'audio/mpeg';
-                $data['proper_filename'] = false;
-            }
-            return $data;
-        };
-        add_filter('wp_check_filetype_and_ext', $allow_audio, 10, 4);
-
-        $attachment_id = media_handle_sideload($file_array, $post_id);
-
-        remove_filter('wp_check_filetype_and_ext', $allow_audio, 10);
-
-        if (is_wp_error($attachment_id)) {
-            @unlink($mp3_tmp);
-            error_log('[SimplePCO] Sideload from URL failed: ' . $attachment_id->get_error_message());
-            return false;
-        }
-
-        return wp_get_attachment_url($attachment_id);
+        return $map;
     }
 
     /**
