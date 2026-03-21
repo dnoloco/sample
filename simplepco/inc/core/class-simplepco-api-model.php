@@ -444,27 +444,70 @@ class SimplePCO_API_Model {
     public function get_file_redirect_url($app_domain, $endpoint_path) {
         $url = $this->base_url . "/{$app_domain}{$endpoint_path}";
 
+        // Try POST first (PCO action endpoints typically use POST)
+        $response = wp_remote_post($url, [
+            'timeout'     => 30,
+            'redirection' => 0,
+            'headers'     => [
+                'Authorization' => $this->auth_header,
+            ],
+        ]);
+
+        if (!is_wp_error($response)) {
+            $location = wp_remote_retrieve_header($response, 'location');
+            if ($location) {
+                return $location;
+            }
+            $status = wp_remote_retrieve_response_code($response);
+            $body   = wp_remote_retrieve_body($response);
+            error_log('[SimplePCO] POST ' . $url . ' => HTTP ' . $status);
+
+            // Check if the response body contains a URL (some endpoints return JSON with the URL)
+            if ($body) {
+                $data = json_decode($body, true);
+                if (!empty($data['data']['attributes']['url'])) {
+                    return $data['data']['attributes']['url'];
+                }
+                // Log truncated body for debugging
+                error_log('[SimplePCO] POST response body: ' . substr($body, 0, 500));
+            }
+        } else {
+            error_log('[SimplePCO] POST request failed: ' . $response->get_error_message());
+        }
+
+        // Fall back to GET
         $response = wp_remote_get($url, [
             'timeout'     => 30,
-            'redirection' => 0, // Don't follow redirects — we want the Location header
+            'redirection' => 0,
             'headers'     => [
                 'Authorization' => $this->auth_header,
             ],
         ]);
 
         if (is_wp_error($response)) {
-            error_log('[SimplePCO] File redirect request failed: ' . $response->get_error_message());
+            error_log('[SimplePCO] GET request failed: ' . $response->get_error_message());
             return false;
         }
 
-        $status = wp_remote_retrieve_response_code($response);
+        $status   = wp_remote_retrieve_response_code($response);
         $location = wp_remote_retrieve_header($response, 'location');
 
         if ($location) {
             return $location;
         }
 
-        error_log('[SimplePCO] No redirect for ' . $url . ' (HTTP ' . $status . ')');
+        // Check if the response body contains a URL
+        $body = wp_remote_retrieve_body($response);
+        if ($body) {
+            $data = json_decode($body, true);
+            if (!empty($data['data']['attributes']['url'])) {
+                return $data['data']['attributes']['url'];
+            }
+            error_log('[SimplePCO] GET ' . $url . ' => HTTP ' . $status . ' body: ' . substr($body, 0, 500));
+        } else {
+            error_log('[SimplePCO] GET ' . $url . ' => HTTP ' . $status . ' (no body)');
+        }
+
         return false;
     }
 }
