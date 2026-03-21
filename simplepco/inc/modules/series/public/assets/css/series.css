@@ -885,3 +885,92 @@
         justify-content: center;
     }
 }
+
+/* =========================================================================
+   Featured Message (archive page hero card)
+   ========================================================================= */
+
+.simplepco-featured-message {
+    max-width: 800px;
+    margin: 0 auto 32px;
+}
+
+.simplepco-featured-message__image {
+    display: block;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+
+.simplepco-featured-message__image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.simplepco-featured-message__body {
+    text-align: center;
+}
+
+.simplepco-featured-message__title {
+    margin: 0 0 8px;
+    font-size: 1.5em;
+    line-height: 1.3;
+}
+
+.simplepco-featured-message__title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.simplepco-featured-message__title a:hover {
+    text-decoration: underline;
+}
+
+.simplepco-featured-message__series {
+    margin-bottom: 8px;
+    font-size: 1em;
+}
+
+.simplepco-featured-message__series a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.simplepco-featured-message__series a:hover {
+    text-decoration: underline;
+}
+
+.simplepco-featured-message__meta {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    font-size: 0.9em;
+    color: #6b7280;
+}
+
+/* Archive divider and series heading */
+.simplepco-archive-divider {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 32px 0 24px;
+}
+
+.simplepco-archive-series-heading {
+    margin: 0 0 24px;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .simplepco-featured-message__title {
+        font-size: 1.2em;
+    }
+
+    .simplepco-featured-message__meta {
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+}
