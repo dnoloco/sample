@@ -131,10 +131,10 @@
                 return;
             }
 
-            $btn.prop('disabled', true).text(i18n.importing);
+            $btn.prop('disabled', true);
             $status.html('');
 
-            // Mark selected rows as importing
+            // Mark selected rows as pending
             $.each(selectedIds, function(idx, id) {
                 var $row = $('#simplepco-import-tbody tr[data-episode-id="' + id + '"]');
                 $row.find('.simplepco-import-row-status').html(
@@ -142,84 +142,107 @@
                 );
             });
 
-            $.post(simplepcoImport.ajaxUrl, {
-                action:      'simplepco_import_run',
-                nonce:       simplepcoImport.nonce,
-                episode_ids: selectedIds
-            }, function(response) {
-                $btn.prop('disabled', false).text($btn.data('original-text') || 'Import Selected');
+            // Import episodes one at a time to avoid server timeouts (audio downloads can take 30+ seconds each)
+            var totalImported = 0;
+            var totalSkipped  = 0;
+            var totalErrors   = [];
+            var idx = 0;
 
-                if (!response.success) {
-                    $status.html('<span class="simplepco-import-error">' + (response.data.message || i18n.error) + '</span>');
+            function importNext() {
+                if (idx >= selectedIds.length) {
+                    // All done — show summary
+                    $btn.prop('disabled', false).text($btn.data('original-text') || 'Import Selected');
+
+                    var resultsHtml =
+                        '<div class="notice notice-success inline" style="margin:10px 0;">' +
+                            '<p><strong>' + i18n.importComplete + '</strong> ' +
+                            totalImported + ' ' + i18n.imported.toLowerCase() + ', ' +
+                            totalSkipped + ' ' + i18n.skipped.toLowerCase() + '.</p>' +
+                        '</div>';
+
+                    if (totalErrors.length) {
+                        resultsHtml += '<div class="notice notice-warning inline" style="margin:10px 0;">';
+                        resultsHtml += '<p><strong>Errors:</strong></p><ul>';
+                        $.each(totalErrors, function(i, err) {
+                            resultsHtml += '<li>' + escHtml(err) + '</li>';
+                        });
+                        resultsHtml += '</ul></div>';
+                    }
+
+                    $('#simplepco-import-results').html(resultsHtml);
+                    $('#simplepco-import-step-results').slideDown(200);
                     return;
                 }
 
-                var data = response.data;
+                var episodeId = selectedIds[idx];
+                var $row = $('#simplepco-import-tbody tr[data-episode-id="' + episodeId + '"]');
 
-                // Update individual row statuses
-                if (data.results) {
-                    $.each(data.results, function(idx, result) {
-                        var $row = $('#simplepco-import-tbody tr[data-episode-id="' + result.id + '"]');
-                        var badgeClass, badgeText;
+                // Update progress text
+                $btn.text(i18n.importing + ' (' + (idx + 1) + '/' + selectedIds.length + ')');
+                $row.find('.simplepco-import-row-status').html(
+                    '<span class="simplepco-import-badge simplepco-import-badge-pending">' + i18n.importing + '...</span>'
+                );
 
-                        if (result.status === 'imported') {
-                            badgeClass = 'simplepco-import-badge-success';
-                            badgeText  = i18n.imported;
-                            $row.find('input[type="checkbox"]').prop('checked', false).prop('disabled', true);
-                        } else if (result.status === 'skipped') {
-                            badgeClass = 'simplepco-import-badge-skip';
-                            badgeText  = i18n.skipped;
-                        } else {
-                            badgeClass = 'simplepco-import-badge-error';
-                            badgeText  = result.message || i18n.error;
-                        }
-
+                $.post({
+                    url: simplepcoImport.ajaxUrl,
+                    data: {
+                        action:      'simplepco_import_run',
+                        nonce:       simplepcoImport.nonce,
+                        episode_ids: [episodeId]
+                    },
+                    timeout: 120000 // 2 minutes per episode for audio download
+                }).done(function(response) {
+                    if (response.success && response.data.results) {
+                        $.each(response.data.results, function(i, result) {
+                            var badgeClass, badgeText;
+                            if (result.status === 'imported') {
+                                badgeClass = 'simplepco-import-badge-success';
+                                badgeText  = i18n.imported;
+                                totalImported++;
+                                $row.find('input[type="checkbox"]').prop('checked', false).prop('disabled', true);
+                            } else if (result.status === 'skipped') {
+                                badgeClass = 'simplepco-import-badge-skip';
+                                badgeText  = i18n.skipped;
+                                totalSkipped++;
+                            } else {
+                                badgeClass = 'simplepco-import-badge-error';
+                                badgeText  = result.message || i18n.error;
+                                totalErrors.push(result.message || i18n.error);
+                            }
+                            $row.find('.simplepco-import-row-status').html(
+                                '<span class="simplepco-import-badge ' + badgeClass + '" title="' + escHtml(result.message || '') + '">' + escHtml(badgeText) + '</span>'
+                            );
+                        });
+                    } else {
                         $row.find('.simplepco-import-row-status').html(
-                            '<span class="simplepco-import-badge ' + badgeClass + '" title="' + escHtml(result.message || '') + '">' + escHtml(badgeText) + '</span>'
+                            '<span class="simplepco-import-badge simplepco-import-badge-error">' + escHtml(response.data && response.data.message ? response.data.message : i18n.error) + '</span>'
                         );
-                    });
-                }
+                        totalErrors.push(response.data && response.data.message ? response.data.message : i18n.error);
+                    }
 
-                // Show results summary
-                var resultsHtml =
-                    '<div class="notice notice-success inline" style="margin:10px 0;">' +
-                        '<p><strong>' + i18n.importComplete + '</strong> ' +
-                        data.imported + ' ' + i18n.imported.toLowerCase() + ', ' +
-                        data.skipped + ' ' + i18n.skipped.toLowerCase() + '.</p>' +
-                    '</div>';
+                    idx++;
+                    importNext();
+                }).fail(function(jqXHR) {
+                    var msg = i18n.error;
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.data && jqXHR.responseJSON.data.message) {
+                        msg = jqXHR.responseJSON.data.message;
+                    } else if (jqXHR.status === 0) {
+                        msg = i18n.requestTimeout;
+                    } else if (jqXHR.statusText) {
+                        msg = i18n.error + ': ' + jqXHR.statusText;
+                    }
 
-                if (data.errors && data.errors.length) {
-                    resultsHtml += '<div class="notice notice-warning inline" style="margin:10px 0;">';
-                    resultsHtml += '<p><strong>Errors:</strong></p><ul>';
-                    $.each(data.errors, function(idx, err) {
-                        resultsHtml += '<li>' + escHtml(err) + '</li>';
-                    });
-                    resultsHtml += '</ul></div>';
-                }
-
-                $('#simplepco-import-results').html(resultsHtml);
-                $('#simplepco-import-step-results').slideDown(200);
-
-            }).fail(function(jqXHR) {
-                $btn.prop('disabled', false).text($btn.data('original-text') || 'Import Selected');
-                var msg = i18n.error;
-                if (jqXHR.responseJSON && jqXHR.responseJSON.data && jqXHR.responseJSON.data.message) {
-                    msg = jqXHR.responseJSON.data.message;
-                } else if (jqXHR.status === 0) {
-                    msg = i18n.requestTimeout;
-                } else if (jqXHR.statusText) {
-                    msg = i18n.error + ': ' + jqXHR.statusText;
-                }
-                $status.html('<span class="simplepco-import-error">' + escHtml(msg) + '</span>');
-
-                // Reset row badges back from "Importing..." to "New"
-                $.each(selectedIds, function(idx, id) {
-                    var $row = $('#simplepco-import-tbody tr[data-episode-id="' + id + '"]');
                     $row.find('.simplepco-import-row-status').html(
-                        '<span class="simplepco-import-badge simplepco-import-badge-new">New</span>'
+                        '<span class="simplepco-import-badge simplepco-import-badge-error">' + escHtml(msg) + '</span>'
                     );
+                    totalErrors.push(msg);
+
+                    idx++;
+                    importNext();
                 });
-            });
+            }
+
+            importNext();
         });
 
         // Store original button text
