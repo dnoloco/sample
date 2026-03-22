@@ -56,11 +56,9 @@ $placeholder_url = class_exists( 'SimplePCO_Series_Public' )
 					$thumb_url = $placeholder_url;
 				}
 
-				// Series info & background artwork
+				// Series info
 				$series_terms = wp_get_post_terms( $post_id, 'simplepco_series', [ 'fields' => 'all' ] );
 				$series_term  = ( ! empty( $series_terms ) && ! is_wp_error( $series_terms ) ) ? $series_terms[0] : null;
-				$series_artwork = $series_term ? get_term_meta( $series_term->term_id, '_simplepco_series_image', true ) : '';
-				$bg_image = ! empty( $series_artwork ) ? $series_artwork : $thumb_url;
 
 				// Message date
 				$message_date   = get_post_meta( $post_id, '_simplepco_message_date', true );
@@ -82,7 +80,7 @@ $placeholder_url = class_exists( 'SimplePCO_Series_Public' )
 
 				<h2 class="simplepco-featured-heading">Recent Message</h2>
 
-				<div class="simplepco-featured-message" style="background-image: url('<?php echo esc_url( $bg_image ); ?>');">
+				<div class="simplepco-featured-message">
 					<a href="<?php the_permalink(); ?>" class="simplepco-featured-message__thumb">
 						<img src="<?php echo esc_url( $thumb_url ); ?>"
 						     alt="<?php echo esc_attr( get_the_title() ); ?>"

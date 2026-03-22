@@ -903,9 +903,7 @@
     margin-bottom: 32px;
     border-radius: 8px;
     overflow: hidden;
-    background-size: cover;
-    background-position: center;
-    min-height: 320px;
+    border: 1px solid #e5e7eb;
 }
 
 /* Thumbnail on the left */
