@@ -1,0 +1,305 @@
+<?php
+/**
+ * REST API Controller
+ *
+ * Provides REST endpoints that power the React-based "Skin" layer:
+ *  - Settings page (credentials, module toggles, cache clearing)
+ *  - Gutenberg block live preview (events, services)
+ *
+ * All data access goes through Repositories, never directly to the API model.
+ *
+ * @package SimplePCO
+ * @since 3.0.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+class SimplePCO_REST_Controller {
+
+    const NAMESPACE = 'simplepco/v1';
+
+    /**
+     * @var SimplePCO_Settings_Repository  The "Data Vault" for local settings.
+     */
+    private $settings_repo;
+
+    /**
+     * @var SimplePCO_License_Manager  Remote license verifier.
+     */
+    private $license_manager;
+
+    /**
+     * @var SimplePCO_Loader  Loader for accessing other repositories (events, cache).
+     */
+    protected $loader;
+
+    /**
+     * @var SimplePCO_OAuth_Handler|null  OAuth handler for token-based auth.
+     */
+    private $oauth_handler;
+
+    /**
+     * @param SimplePCO_Settings_Repository $settings_repo   The settings data repository.
+     * @param SimplePCO_License_Manager     $license_manager The license verifier.
+     * @param SimplePCO_Loader              $loader          The loader (for event repos, cache clearing).
+     * @param SimplePCO_OAuth_Handler|null  $oauth_handler   OAuth handler (optional).
+     */
+    public function __construct( SimplePCO_Settings_Repository $settings_repo, SimplePCO_License_Manager $license_manager, SimplePCO_Loader $loader, $oauth_handler = null ) {
+        $this->settings_repo   = $settings_repo;
+        $this->license_manager = $license_manager;
+        $this->loader          = $loader;
+        $this->oauth_handler   = $oauth_handler;
+    }
+
+    /**
+     * Register REST routes.
+     *
+     * @return void
+     */
+    public function register_routes() {
+        // Events endpoint (for Gutenberg block preview)
+        register_rest_route( self::NAMESPACE, '/events', [
+            'methods'             => 'GET',
+            'callback'            => [ $this, 'get_events' ],
+            'permission_callback' => [ $this, 'check_read_permission' ],
+            'args'                => [
+                'per_page' => [
+                    'type'              => 'integer',
+                    'default'           => 5,
+                    'sanitize_callback' => 'absint',
+                ],
+                'view' => [
+                    'type'              => 'string',
+                    'default'           => 'list',
+                    'sanitize_callback' => 'sanitize_text_field',
+                ],
+            ],
+        ] );
+
+        // Settings endpoints (for React settings page)
+        register_rest_route( self::NAMESPACE, '/settings/credentials', [
+            'methods'             => 'POST',
+            'callback'            => [ $this, 'save_credentials' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        register_rest_route( self::NAMESPACE, '/settings/test-connection', [
+            'methods'             => 'POST',
+            'callback'            => [ $this, 'test_connection' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        // Cache clearing
+        register_rest_route( self::NAMESPACE, '/cache/clear', [
+            'methods'             => 'POST',
+            'callback'            => [ $this, 'clear_cache' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        // License management
+        register_rest_route( self::NAMESPACE, '/license/status', [
+            'methods'             => 'GET',
+            'callback'            => [ $this, 'get_license_status' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        register_rest_route( self::NAMESPACE, '/license/activate', [
+            'methods'             => 'POST',
+            'callback'            => [ $this, 'activate_license' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        register_rest_route( self::NAMESPACE, '/license/deactivate', [
+            'methods'             => 'POST',
+            'callback'            => [ $this, 'deactivate_license' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        // OAuth 2.0 endpoints
+        register_rest_route( self::NAMESPACE, '/oauth/authorize-url', [
+            'methods'             => 'GET',
+            'callback'            => [ $this, 'get_oauth_authorize_url' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        register_rest_route( self::NAMESPACE, '/oauth/status', [
+            'methods'             => 'GET',
+            'callback'            => [ $this, 'get_oauth_status' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+
+        register_rest_route( self::NAMESPACE, '/oauth/disconnect', [
+            'methods'             => 'POST',
+            'callback'            => [ $this, 'oauth_disconnect' ],
+            'permission_callback' => [ $this, 'check_admin_permission' ],
+        ] );
+    }
+
+    /**
+     * GET /events — Returns upcoming events for block preview.
+     */
+    public function get_events( $request ) {
+        $repo = $this->loader->get_repository( 'events' );
+        if ( ! $repo ) {
+            return new WP_Error( 'no_repository', __( 'Event repository not available. Check API credentials.', 'simplepco' ), [ 'status' => 503 ] );
+        }
+
+        $events = $repo->find_all( [
+            'per_page' => $request->get_param( 'per_page' ),
+        ] );
+
+        return rest_ensure_response( $events );
+    }
+
+    /**
+     * POST /settings/credentials — Save API credentials.
+     */
+    public function save_credentials( $request ) {
+        $params = $request->get_json_params();
+
+        if ( ! empty( $params['pco_client_id'] ) ) {
+            $this->settings_repo->save_pco_credentials(
+                sanitize_text_field( $params['pco_client_id'] ),
+                sanitize_text_field( $params['pco_secret_key'] ?? '' )
+            );
+        }
+
+        if ( ! empty( $params['clearstream_api_key'] ) ) {
+            $this->settings_repo->save_clearstream_credentials(
+                sanitize_text_field( $params['clearstream_api_key'] ),
+                '' // message header
+            );
+        }
+
+        return rest_ensure_response( [ 'success' => true ] );
+    }
+
+    /**
+     * POST /settings/test-connection — Test PCO API connection.
+     */
+    public function test_connection( $request ) {
+        $credentials = $this->settings_repo->get_pco_credentials();
+
+        if ( empty( $credentials['client_id'] ) || empty( $credentials['secret_key'] ) ) {
+            return rest_ensure_response( [ 'connected' => false, 'message' => 'No credentials configured.' ] );
+        }
+
+        $timezone  = get_option( 'timezone_string' ) ?: 'America/Chicago';
+        $api_model = new SimplePCO_API_Model( $credentials['client_id'], $credentials['secret_key'], $timezone );
+        $result    = $api_model->get_organization();
+
+        $connected = ! empty( $result ) && ! isset( $result['error'] );
+
+        return rest_ensure_response( [
+            'connected' => $connected,
+            'message'   => $connected ? 'Connected' : ( $result['error'] ?? 'Unknown error' ),
+        ] );
+    }
+
+    /**
+     * POST /cache/clear — Clear all repository caches.
+     */
+    public function clear_cache( $request ) {
+        foreach ( $this->loader->get_repositories() as $repo ) {
+            $repo->clear_cache();
+        }
+
+        // Also clear the legacy transient caches
+        SimplePCO_API_Model::clear_all_cache();
+
+        return rest_ensure_response( [ 'success' => true ] );
+    }
+
+    /**
+     * GET /license/status — Current license status for the React dashboard.
+     */
+    public function get_license_status() {
+        return rest_ensure_response( $this->license_manager->get_status_summary() );
+    }
+
+    /**
+     * POST /license/activate — Verify key with remote server and activate.
+     */
+    public function activate_license( $request ) {
+        $params      = $request->get_json_params();
+        $license_key = isset( $params['license_key'] ) ? sanitize_text_field( $params['license_key'] ) : '';
+
+        if ( empty( $license_key ) ) {
+            return new WP_Error( 'missing_key', __( 'Please enter a license key.', 'simplepco' ), [ 'status' => 400 ] );
+        }
+
+        $result = $this->license_manager->activate_license( $license_key );
+
+        return rest_ensure_response( $result );
+    }
+
+    /**
+     * POST /license/deactivate — Deactivate license from this site.
+     */
+    public function deactivate_license() {
+        $result = $this->license_manager->deactivate_license();
+
+        return rest_ensure_response( $result );
+    }
+
+    /**
+     * GET /oauth/authorize-url — Returns the URL to redirect the user to.
+     */
+    public function get_oauth_authorize_url() {
+        if ( ! $this->oauth_handler ) {
+            return new WP_Error( 'oauth_not_configured', __( 'OAuth is not configured.', 'simplepco' ), [ 'status' => 500 ] );
+        }
+
+        return rest_ensure_response( [
+            'authorize_url' => $this->oauth_handler->get_authorize_url(),
+        ] );
+    }
+
+    /**
+     * GET /oauth/status — Returns current OAuth connection status.
+     */
+    public function get_oauth_status() {
+        $connected = $this->settings_repo->has_pco_oauth_connection();
+        $expires   = $this->settings_repo->get_pco_token_expires();
+
+        return rest_ensure_response( [
+            'connected'  => $connected,
+            'expires_at' => $connected ? gmdate( 'Y-m-d H:i:s', $expires ) : null,
+        ] );
+    }
+
+    /**
+     * POST /oauth/disconnect — Remove stored OAuth tokens.
+     */
+    public function oauth_disconnect() {
+        if ( ! $this->oauth_handler ) {
+            return new WP_Error( 'oauth_not_configured', __( 'OAuth is not configured.', 'simplepco' ), [ 'status' => 500 ] );
+        }
+
+        $this->oauth_handler->disconnect();
+
+        // Also clear API caches since the connection is gone.
+        SimplePCO_API_Model::clear_all_cache();
+
+        return rest_ensure_response( [
+            'success' => true,
+            'message' => __( 'Disconnected from Planning Center.', 'simplepco' ),
+        ] );
+    }
+
+    /**
+     * Permission check: any logged-in user can read (for block preview).
+     */
+    public function check_read_permission() {
+        return is_user_logged_in();
+    }
+
+    /**
+     * Permission check: admin only for settings mutations.
+     */
+    public function check_admin_permission() {
+        return current_user_can( 'manage_options' );
+    }
+}

@@ -1,0 +1,253 @@
+/**
+ * Shortcodes Admin - Styles
+ *
+ * Styling for the centralized shortcodes configuration page.
+ */
+
+.simplepco-shortcodes-page .description {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* Module Sections */
+.simplepco-shortcode-module {
+    margin-bottom: 40px;
+}
+
+.simplepco-module-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 20px;
+    background: #0073aa;
+    color: #fff;
+    border-radius: 4px 4px 0 0;
+    margin: 0;
+    font-size: 18px;
+}
+
+.simplepco-module-name .dashicons {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+}
+
+/* Shortcode Cards */
+.simplepco-shortcode-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    padding: 25px;
+    margin-bottom: 1px;
+}
+
+.simplepco-shortcode-card:last-child {
+    border-radius: 0 0 4px 4px;
+}
+
+/* Shortcode Header */
+.simplepco-shortcode-header {
+    margin-bottom: 20px;
+}
+
+.simplepco-shortcode-tags {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.simplepco-shortcode-tag {
+    display: inline-block;
+    padding: 8px 12px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0073aa;
+}
+
+.simplepco-or {
+    color: #666;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.simplepco-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.simplepco-copy-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.simplepco-shortcode-description {
+    margin: 0;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Shortcode Sections */
+.simplepco-shortcode-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.simplepco-shortcode-section h4 {
+    margin: 0 0 15px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+.simplepco-shortcode-section table {
+    margin-top: 10px;
+}
+
+.simplepco-shortcode-section table code {
+    padding: 2px 6px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.simplepco-param-type {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #e5e5e5;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #666;
+}
+
+/* Examples */
+.simplepco-examples-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.simplepco-example {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.simplepco-example code {
+    flex: 1;
+    padding: 0;
+    background: none;
+    border: none;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #0073aa;
+}
+
+/* Help Section */
+.simplepco-help-section {
+    margin-top: 40px;
+    padding: 25px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.simplepco-help-section h2 {
+    margin-top: 0;
+}
+
+.simplepco-help-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.simplepco-help-card {
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.simplepco-help-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    color: #0073aa;
+}
+
+.simplepco-help-card .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.simplepco-help-card ol {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.simplepco-help-card li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.simplepco-help-card code {
+    padding: 2px 6px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
+/* Copy Success Message */
+#simplepco-copy-message {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .simplepco-shortcode-tags {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .simplepco-example {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .simplepco-help-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,501 @@
+/**
+ * Series Admin Styles
+ */
+
+/* Tabs */
+.simplepco-series-tabs {
+    margin-bottom: 20px;
+}
+
+/* Speaker/Series thumbnails */
+.simplepco-speaker-thumb,
+.simplepco-series-thumb {
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.simplepco-speaker-thumb {
+    border-radius: 50%;
+}
+
+/* No description placeholder */
+.simplepco-no-description {
+    color: #999;
+}
+
+/* Required field indicator */
+.required {
+    color: #d63638;
+}
+
+/* Media icons in message list */
+.column-media .dashicons {
+    color: #2271b1;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+}
+
+/* Column widths */
+.column-date {
+    width: 120px;
+}
+
+.column-speaker,
+.column-series {
+    width: 150px;
+}
+
+.column-scripture {
+    width: 140px;
+}
+
+.column-media {
+    width: 80px;
+}
+
+.column-image {
+    width: 80px;
+}
+
+.column-dates {
+    width: 200px;
+}
+
+/* Message form */
+.simplepco-message-form .form-table th {
+    width: 150px;
+}
+
+/* Image upload widget */
+.simplepco-image-upload .simplepco-upload-btn,
+.simplepco-image-upload .simplepco-remove-btn {
+    margin-top: 8px;
+}
+
+.simplepco-image-upload .simplepco-remove-btn {
+    color: #b32d2e;
+}
+
+.simplepco-image-preview {
+    max-width: 300px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #f0f0f1;
+    border: 1px dashed #c3c4c7;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.simplepco-image-preview:not(.has-image)::after {
+    content: "No image selected";
+    color: #999;
+    font-size: 13px;
+    padding: 16px;
+}
+
+.simplepco-image-preview.has-image {
+    border-style: solid;
+    background: #000;
+    min-height: 0;
+}
+
+.simplepco-image-preview img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* Page description */
+.simplepco-page-description {
+    color: #50575e;
+    font-size: 13px;
+    margin: 0 0 16px;
+}
+
+/* Filter bar */
+.tablenav .button {
+    margin-left: 4px;
+}
+
+/* Delete column */
+.column-delete .submitdelete {
+    color: #b32d2e;
+}
+
+.column-delete .submitdelete:hover {
+    color: #a00;
+}
+
+.column-delete .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* =====================================================================
+   Message Editor – Meta Box Styling
+   ===================================================================== */
+
+/* Spacing between meta boxes */
+#simplepco_message_info,
+#simplepco_scripture_meta,
+#simplepco_media_meta,
+#simplepco_speaker_meta,
+#simplepco_series_info,
+#simplepco_speaker_details {
+    margin-bottom: 24px;
+}
+
+/* Spacing around sidebar taxonomy panels */
+#simplepco_seriesdiv,
+#simplepco_service_typediv {
+    margin-bottom: 24px;
+}
+
+/* Shaded header bar */
+#simplepco_message_info .postbox-header,
+#simplepco_scripture_meta .postbox-header,
+#simplepco_media_meta .postbox-header,
+#simplepco_speaker_meta .postbox-header,
+#simplepco_series_info .postbox-header,
+#simplepco_speaker_details .postbox-header {
+    background: #f0f0f1;
+    border-bottom: 1px solid #c3c4c7;
+}
+
+/* Hide move/sort handles on our meta boxes */
+#simplepco_speaker_meta .handle-order-higher,
+#simplepco_speaker_meta .handle-order-lower,
+#simplepco_series_info .handle-order-higher,
+#simplepco_series_info .handle-order-lower,
+#simplepco_message_info .handle-order-higher,
+#simplepco_message_info .handle-order-lower,
+#simplepco_media_meta .handle-order-higher,
+#simplepco_media_meta .handle-order-lower,
+#simplepco_scripture_meta .handle-order-higher,
+#simplepco_scripture_meta .handle-order-lower,
+#simplepco_speaker_details .handle-order-higher,
+#simplepco_speaker_details .handle-order-lower {
+    display: none;
+}
+
+/* Remove drag cursor from our meta box title bars */
+#simplepco_speaker_meta .hndle,
+#simplepco_series_info .hndle,
+#simplepco_message_info .hndle,
+#simplepco_media_meta .hndle,
+#simplepco_scripture_meta .hndle,
+#simplepco_speaker_details .hndle {
+    cursor: default;
+}
+
+/* Fix speaker dropdown overflow */
+#simplepco_speaker_meta select {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* =====================================================================
+   Message Editor – Shared Meta Table Layout
+   ===================================================================== */
+
+/* Consistent label width across all meta boxes */
+.simplepco-meta-table th {
+    width: 140px;
+    vertical-align: top;
+    padding-top: 14px;
+}
+
+/* Constrain textarea width to match regular-text inputs */
+.simplepco-meta-table textarea {
+    max-width: 25em;
+    width: 100%;
+}
+
+/* Field + button inline layout */
+.simplepco-field-with-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.simplepco-field-with-button input.regular-text {
+    flex: 0 1 auto;
+}
+
+/* =====================================================================
+   Message Editor – Scripture Meta Box
+   ===================================================================== */
+
+.simplepco-scripture-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.simplepco-scripture-row select {
+    min-width: 110px;
+}
+
+.simplepco-scripture-row .simplepco-scripture-book {
+    min-width: 180px;
+}
+
+.simplepco-scripture-dash {
+    color: #50575e;
+    font-size: 14px;
+    line-height: 28px;
+}
+
+.simplepco-remove-scripture {
+    color: #b32d2e;
+    min-width: 30px;
+    padding: 0 8px;
+    line-height: 28px;
+    font-size: 16px;
+}
+
+/* =====================================================================
+   Speaker Links – Repeatable Rows
+   ===================================================================== */
+
+.simplepco-speaker-link-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.simplepco-speaker-link-row .simplepco-link-label {
+    max-width: 180px;
+}
+
+.simplepco-speaker-link-row .simplepco-link-url {
+    flex: 1;
+    max-width: 300px;
+}
+
+.simplepco-remove-speaker-link {
+    color: #b32d2e;
+    min-width: 30px;
+    padding: 0 8px;
+    line-height: 28px;
+    font-size: 16px;
+}
+
+/* =====================================================================
+   Import Page
+   ===================================================================== */
+
+.simplepco-import-wrap h2 {
+    margin-top: 0;
+}
+
+.simplepco-import-step {
+    margin-bottom: 25px;
+}
+
+.simplepco-import-step h3 {
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+/* Status messages */
+.simplepco-import-status {
+    display: inline-block;
+    margin-left: 10px;
+    font-style: italic;
+    line-height: 30px;
+    vertical-align: middle;
+}
+
+.simplepco-import-error {
+    color: #d63638;
+    font-style: normal;
+    font-weight: 600;
+}
+
+/* Import table */
+#simplepco-import-table {
+    margin-top: 10px;
+}
+
+#simplepco-import-table th.check-column,
+#simplepco-import-table td.check-column {
+    width: 2.2em;
+    padding: 8px 0 8px 10px;
+}
+
+/* Dim already-imported rows */
+.simplepco-import-row-existing td {
+    opacity: 0.6;
+}
+
+/* Status badges */
+.simplepco-import-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.simplepco-import-badge-new {
+    background: #dff0d8;
+    color: #3c763d;
+}
+
+.simplepco-import-badge-success {
+    background: #dff0d8;
+    color: #3c763d;
+}
+
+.simplepco-import-badge-skip {
+    background: #f0f0f1;
+    color: #50575e;
+}
+
+.simplepco-import-badge-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.simplepco-import-badge-error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Field mapping reference table */
+.simplepco-import-mapping {
+    border-top: 1px solid #ccd0d4;
+    padding-top: 20px;
+}
+
+.simplepco-import-mapping table {
+    background: #f9f9f9;
+}
+
+.simplepco-import-mapping th,
+.simplepco-import-mapping td {
+    padding: 8px 12px;
+}
+
+/* Last import info bar */
+.simplepco-import-last-run {
+    font-size: 13px;
+}
+
+/* Summary line */
+#simplepco-import-summary {
+    font-size: 13px;
+    padding: 8px 0;
+}
+
+/* Media type tags */
+.simplepco-import-media-tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.6;
+    margin: 1px 2px;
+}
+
+.simplepco-media-video {
+    background: #e8f0fe;
+    color: #1a56db;
+}
+
+.simplepco-media-audio {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.simplepco-media-sermon-audio {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.simplepco-media-art {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.simplepco-media-files {
+    background: #fce7f3;
+    color: #9d174d;
+}
+
+.simplepco-media-none {
+    background: #f0f0f1;
+    color: #999;
+}
+
+/* =====================================================================
+   Files Repeater (Media Meta Box)
+   ===================================================================== */
+
+.simplepco-files-repeater {
+    max-width: 700px;
+}
+
+.simplepco-file-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    padding: 4px 0;
+}
+
+.simplepco-file-row.ui-sortable-helper {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    border-radius: 3px;
+    padding: 4px 6px;
+}
+
+.simplepco-file-drag {
+    cursor: move;
+    color: #c3c4c7;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+    line-height: 1;
+}
+
+.simplepco-file-drag:hover {
+    color: #50575e;
+}
+
+.simplepco-file-name {
+    max-width: 180px !important;
+    flex-shrink: 0;
+}
+
+.simplepco-file-url {
+    flex: 1;
+    min-width: 0;
+}
+
+.simplepco-file-upload-btn {
+    flex-shrink: 0;
+}
+
+.simplepco-file-remove-btn {
+    color: #b32d2e;
+    min-width: 30px;
+    padding: 0 8px;
+    line-height: 28px;
+    font-size: 16px;
+    flex-shrink: 0;
+}
